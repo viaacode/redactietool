@@ -110,7 +110,8 @@ def login():
         if username == 'admin' and password == 'admin':
             session['samlUserdata'] = {}
             session['samlUserdata']['cn'] = [username]
-            session['samlUserdata']['apps'] = [OAS_APPNAME]
+            session['samlUserdata']['apps'] = ['broken'+OAS_APPNAME]
+            print(">>>>>>>> redirect to search_media")
             return redirect(
                 url_for('.search_media')
             )
