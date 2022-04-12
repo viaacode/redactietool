@@ -1,3 +1,15 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+#  @Author: Walter Schreppers
+#
+#  app/services/input_escaping.py
+#
+#   Escape content for richtext editor so it works with markup instead of html
+#   also sanitize html server side. These module methods are used inside the MetaMapping
+#   class.
+#
+
 import markdown2
 from markupsafe import escape
 
