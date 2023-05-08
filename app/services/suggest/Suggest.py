@@ -231,10 +231,13 @@ class Suggest:
     OND_NS = OND_NS
     EXT_NS = EXT_NS
 
-    def __init__(self, endpoint: str, user: str, password: str):
+    def __init__(self, endpoint: str, user: str = None, password: str= None, token: str = None):
         self.sparql = SPARQLWrapper2(endpoint)
         self.sparql.setMethod(POST)
-        self.sparql.setCredentials(user, password)
+        if token is not None:
+            self.sparql.addCustomHttpHeader('Authorization',f'Bearer {token}')
+        else:
+            self.sparql.setCredentials(user, password)
         self.sparql.setReturnFormat(JSON)
 
     def __exec_query(self, query: str, **kwargs):
