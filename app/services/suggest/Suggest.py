@@ -58,8 +58,9 @@ GET_VAKKEN_QUERY = (
     + """
 SELECT ?id ?label ?definition (0 AS ?child_count) (GROUP_CONCAT(?rel; separator=",") as ?related_id)
 WHERE {{
-    col:vak skos:memberList ?list .
-    ?list stardog:list:member (?id ?index) .
+    # col:vak skos:memberList ?list .
+    # ?list stardog:list:member (?id ?index) .
+    col:vak skos:member ?id .
 
     ?id a skos:Concept;
     skos:prefLabel ?label;
@@ -119,9 +120,10 @@ GET_THEMAS_QUERY = (
     + """
 SELECT DISTINCT ?id ?label ?definition (0 AS ?child_count)
 WHERE {{
-    ocol:thema skos:memberList ?list .
-    ?list stardog:list:member (?id ?index) .
-
+    # ocol:thema skos:memberList ?list .
+    # ?list stardog:list:member (?id ?index) .
+    ocol:thema skos:member ?id .
+    
     ?id a skos:Concept;
     skos:prefLabel ?label;
     skos:definition ?definition .
@@ -229,10 +231,13 @@ class Suggest:
     OND_NS = OND_NS
     EXT_NS = EXT_NS
 
-    def __init__(self, endpoint: str, user: str, password: str):
+    def __init__(self, endpoint: str, user: str = None, password: str= None, token: str = None):
         self.sparql = SPARQLWrapper2(endpoint)
         self.sparql.setMethod(POST)
-        self.sparql.setCredentials(user, password)
+        if token is not None:
+            self.sparql.addCustomHttpHeader('Authorization',f'Bearer {token}')
+        else:
+            self.sparql.setCredentials(user, password)
         self.sparql.setReturnFormat(JSON)
 
     def __exec_query(self, query: str, **kwargs):

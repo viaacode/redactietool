@@ -12,7 +12,7 @@
 #   the Vue components. Furthermore we will add some endpoints to do ajax calls from
 #   vue that return data here (again in json format).
 #
-#   ENV vars: SPARQL_ENDPOINT, SPARQL_USER and SPARQL_PASS
+#   ENV vars: SPARQL_ENDPOINT, SPARQL_USER, SPARQL_PASS and SPARQL_TOKEN
 #
 
 import os
@@ -22,14 +22,15 @@ from app.services.suggest.Suggest import Suggest
 
 class SuggestApi:
 
-    SPARQL_ENDPOINT = os.environ.get(
-        "SPARQL_ENDPOINT", "http://sparql_test_endpoint")
+    SPARQL_ENDPOINT = os.environ.get("SPARQL_ENDPOINT", "http://sparql_test_endpoint")
     USER = os.environ.get("SPARQL_USER", "test")
     PASSWORD = os.environ.get("SPARQL_PASS", "test")
+    TOKEN = os.environ.get("SPARQL_TOKEN", "test")
 
     def __init__(self):
-        print(f"{self.SPARQL_ENDPOINT=}")
-        self.suggest = Suggest(self.SPARQL_ENDPOINT, self.USER, self.PASSWORD)
+        self.suggest = Suggest(
+            self.SPARQL_ENDPOINT, self.USER, self.PASSWORD, self.TOKEN
+        )
 
     def get_onderwijsniveaus(self):
         res = []
