@@ -28,6 +28,7 @@ class SuggestApi:
     PASSWORD = os.environ.get("SPARQL_PASS", "test")
 
     def __init__(self):
+        print(f"{self.SPARQL_ENDPOINT=}")
         self.suggest = Suggest(self.SPARQL_ENDPOINT, self.USER, self.PASSWORD)
 
     def get_onderwijsniveaus(self):
