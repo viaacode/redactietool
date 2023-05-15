@@ -598,3 +598,17 @@ h2.title {
   margin-bottom: 24px !important;
 }
 
+fieldset.debug-pids {
+  border: 2px solid #7b92a4;
+  border-radius: 5px;
+  padding: 1em;
+  padding-top: 2px;
+  padding-bottom: 5px;
+  margin-bottom: -10px;
+}
+
+fieldset.debug-pids > legend {
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #324b5e;
+}
