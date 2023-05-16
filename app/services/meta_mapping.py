@@ -26,6 +26,32 @@ from app.services.input_escaping import markdown_to_html, cleanup_markdown, esca
 
 logger = logging.get_logger(__name__, config=ConfigParser())
 
+# get_md_array is now deprecated. we need this instead!
+
+
+def dynamic_array(mam_data, field_name):
+    result = []
+    field_value = mam_data.get('Dynamic').get(field_name)
+    for key in field_value:
+        for val in field_value[key]:
+            result.append({
+                'value': val,
+                'attribute': key,
+                'dottedKey': None  # not sure we need this
+            })
+
+    return result
+
+
+def dynamic_field(mam_data, field_name, field_type):
+    result = []
+    for val in mam_data.get('Dynamic').get(field_name).get(field_type):
+        result.append({
+            'value': val,
+            'attribute': field_type,
+            'dottedKey': None,  # TODO: check if frontend can work without this
+        })
+
 
 class MetaMapping:
     def __init__(self):
@@ -59,7 +85,7 @@ class MetaMapping:
 
     def frontend_metadata(self, pid, department, mam_data):
         item_type = mam_data.get('type')
-        item_type_lom = get_md_array(mam_data, 'lom_learningresourcetype')
+        item_type_lom = dynamic_array(mam_data, 'lom_learningresourcetype')
         if item_type_lom and len(item_type_lom) > 0:
             item_type = item_type_lom[0]['value']
 
@@ -67,39 +93,33 @@ class MetaMapping:
             'pid': pid,
             'department': department,
             'item_type': item_type,
-            'item_languages': get_md_array(mam_data, 'lom_languages'),
-            'item_eindgebruikers': get_md_array(mam_data, 'lom_intendedenduserrole'),
-            'item_themas': get_md_array(mam_data, 'lom_thema'),
-            'item_vakken': get_md_array(mam_data, 'lom_vak'),
-            'item_vakken_legacy': get_md_array(mam_data, 'lom_classification'),
-            'item_onderwijsniveaus': get_md_array(
-                mam_data,
-                'lom_onderwijsniveau',
-                legacy_fallback=True
-            ),
-            'item_onderwijsniveaus_legacy': get_md_array(
-                mam_data, 'lom_context'),
-            'item_onderwijsgraden': get_md_array(
-                mam_data,
-                'lom_onderwijsgraad',
-                legacy_fallback=True
-            ),
-            'item_onderwijsgraden_legacy': get_md_array(
-                mam_data,
-                'lom_typicalagerange'
-            ),
-            'item_keywords': get_md_array(mam_data, 'lom_keywords'),
-            'item_keywords_cp': get_md_array(mam_data, 'dc_subjects'),
-            # TODO: later fetch directly after v2 refactor
+            'item_languages': dynamic_field(mam_data, 'lom_languages', 'multiselect'),
+            'item_eindgebruikers': dynamic_field(mam_data, 'lom_intendedenduserrole', 'multiselect'),
+            'item_themas': dynamic_field(mam_data, 'lom_thema', 'Thema'),
+            'item_vakken': dynamic_field(mam_data, 'lom_vak', 'Vak'),
+            'item_vakken_legacy': dynamic_field(mam_data, 'lom_classification', 'multiselect'),
+            'item_onderwijsniveaus': dynamic_field(mam_data, 'lom_onderwijsniveau', 'Onderwijsniveau'),
+            'item_onderwijsgraden': dynamic_field(mam_data, 'lom_onderwijsgraad', 'Onderwijsgraad'),
+            'tiem_onderwijsgraden_legacy': [],  # TODO: how does this work in v2???
+            'item_onderwijsniveaus_legacy': [],  # TODO: how does this work in v2???
+            # 'item_onderwijsniveaus_legacy': get_md_array(
+            #     mam_data, 'lom_context'),
+            #     mam_data,
+            #     'lom_onderwijsgraad',
+            #     legacy_fallback=True
+            # ),
+            # 'item_onderwijsgraden_legacy': get_md_array(
+            #    mam_data,
+            #    'lom_typicalagerange'
+            # ),
+            'item_keywords': dynamic_field(mam_data, 'lom_keywords', 'Sleutelwoord'),
+            # 'item_keywords_cp': get_md_array(mam_data, 'dc_subjects'),
+            # this is just an educated guess TODO: check if this is now correct
+            'item_keywords_cp': mam_data.get('Descriptive').get('Keywords').get('Keyword'),
             'publish_item': 'ajax'  # signal ajax request to frontend
         }
 
     def form_params(self, pid, department, mam_data, errors=[]):
-        dc_description_lang = get_property(mam_data, 'dc_description_lang')
-        ondertitels = get_property(mam_data, 'dc_description_ondertitels')
-        cast = get_property(mam_data, 'dc_description_cast')
-        transcriptie = get_property(mam_data, 'dc_description_transcriptie')
-
         keyframe_edit_url = '{}{}'.format(
             os.environ.get('KEYFRAME_EDITING_LINK',
                            'https://set_in_secrets?id='),
@@ -107,11 +127,12 @@ class MetaMapping:
         )
 
         item_type = mam_data.get('type')
-        item_type_lom = get_md_array(mam_data, 'lom_learningresourcetype')
+        item_type_lom = dynamic_array(mam_data, 'lom_learningresourcetype')
         if item_type_lom and len(item_type_lom) > 0:
             item_type = item_type_lom[0]['value']
 
-        dcterms_abstract = get_property(mam_data, 'dcterms_abstract')
+        # get_property(mam_data, 'dcterms_abstract')
+        dcterms_abstract = mam_data.get('Dynamic').get('dcterms_abstract')
         avo_beschrijving = markdown_to_html(dcterms_abstract)
 
         result = {
@@ -119,44 +140,46 @@ class MetaMapping:
             'mam_data': json.dumps(mam_data),
             'publish_item': False,
             'original_cp': mam_data.get('Dynamic').get('Original_CP'),
-            'makers': get_md_array(mam_data, 'dc_creators'),
+            'makers': dynamic_array(mam_data, 'dc_creators'),
             'maker_options': self.MAKER_OPTIONS,
-            'contributors': get_md_array(mam_data, 'dc_contributors'),
+            'contributors': dynamic_array(mam_data, 'dc_contributors'),
             'contributor_options': self.CONTRIBUTOR_OPTIONS,
-            'publishers': get_md_array(mam_data, 'dc_publishers'),
+            'publishers': dynamic_array(mam_data, 'dc_publishers'),
             'publisher_options': self.PUBLISHER_OPTIONS,
             'item_type': item_type,
             'frontend_metadata': self.frontend_metadata(pid, department, mam_data),
-            'dc_identifier_localid': get_property(mam_data, 'dc_identifier_localid'),
+            'dc_identifier_localid': mam_data.get('Dynamic').get('dc_identifier_localid'),
             'pid': pid,
-            'title': mam_data.get('title'),
-            'ontsluitingstitel': get_property(mam_data, 'dc_title'),
-
-            'titel_serie': get_array_property(mam_data, 'dc_titles', 'serie'),
-            'titel_episode': get_array_property(mam_data, 'dc_titles', 'episode'),
-            'titel_aflevering': get_array_property(mam_data, 'dc_titles', 'aflevering'),
-            'titel_alternatief': get_array_property(mam_data, 'dc_titles', 'alternatief'),
-            'titel_programma': get_array_property(mam_data, 'dc_titles', 'programma'),
-            'titel_serienummer': get_array_property(mam_data, 'dc_titles', 'serienummer'),
-            'titel_seizoen': get_array_property(mam_data, 'dc_titles', 'seizoen'),
-            'titel_seizoen_nr': get_array_property(mam_data, 'dc_titles', 'seizoen_nr'),
-            'titel_archief': get_array_property(mam_data, 'dc_titles', 'archief'),
-            'titel_deelarchief': get_array_property(mam_data, 'dc_titles', 'deelarchief'),
-            'titel_reeks': get_array_property(mam_data, 'dc_titles', 'reeks'),
-            'titel_deelreeks': get_array_property(mam_data, 'dc_titles', 'deelreeks'),
-            'titel_registratie': get_array_property(mam_data, 'dc_titles', 'registratie'),
-            'description': mam_data.get('description'),
+            'title': mam_data.get('Descriptive').get('Title'),
+            'ontsluitingstitel': mam_data.get('Dynamic').get('dc_title'),
+            # get_array_property(mam_data, 'dc_titles', 'serie'),
+            # array now???
+            'titel_serie': mam_data.get('Dynamic').get('dc_titles').get('serie', ''),
+            'titel_episode': mam_data.get('Dynamic').get('dc_titles').get('episode', ''),
+            'titel_aflevering': mam_data.get('Dynamic').get('dc_titles').get('aflevering', ''),
+            'titel_alternatief': mam_data.get('Dynamic').get('dc_titles').get('alternatief', ''),
+            'titel_programma': mam_data.get('Dynamic').get('dc_titles').get('programma', ''),
+            'titel_serienummer': mam_data.get('Dynamic').get('dc_titles').get('serienummer', ''),
+            'titel_seizoen': mam_data.get('Dynamic').get('dc_titles').get('seizoen', ''),
+            'titel_seizoen_nr': mam_data.get('Dynamic').get('dc_titles').get('seizoen_nr', ''),
+            'titel_archief': mam_data.get('Dynamic').get('dc_titles').get('archief', ''),
+            'titel_deelarchief': mam_data.get('Dynamic').get('dc_titles').get('deelarchief', ''),
+            'titel_reeks': mam_data.get('Dynamic').get('dc_titles').get('reeks', ''),
+            'titel_deelreeks': mam_data.get('Dynamic').get('dc_titles').get('deelreeks', ''),
+            'titel_registratie': mam_data.get('Dynamic').get('dc_titles').get('registratie', ''),
+            'description': mam_data.get('Descriptive').get('Description'),
             'avo_beschrijving': avo_beschrijving,
-            'ondertitels': ondertitels,
-            'programma_beschrijving': get_property(mam_data, 'dc_description_programma'),
-            'cast': cast,
-            'transcriptie': transcriptie,
-            'dc_description_lang': dc_description_lang,  # orig uitgebr. beschr
-            'created': get_property(mam_data, 'CreationDate'),
-            'dcterms_issued': get_property(mam_data, 'dcterms_issued'),
-            # not used in form yet?
-            'dcterms_created': get_property(mam_data, 'dcterms_created'),
-            'archived': get_property(mam_data, 'created_on'),
+            'ondertitels': mam_data.get('Dynamic').get('dc_description_ondertitels', ''),
+            'programma_beschrijving': mam_data.get('Dynamic').get('dc_description_programma', ''),
+            'cast': mam_data.get('Dynamic').get('dc_description_cast', ''),
+            'transcriptie': mam_data.get('Dynamic').get('dc_description_transcriptie', ''),
+            'dc_description_lang': mam_data.get('Dynamic').get('dc_description_lang', ''),
+            # is now isodate!
+            'created': mam_data.get('Descriptive').get('CreationDate'),
+            'dcterms_issued': mam_data.get('Dynamic').get('dcterms_issued'),
+            'dcterms_created': mam_data.get('Dynamic').get('dcterms_created'),
+            # is now isodate!
+            'archived': mam_data.get('Administrative').get('ArchiveDate'),
             'keyframe_edit_url': keyframe_edit_url,
             'video_url': mam_data.get('Internal').get('PathToVideo'),
             'keyframe': mam_data.get('Internal').get('PathToKeyframe'),
@@ -166,6 +189,7 @@ class MetaMapping:
             'validation_errors': errors
         }
 
+        print(">>>>>> MAM DATA=", json.dumps(mam_data, indent=2))
         print(">>>>>> MAP RESULT=", json.dumps(result, indent=2))
         return result
 
@@ -185,8 +209,8 @@ class MetaMapping:
         # default waarde voor lom_legacy
         lom_legacy = "true"
 
-        themas = get_md_array(mam_data, 'lom_thema')
-        vakken = get_md_array(mam_data, 'lom_vak')
+        themas = dynamic_array(mam_data, 'lom_thema')
+        vakken = dynamic_array(mam_data, 'lom_vak')
 
         if (themas and vakken and len(themas) > 0 and len(vakken) > 0):
             lom_legacy = "false"
