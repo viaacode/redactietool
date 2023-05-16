@@ -12,22 +12,27 @@
 #
 
 import os
+import json
 from requests import Session
 from viaa.configuration import ConfigParser
 from viaa.observability import logging
+from mediahaven import MediaHaven
+from mediahaven.oauth2 import ROPCGrant, RequestTokenError
 
 logger = logging.get_logger(__name__, config=ConfigParser())
 
 
 class MediahavenApi:
-    # Voor v2 is endpoint hier /mediahaven-rest-api/v2/resources/
-    # en met oauth ipv basic auth
     API_SERVER = os.environ.get(
         'MEDIAHAVEN_API',
-        'https://archief-qas.viaa.be/mediahaven-rest-api'
+        'https://archief-qas.viaa.be/mediahaven-rest-api/v2'
     )
-    API_USER_PREFIX = os.environ.get('MEDIAHAVEN_USER_PREFIX', 'viaa@')
+    # API_USER_PREFIX = os.environ.get('MEDIAHAVEN_USER_PREFIX', 'viaa@')
+    API_USERNAME = os.environ["MEDIAHAVEN_USER"]
     API_PASSWORD = os.environ.get('MEDIAHAVEN_PASS', 'password')
+    CLIENT_ID = os.environ["MEDIAHAVEN_CLIENT"]
+    CLIENT_SECRET = os.environ["MEDIAHAVEN_SECRET"]
+
     DEPARTMENT_ID = os.environ.get(
         'DEPARTMENT_ID',
         'dd111b7a-efd0-44e3-8816-0905572421da'
@@ -37,50 +42,28 @@ class MediahavenApi:
     ONDERWIJS_PERM_ID = os.environ.get(
         'ONDERWIJS_PERM_ID', 'config_onderwijs_uuid')
 
+
     def __init__(self, session=None):
-        if session is None:
-            self.session = Session()
-        else:
-            self.session = session
+        # Create a ROPC grant
+        grant = ROPCGrant(url, client_id, client_secret)
 
-    def api_user(self, department):
-        return f"{self.API_USER_PREFIX}{department}"
+        # Request a token
+        try:
+            grant.request_token(username, password)
+        except RequestTokenError as e:
+            logger.error(f"MediaHaven token error: {e}")
 
-    # generic get request to mediahaven api
-    def get_proxy(self, department, api_route, enable_v2_header=False):
-        get_url = f"{self.API_SERVER}{api_route}"
-        headers = {
-            'Content-Type': 'application/json',
-        }
+        self.client = MediaHaven(self.API_SERVER, grant)
 
-        if enable_v2_header:
-            headers['Accept'] = 'application/vnd.mediahaven.v2+json'
-
-        response = self.session.get(
-            url=get_url,
-            headers=headers,
-            auth=(self.api_user(department), self.API_PASSWORD)
-        )
-
-        if response.status_code > 400:
-            logger.info(
-                f"ERROR {response.status_code} from mediahaven", data=response.text)
-            return {'totalNrOfResults': 0, 'data': []}
-
-        return response.json()
-
-    def list_objects(self, department, search='', enable_v2_header=False, offset=0, limit=25):
-        return self.get_proxy(
-            department,
-            f"/resources/media?q={search}&startIndex={offset}&nrOfResults={limit}",
-            enable_v2_header=enable_v2_header
-        )
+    # def list_objects(self, department, search='', enable_v2_header=False, offset=0, limit=25):
+        
 
     def find_by(self, department, object_key, value):
         search_matches = self.list_objects(
             department, search=f"+({object_key}:{value})")
         return search_matches
 
+    # TODO: convert this call
     def delete_fragment(self, department, frag_id):
         del_url = f"{self.API_SERVER}/resources/media/{frag_id}"
         del_resp = self.session.delete(
@@ -96,26 +79,7 @@ class MediahavenApi:
             }
         )
 
-    def find_item_by_pid(self, department, pid):
-        # per request Athina, we drop the department filtering here
-        # self.list_objects(search=f"%2B(DepartmentName:{department})%2B(ExternalId:{pid})")
-        matched_videos = self.list_objects(
-            department,
-            search=f"%2B(ExternalId:{pid})",
-        )
-
-        nr_results = matched_videos.get('totalNrOfResults')
-        if not nr_results:
-            return None
-
-        if nr_results == 1:
-            return matched_videos.get('mediaDataList', [{}])[0]
-        elif nr_results > 1:
-            # future todo, iterate them and pick a certain one to return?
-            return matched_videos.get('mediaDataList', [{}])[1]
-        else:
-            return None
-
+    # TODO: convert call
     def delete_old_subtitle(self, department, subtitle_file):
         items = self.find_by(department, 'originalFileName', subtitle_file)
         if items.get('totalNrOfResults') >= 1:
@@ -123,6 +87,22 @@ class MediahavenApi:
             frag_id = sub['fragmentId']
             self.delete_fragment(department, frag_id)
 
+
+    def find_item_by_pid(self, department, pid):
+        records = self.client.records.search(q=f"+(ExternalId:{pid})")
+
+        if not records.total_nr_of_results > 0:
+            return None
+
+        if records.total_nr_of_results == 1:
+            return json.loads(records.raw_response).get('Results', [{}])[0]
+        elif records.total_nr_of_results > 1:
+            # future todo, iterate them and pick a certain one to return?
+            return json.loads(records.raw_response).get('Results', [{}])[1]
+        else:
+            return None
+
+    # TODO: convert call
     def send_subtitles(self, upload_folder, metadata, tp):
         # sends srt_file and xml_file to mediahaven
         send_url = f"{self.API_SERVER}/resources/media/"
@@ -146,67 +126,31 @@ class MediahavenApi:
 
         return response.json()
 
-    # only possible with v2 header this can replace find_item_by_pid
-    # but will require the refactoring given in ticket DEV-1918
     def get_publicatiestatus(self, department, pid):
-        matched_videos = self.list_objects(
-            department,
-            search=f"%2B(ExternalId:{pid})",
-            enable_v2_header=True
-        )
-
-        nr_results = matched_videos.get('TotalNrOfResults')
-        if not nr_results:
+        records = self.client.records.search(q=f"+(ExternalId:{pid})")
+        if records.total_nr_of_results < 1:
             return False
-
-        if nr_results == 1:
-            item_v2 = matched_videos.get('MediaDataList', [{}])[0]
-        elif nr_results > 1:
-            # future todo, iterate them and pick a certain one to return?
-            item_v2 = matched_videos.get('MediaDataList', [{}])[1]
-        else:
-            return False
-
-        # data = item_v2.get('Dynamic')
-        # TODO: Later we can use this data to refactor the v1 calls in MetaMapping
-        # and SubMapping
-        # print(json.dumps(item_v2, indent=2))
-        # import json
-
-        permissions = item_v2.get('RightsManagement').get(
-            'Permissions').get('Read')
-
-        print("permissions=", permissions)
-
+       
+        permissions = records[0].RightsManagement.Permissions.Read
+        logger.info("permissions=", permissions)
         return self.ONDERWIJS_PERM_ID in permissions
 
     def get_subtitles(self, department, pid):
-        matched_subs = self.list_objects(
-            department,
-            search=f"+(dc_relationsis_verwant_aan:{pid})",
-            enable_v2_header=True
-        )
-        nr_results = matched_subs.get('TotalNrOfResults')
-        if not nr_results:
+        matched_subs = self.client.records.search(q=f"+(dc_relationsis_verwant_aan:{pid})")
+        if not matched_subs.total_nr_of_results:
             return []
 
-        return matched_subs.get('MediaDataList', [{}])
+        return json.loads(matched_subs.raw_response).get('Results', [{}])
 
     def get_subtitle(self, department, pid, subtype):
-        matched_subs = self.list_objects(
-            department,
-            search=f"+(dc_relationsis_verwant_aan:{pid})",
-            enable_v2_header=True
-        )
-
-        nr_results = matched_subs.get('TotalNrOfResults')
-        if not nr_results:
+        matched_subs = self.client.records.search(q=f"+(dc_relationsis_verwant_aan:{pid})")
+        if not matched_subs.total_nr_of_results:
             return False
 
-        if nr_results == 1:
-            return matched_subs.get('MediaDataList', [{}])[0]
-        elif nr_results > 1:
-            all_subs = matched_subs.get('MediaDataList', [{}])
+        if matched_subs.total_nr_of_results == 1:
+            return json.loads(matched_subs.raw_response).get('Results', [{}])[0]
+        elif matched_subs.total_nr_of_results > 1:
+            all_subs = json.loads(matched_subs.raw_response).get('Results', [{}])
             for sub in all_subs:
                 if subtype in sub.get('Descriptive').get('OriginalFilename'):
                     return sub
