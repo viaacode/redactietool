@@ -15,10 +15,11 @@ import json
 import os
 from viaa.configuration import ConfigParser
 from viaa.observability import logging
+
+# TODO: these setters will also need to be refactored
 from app.services.mh_properties import (
-    get_property, set_property,
-    get_md_array,
-    get_array_property, set_array_property,
+    set_property,
+    set_array_property,
     set_json_array_property
 )
 from app.services.xml_sidecar import XMLSidecar
@@ -30,8 +31,12 @@ logger = logging.get_logger(__name__, config=ConfigParser())
 
 
 def dynamic_array(mam_data, field_name):
-    result = []
     field_value = mam_data.get('Dynamic').get(field_name)
+
+    if field_value is None:
+        return []
+
+    result = []
     for key in field_value:
         for val in field_value[key]:
             result.append({
@@ -44,13 +49,35 @@ def dynamic_array(mam_data, field_name):
 
 
 def dynamic_field(mam_data, field_name, field_type):
+    field_values = mam_data.get('Dynamic').get(field_name)
+    if field_values is None:
+        return []
+
     result = []
-    for val in mam_data.get('Dynamic').get(field_name).get(field_type):
+    for val in field_values.get(field_type):
         result.append({
             'value': val,
             'attribute': field_type,
             'dottedKey': None,  # TODO: check if frontend can work without this
         })
+
+    return result
+
+
+# TODO: ask if this is ok to return first element of list here.
+# in v1 we had 1 value, here we have an array with 1 value so we just return the first
+# title string to make it compatible
+def get_title(mam_data, title_name):
+    if mam_data.get('Dynamic') is None:
+        return ''
+
+    dc_titles = mam_data.get('Dynamic').get('dc_titles')
+    if dc_titles:
+        titles = dc_titles.get(title_name, '')
+        if len(titles) > 0:
+            return titles[0]
+
+    return ''
 
 
 class MetaMapping:
@@ -113,7 +140,6 @@ class MetaMapping:
             #    'lom_typicalagerange'
             # ),
             'item_keywords': dynamic_field(mam_data, 'lom_keywords', 'Sleutelwoord'),
-            # 'item_keywords_cp': get_md_array(mam_data, 'dc_subjects'),
             # this is just an educated guess TODO: check if this is now correct
             'item_keywords_cp': mam_data.get('Descriptive').get('Keywords').get('Keyword'),
             'publish_item': 'ajax'  # signal ajax request to frontend
@@ -152,21 +178,19 @@ class MetaMapping:
             'pid': pid,
             'title': mam_data.get('Descriptive').get('Title'),
             'ontsluitingstitel': mam_data.get('Dynamic').get('dc_title'),
-            # get_array_property(mam_data, 'dc_titles', 'serie'),
-            # array now???
-            'titel_serie': mam_data.get('Dynamic').get('dc_titles').get('serie', ''),
-            'titel_episode': mam_data.get('Dynamic').get('dc_titles').get('episode', ''),
-            'titel_aflevering': mam_data.get('Dynamic').get('dc_titles').get('aflevering', ''),
-            'titel_alternatief': mam_data.get('Dynamic').get('dc_titles').get('alternatief', ''),
-            'titel_programma': mam_data.get('Dynamic').get('dc_titles').get('programma', ''),
-            'titel_serienummer': mam_data.get('Dynamic').get('dc_titles').get('serienummer', ''),
-            'titel_seizoen': mam_data.get('Dynamic').get('dc_titles').get('seizoen', ''),
-            'titel_seizoen_nr': mam_data.get('Dynamic').get('dc_titles').get('seizoen_nr', ''),
-            'titel_archief': mam_data.get('Dynamic').get('dc_titles').get('archief', ''),
-            'titel_deelarchief': mam_data.get('Dynamic').get('dc_titles').get('deelarchief', ''),
-            'titel_reeks': mam_data.get('Dynamic').get('dc_titles').get('reeks', ''),
-            'titel_deelreeks': mam_data.get('Dynamic').get('dc_titles').get('deelreeks', ''),
-            'titel_registratie': mam_data.get('Dynamic').get('dc_titles').get('registratie', ''),
+            'titel_serie': get_title(mam_data, 'serie'),
+            'titel_episode': get_title(mam_data, 'episode'),
+            'titel_aflevering': get_title(mam_data, 'aflevering'),
+            'titel_alternatief': get_title(mam_data, 'alternatief'),
+            'titel_programma': get_title(mam_data, 'programma'),
+            'titel_serienummer': get_title(mam_data, 'serienummer'),
+            'titel_seizoen': get_title(mam_data, 'seizoen'),
+            'titel_seizoen_nr': get_title(mam_data, 'seizoen_nr'),
+            'titel_archief': get_title(mam_data, 'archief'),
+            'titel_deelarchief': get_title(mam_data, 'deelarchief'),
+            'titel_reeks': get_title(mam_data, 'reeks'),
+            'titel_deelreeks': get_title(mam_data, 'deelreeks'),
+            'titel_registratie': get_title(mam_data, 'registratie'),
             'description': mam_data.get('Descriptive').get('Description'),
             'avo_beschrijving': avo_beschrijving,
             'ondertitels': mam_data.get('Dynamic').get('dc_description_ondertitels', ''),
@@ -174,11 +198,11 @@ class MetaMapping:
             'cast': mam_data.get('Dynamic').get('dc_description_cast', ''),
             'transcriptie': mam_data.get('Dynamic').get('dc_description_transcriptie', ''),
             'dc_description_lang': mam_data.get('Dynamic').get('dc_description_lang', ''),
-            # is now isodate!
+            # created is now isodate!
             'created': mam_data.get('Descriptive').get('CreationDate'),
             'dcterms_issued': mam_data.get('Dynamic').get('dcterms_issued'),
             'dcterms_created': mam_data.get('Dynamic').get('dcterms_created'),
-            # is now isodate!
+            # archived is now isodate!
             'archived': mam_data.get('Administrative').get('ArchiveDate'),
             'keyframe_edit_url': keyframe_edit_url,
             'video_url': mam_data.get('Internal').get('PathToVideo'),
@@ -189,8 +213,8 @@ class MetaMapping:
             'validation_errors': errors
         }
 
-        print(">>>>>> MAM DATA=", json.dumps(mam_data, indent=2))
-        print(">>>>>> MAP RESULT=", json.dumps(result, indent=2))
+        # print(">>>>>> MAM DATA=", json.dumps(mam_data, indent=2))
+        # print(">>>>>> MAP RESULT=", json.dumps(result, indent=2))
         return result
 
     def get_productie_field(self, request_form, field_name, field):
