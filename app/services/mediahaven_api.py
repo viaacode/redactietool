@@ -27,11 +27,6 @@ class MediahavenApi:
         'MEDIAHAVEN_API',
         'https://archief-qas.viaa.be/mediahaven-rest-api/v2'
     )
-    # API_USER_PREFIX = os.environ.get('MEDIAHAVEN_USER_PREFIX', 'viaa@')
-    API_USERNAME = os.environ["MEDIAHAVEN_USER"]
-    API_PASSWORD = os.environ.get('MEDIAHAVEN_PASS', 'password')
-    CLIENT_ID = os.environ["MEDIAHAVEN_CLIENT"]
-    CLIENT_SECRET = os.environ["MEDIAHAVEN_SECRET"]
 
     DEPARTMENT_ID = os.environ.get(
         'DEPARTMENT_ID',
@@ -45,7 +40,13 @@ class MediahavenApi:
 
     def __init__(self, session=None):
         # Create a ROPC grant
-        grant = ROPCGrant(url, client_id, client_secret)
+
+        # API_USER_PREFIX = os.environ.get('MEDIAHAVEN_USER_PREFIX', 'viaa@')
+        username = os.environ["MEDIAHAVEN_USER"]
+        password = os.environ.get('MEDIAHAVEN_PASS', 'password')
+        client_id = os.environ["MEDIAHAVEN_CLIENT"]
+        client_secret = os.environ["MEDIAHAVEN_SECRET"]
+        grant = ROPCGrant(self.API_SERVER, client_id, client_secret)
 
         # Request a token
         try:
@@ -132,7 +133,6 @@ class MediahavenApi:
             return False
        
         permissions = records[0].RightsManagement.Permissions.Read
-        logger.info("permissions=", permissions)
         return self.ONDERWIJS_PERM_ID in permissions
 
     def get_subtitles(self, department, pid):
@@ -157,6 +157,7 @@ class MediahavenApi:
         else:
             return False
 
+    # TODO: update call
     def update_metadata(self, department, fragment_id, external_id, xml_sidecar):
         send_url = f"{self.API_SERVER}/resources/media/{fragment_id}"
         # logger.info("syncing metadata to mediahaven...", data=xml_sidecar)
@@ -179,10 +180,10 @@ class MediahavenApi:
         return response
 
     # below two methods are extra helpers only used by maintenance scripts
-    def get_object(self, object_id, department='testbeeld'):
-        return self.get_proxy(department, f"/resources/media/{object_id}")
+    # def get_object(self, object_id, department='testbeeld'):
+    #     return self.get_proxy(department, f"/resources/media/{object_id}")
 
-    def list_videos(self, department='testbeeld'):
-        matched_videos = self.list_objects(
-            department, search=f"%2B(DepartmentName:{department})")
-        return matched_videos
+    # def list_videos(self, department='testbeeld'):
+    #     matched_videos = self.list_objects(
+    #         department, search=f"%2B(DepartmentName:{department})")
+    #     return matched_videos

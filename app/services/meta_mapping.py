@@ -103,7 +103,7 @@ class MetaMapping:
         keyframe_edit_url = '{}{}'.format(
             os.environ.get('KEYFRAME_EDITING_LINK',
                            'https://set_in_secrets?id='),
-            mam_data['fragmentId']
+            mam_data['Internal']['FragmentId']
         )
 
         item_type = mam_data.get('type')
