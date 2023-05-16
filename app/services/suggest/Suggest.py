@@ -123,7 +123,7 @@ WHERE {{
     # ocol:thema skos:memberList ?list .
     # ?list stardog:list:member (?id ?index) .
     ocol:thema skos:member ?id .
-    
+
     ?id a skos:Concept;
     skos:prefLabel ?label;
     skos:definition ?definition .
@@ -231,11 +231,11 @@ class Suggest:
     OND_NS = OND_NS
     EXT_NS = EXT_NS
 
-    def __init__(self, endpoint: str, user: str = None, password: str= None, token: str = None):
+    def __init__(self, endpoint: str, user: str = None, password: str = None, token: str = None):
         self.sparql = SPARQLWrapper2(endpoint)
         self.sparql.setMethod(POST)
         if token is not None:
-            self.sparql.addCustomHttpHeader('Authorization',f'Bearer {token}')
+            self.sparql.addCustomHttpHeader('Authorization', f'Bearer {token}')
         else:
             self.sparql.setCredentials(user, password)
         self.sparql.setReturnFormat(JSON)

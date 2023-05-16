@@ -261,7 +261,7 @@ def search_media():
         if len(session['samlUserdata']) > 0:
             attributes = session['samlUserdata'].items()
 
-    SHOW_DEBUG_PIDS = app.config['DEBUG'] is True 
+    SHOW_DEBUG_PIDS = app.config['DEBUG'] is True
     return render_template('search_media.html', **locals())
 
 

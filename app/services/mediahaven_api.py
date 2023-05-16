@@ -13,7 +13,6 @@
 
 import os
 import json
-from requests import Session
 from viaa.configuration import ConfigParser
 from viaa.observability import logging
 from mediahaven import MediaHaven
@@ -37,7 +36,6 @@ class MediahavenApi:
     ONDERWIJS_PERM_ID = os.environ.get(
         'ONDERWIJS_PERM_ID', 'config_onderwijs_uuid')
 
-
     def __init__(self, session=None):
         # Create a ROPC grant
 
@@ -57,7 +55,6 @@ class MediahavenApi:
         self.client = MediaHaven(self.API_SERVER, grant)
 
     # def list_objects(self, department, search='', enable_v2_header=False, offset=0, limit=25):
-        
 
     def find_by(self, department, object_key, value):
         search_matches = self.list_objects(
@@ -87,7 +84,6 @@ class MediahavenApi:
             sub = items.get('mediaDataList')[0]
             frag_id = sub['fragmentId']
             self.delete_fragment(department, frag_id)
-
 
     def find_item_by_pid(self, department, pid):
         records = self.client.records.search(q=f"+(ExternalId:{pid})")
@@ -131,26 +127,29 @@ class MediahavenApi:
         records = self.client.records.search(q=f"+(ExternalId:{pid})")
         if records.total_nr_of_results < 1:
             return False
-       
+
         permissions = records[0].RightsManagement.Permissions.Read
         return self.ONDERWIJS_PERM_ID in permissions
 
     def get_subtitles(self, department, pid):
-        matched_subs = self.client.records.search(q=f"+(dc_relationsis_verwant_aan:{pid})")
+        matched_subs = self.client.records.search(
+            q=f"+(dc_relationsis_verwant_aan:{pid})")
         if not matched_subs.total_nr_of_results:
             return []
 
         return json.loads(matched_subs.raw_response).get('Results', [{}])
 
     def get_subtitle(self, department, pid, subtype):
-        matched_subs = self.client.records.search(q=f"+(dc_relationsis_verwant_aan:{pid})")
+        matched_subs = self.client.records.search(
+            q=f"+(dc_relationsis_verwant_aan:{pid})")
         if not matched_subs.total_nr_of_results:
             return False
 
         if matched_subs.total_nr_of_results == 1:
             return json.loads(matched_subs.raw_response).get('Results', [{}])[0]
         elif matched_subs.total_nr_of_results > 1:
-            all_subs = json.loads(matched_subs.raw_response).get('Results', [{}])
+            all_subs = json.loads(
+                matched_subs.raw_response).get('Results', [{}])
             for sub in all_subs:
                 if subtype in sub.get('Descriptive').get('OriginalFilename'):
                     return sub

@@ -186,7 +186,7 @@ class MetaMapping:
         themas = get_md_array(mam_data, 'lom_thema')
         vakken = get_md_array(mam_data, 'lom_vak')
 
-        if(themas and vakken and len(themas) > 0 and len(vakken) > 0):
+        if (themas and vakken and len(themas) > 0 and len(vakken) > 0):
             lom_legacy = "false"
 
         mam_data = set_property(
