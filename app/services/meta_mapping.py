@@ -114,11 +114,11 @@ class MetaMapping:
         dcterms_abstract = get_property(mam_data, 'dcterms_abstract')
         avo_beschrijving = markdown_to_html(dcterms_abstract)
 
-        return {
+        result = {
             'department': department,
             'mam_data': json.dumps(mam_data),
             'publish_item': False,
-            'original_cp': get_property(mam_data, 'Original_CP'),
+            'original_cp': mam_data.get('Dynamic').get('Original_CP'),
             'makers': get_md_array(mam_data, 'dc_creators'),
             'maker_options': self.MAKER_OPTIONS,
             'contributors': get_md_array(mam_data, 'dc_contributors'),
@@ -165,6 +165,9 @@ class MetaMapping:
             ),
             'validation_errors': errors
         }
+
+        print(">>>>>> MAP RESULT=", json.dumps(result, indent=2))
+        return result
 
     def get_productie_field(self, request_form, field_name, field):
         if f'{field_name}_attribute_' in field:
