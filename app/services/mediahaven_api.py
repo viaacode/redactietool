@@ -54,36 +54,34 @@ class MediahavenApi:
 
         self.client = MediaHaven(self.API_SERVER, grant)
 
-    # def list_objects(self, department, search='', enable_v2_header=False, offset=0, limit=25):
+    # TODO: check if this now works
 
-    def find_by(self, department, object_key, value):
-        search_matches = self.list_objects(
-            department, search=f"+({object_key}:{value})")
-        return search_matches
+    def delete_fragment(self, frag_id):
+        # del_url = f"{self.API_SERVER}/resources/media/{frag_id}"
+        # del_resp = self.session.delete(
+        #     url=del_url,
+        #     auth=(self.api_user(department), self.API_PASSWORD)
+        # )
+        del_url = f"delete_resource/{frag_id}"
 
-    # TODO: convert this call
-    def delete_fragment(self, department, frag_id):
-        del_url = f"{self.API_SERVER}/resources/media/{frag_id}"
-        del_resp = self.session.delete(
-            url=del_url,
-            auth=(self.api_user(department), self.API_PASSWORD)
-        )
+        # what should we put for reason and event type here???
+        del_resp = self.client.delete(
+            del_url, Reason="reason", EventType="subtype")
 
         logger.info(
             "deleted old subtitle fragment",
             data={
                 'fragment': frag_id,
-                'del_response': del_resp.status_code
+                'del_response': del_resp
             }
         )
 
-    # TODO: convert call
     def delete_old_subtitle(self, department, subtitle_file):
-        items = self.find_by(department, 'originalFileName', subtitle_file)
-        if items.get('totalNrOfResults') >= 1:
-            sub = items.get('mediaDataList')[0]
-            frag_id = sub['fragmentId']
-            self.delete_fragment(department, frag_id)
+        items = self.client.records.search(
+            q=f"+(originalFileName:{subtitle_file})")
+        if items.total_nr_of_results >= 1:
+            frag_id = items[0].Internal.FragmentId
+            self.delete_fragment(frag_id)
 
     def find_item_by_pid(self, department, pid):
         records = self.client.records.search(q=f"+(ExternalId:{pid})")
@@ -137,7 +135,9 @@ class MediahavenApi:
         if not matched_subs.total_nr_of_results:
             return []
 
-        return json.loads(matched_subs.raw_response).get('Results', [{}])
+        sub_response = json.loads(
+            matched_subs.raw_response).get('Results', [{}])
+        return sub_response
 
     def get_subtitle(self, department, pid, subtype):
         matched_subs = self.client.records.search(

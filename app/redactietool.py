@@ -38,7 +38,6 @@ from app.services.subtitle_files import (
     save_subtitles, delete_files, save_sidecar_xml,
     move_subtitle, not_deleted, get_vtt_subtitles
 )
-from app.services.mh_properties import get_property
 from app.services.validation import (pid_error, upload_error, validate_input,
                                      validate_upload, validate_conversion)
 
@@ -311,14 +310,13 @@ def get_upload():
         department=department,
         mam_data=json.dumps(mam_data),
         subtitle_files=subfiles,
-        title=mam_data.get('title'),
-        keyframe=mam_data.get('previewImagePath'),
-        description=mam_data.get('description'),
-        created=get_property(mam_data, 'CreationDate'),
-        archived=get_property(mam_data, 'created_on'),
-        original_cp=get_property(mam_data, 'Original_CP'),
-        # for v2 mam_data['Internal']['PathToVideo']
-        video_url=mam_data.get('videoPath'),
+        title=mam_data.get('Descriptive').get('Title'),
+        description=mam_data.get('Descriptive').get('Description'),
+        created=mam_data.get('Descriptive').get('CreationDate'),
+        archived=mam_data.get('Descriptive').get('ArchiveDate'),
+        original_cp=mam_data.get('Dynamic').get('Original_CP'),
+        video_url=mam_data.get('Internal').get('PathToVideo'),
+        keyframe=mam_data.get('Internal').get('PathToKeyframe'),
         flowplayer_token=os.environ.get('FLOWPLAYER_TOKEN', 'set_in_secrets')
     )
 
@@ -353,10 +351,10 @@ def post_upload():
     video_data = json.loads(tp['mam_data'])
     tp['title'] = video_data.get('title')
     tp['description'] = video_data.get('description')
-    tp['keyframe'] = video_data.get('previewImagePath')
-    tp['created'] = get_property(video_data, 'CreationDate')
-    tp['archived'] = get_property(video_data, 'created_on')
-    tp['original_cp'] = get_property(video_data, 'Original_CP')
+    tp['keyframe'] = video_data.get('Internal').get('PathToKeyframe')
+    tp['created'] = video_data.get('Descriptive').get('CreationDate')
+    tp['archived'] = video_data.get('Descriptive').get('ArchiveDate')
+    tp['original_cp'] = video_data.get('Dynamic').get('Original_CP')
     tp['flowplayer_token'] = os.environ.get(
         'FLOWPLAYER_TOKEN', 'set_in_secrets')
 

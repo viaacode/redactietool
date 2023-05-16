@@ -128,7 +128,6 @@ class MetaMapping:
             'item_type': item_type,
             'frontend_metadata': self.frontend_metadata(pid, department, mam_data),
             'dc_identifier_localid': get_property(mam_data, 'dc_identifier_localid'),
-            'keyframe': mam_data.get('previewImagePath'),
             'pid': pid,
             'title': mam_data.get('title'),
             'ontsluitingstitel': get_property(mam_data, 'dc_title'),
@@ -159,8 +158,8 @@ class MetaMapping:
             'dcterms_created': get_property(mam_data, 'dcterms_created'),
             'archived': get_property(mam_data, 'created_on'),
             'keyframe_edit_url': keyframe_edit_url,
-            # for v2 mam_data['Internal']['PathToVideo']
-            'video_url': mam_data.get('videoPath'),
+            'video_url': mam_data.get('Internal').get('PathToVideo'),
+            'keyframe': mam_data.get('Internal').get('PathToKeyframe'),
             'flowplayer_token': os.environ.get(
                 'FLOWPLAYER_TOKEN', 'set_in_secrets'
             ),
