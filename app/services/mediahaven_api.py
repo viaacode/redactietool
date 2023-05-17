@@ -54,14 +54,13 @@ class MediahavenApi:
 
         self.client = MediaHaven(self.API_SERVER, grant)
 
-
     def delete_fragment(self, frag_id):
         # del_url = f"{self.API_SERVER}/resources/media/{frag_id}"
         # del_resp = self.session.delete(
         #     url=del_url,
         #     auth=(self.api_user(department), self.API_PASSWORD)
         # )
-    
+
         # TODO: check if this now works
         del_url = f"delete_resource/{frag_id}"
 

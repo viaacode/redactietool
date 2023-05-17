@@ -64,9 +64,20 @@ def dynamic_field(mam_data, field_name, field_type):
     return result
 
 
+def save_json_value(field_type, json_value, value_key):
+    result = {}
+    result[field_type] = []
+    values = json.loads(json_value)
+    for val in values:
+        result[field_type].append(val[value_key])
+
+    return result
+
 # TODO: ask if this is ok to return first element of list here.
 # in v1 we had 1 value, here we have an array with 1 value so we just return the first
 # title string to make it compatible
+
+
 def get_title(mam_data, title_name):
     if mam_data.get('Dynamic') is None:
         return ''
@@ -213,8 +224,6 @@ class MetaMapping:
             'validation_errors': errors
         }
 
-        # print(">>>>>> MAM DATA=", json.dumps(mam_data, indent=2))
-        # print(">>>>>> MAP RESULT=", json.dumps(result, indent=2))
         return result
 
     def get_productie_field(self, request_form, field_name, field):
@@ -253,88 +262,54 @@ class MetaMapping:
         pid = escape(request.form.get('pid'))
         department = escape(escape(request.form.get('department')))
 
-        # update fields we are allowed to alter:
-        # ======================================
+        # update fields we are allowed to alter in v2 structure:
         # mam_data['Dynamic']['PID'] = pid
         mam_data['Dynamic']['dc_title'] = request.form.get('ontsluitingstitel')
-        mam_data['Dynamic']['dcterms_issued'] = request.form.get('uitzenddatum')
+        mam_data['Dynamic']['dcterms_issued'] = request.form.get(
+            'uitzenddatum')
         mam_data['Dynamic']['dcterms_abstract'] = cleanup_markdown(
             request.form.get('avo_beschrijving')
         )
-        
         mam_data['Dynamic']['dc_titles'] = {
-                "serie": [ request.form.get('serie') ]
+            "serie": [request.form.get('serie')]
         }
-        mam_data['Dynamic']['lom_learningresourcetype'] = request.form.get('lom_type')
-
-
-        print(" >>> mam_data  =", json.dumps(mam_data, indent=2))
-        print(" >>> FORM DATA =", request.form)
-        __import__('pdb').set_trace()
-
-
-        # array value serie in subsection dc_titles
-        mam_data = set_array_property(
-            mam_data, 'dc_titles',
-            'serie', request.form.get('serie')
+        mam_data['Dynamic']['lom_learningresourcetype'] = save_json_value(
+            'multiselect', request.form.get('lom_type'), 'code'
+        )
+        mam_data['Dynamic']['lom_languages'] = save_json_value(
+            'multiselect', request.form.get('talen'), 'code'
+        )
+        mam_data['Dynamic']['lom_intendedenduserrole'] = save_json_value(
+            'multiselect', request.form.get(
+                'lom1_beoogde_eindgebruiker'), 'code'
         )
 
-        # single select item_type -> lom_learningresourcetype
-        mam_data = set_json_array_property(
-            mam_data, 'lom_learningresourcetype', 'code',
-            request.form.get('lom_type'),
+        mam_data['Dynamic']['lom_onderwijsniveau'] = save_json_value(
+            'Onderwijsniveau', request.form.get('lom1_onderwijsniveaus'), 'id'
+        )
+        # multiselect item_onderwijsgraden of item_onderwijsgraden_legacy -> lom_onderwijsgraad
+        mam_data['Dynamic']['lom_onderwijsgraad'] = save_json_value(
+            'Onderwijsgraad', request.form.get('lom1_onderwijsgraden'), 'id'
         )
 
-        # multiselect talen -> lom_languages
-        mam_data = set_json_array_property(
-            mam_data, 'lom_languages', 'code',
-            request.form.get('talen'),
+        mam_data['Dynamic']['lom_thema'] = save_json_value(
+            'Thema', request.form.get('themas'), 'id'
         )
-
-        # multiselect item_eindgebruikers -> lom_intendedenduserrole
-        mam_data = set_json_array_property(
-            mam_data, 'lom_intendedenduserrole', 'code',
-            request.form.get('lom1_beoogde_eindgebruiker'),
+        mam_data['Dynamic']['lom_vak'] = save_json_value(
+            'Vak', request.form.get('vakken'), 'id'
         )
-
-        # multiselect item_onderwijsniveaus of
-        # item_onderwijsnivaus_legacy -> lom_onderwijsniveau
-        mam_data = set_json_array_property(
-            mam_data, 'lom_onderwijsniveau', 'id',
-            request.form.get('lom1_onderwijsniveaus'),
-            'Onderwijsniveau'
-        )
-
-        # multiselect item_onderwijsgraden of
-        # item_onderwijsgraden_legacy -> lom_onderwijsgraad
-        mam_data = set_json_array_property(
-            mam_data, 'lom_onderwijsgraad', 'id',
-            request.form.get('lom1_onderwijsgraden'),
-            'Onderwijsgraad'
-        )
-
-        # multiselect themas -> lom_thema
-        mam_data = set_json_array_property(
-            mam_data, 'lom_thema', 'id',
-            request.form.get('themas'),
-            'Thema'
-        )
-
-        # multiselect vakken -> lom_vak
-        mam_data = set_json_array_property(
-            mam_data, 'lom_vak', 'id',
-            request.form.get('vakken'),
-            'Vak'
-        )
-
-        mam_data = self.update_legacy_flag(request, mam_data)
 
         # Sleutelwoord(en) trefwoorden -> lom_keywords
-        mam_data = set_json_array_property(
-            mam_data, 'lom_keywords', 'name',
-            request.form.get('trefwoorden'),
-            'Sleutelwoord'
+        mam_data['Dynamic']['lom_keywords'] = save_json_value(
+            'Sleutelwoord', request.form.get('trefwoorden'), 'code'
         )
+
+        # TODO: these still need converting:
+        # print(" >>> mam_data  =", json.dumps(mam_data, indent=2))
+        # print(" >>> FORM DATA =", request.form)
+        # __import__('pdb').set_trace()
+
+        mam_data = self.update_legacy_flag(request, mam_data)
 
         dc_creators = []
         dc_contributors = []
