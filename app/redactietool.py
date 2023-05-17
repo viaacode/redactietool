@@ -349,7 +349,7 @@ def post_upload():
     })
 
     video_data = json.loads(tp['mam_data'])
-    tp['title'] = video_data.get('title')
+    tp['title'] = video_data.get('Descriptive').get('Title')
     tp['description'] = video_data.get('description')
     tp['keyframe'] = video_data.get('Internal').get('PathToKeyframe')
     tp['created'] = video_data.get('Descriptive').get('CreationDate')
@@ -401,7 +401,7 @@ def send_subtitles_to_mam():
     }
 
     video_data = json.loads(tp['mam_data'])
-    tp['title'] = video_data.get('title')
+    tp['title'] = video_data.get('Descriptive').get('Title')
     tp['keyframe'] = video_data.get('previewImagePath')
     tp['flowplayer_token'] = os.environ.get(
         'FLOWPLAYER_TOKEN', 'set_in_secrets')
