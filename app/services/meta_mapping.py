@@ -276,9 +276,6 @@ class MetaMapping:
         python hash for populating the view and do the mapping from mh names to
         wanted names in metadata/edit.html
         """
-        # print("DEBUG: mediahaven json_data:\n")
-        # print(json.dumps(mam_data, indent=2))
-
         return self.form_params(pid, department, mam_data, validation_errors)
 
     def xml_sidecar(self, metadata, tp):
@@ -286,5 +283,4 @@ class MetaMapping:
         fragment_id = metadata['Internal']['FragmentId']
         external_id = metadata['Administrative']['ExternalId']
 
-        print(" >>>> XML DATA = ", xml_data)
         return fragment_id, external_id, xml_data

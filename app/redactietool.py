@@ -538,13 +538,11 @@ def save_item_metadata():
     frag_id, ext_id, xml_sidecar = mm.xml_sidecar(mam_data, template_vars)
     response = mh_api.update_metadata(department, frag_id, ext_id, xml_sidecar)
 
-    if response.status_code >= 200 and response.status_code < 300:
-        print("Mediahaven save ok, status code=", response.status_code)
+    if response['status']:
         template_vars['mh_synced'] = True
     else:
         template_vars['mh_synced'] = False
-        template_vars['mh_errors'] = [response.json()['message']]
-        print("Mediahaven ERRORS= ", response.json())
+        template_vars['mh_errors'] = response['errors']
 
     # we can even do another GET call here to validate the changed modified timestamp
 

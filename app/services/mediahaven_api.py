@@ -16,6 +16,7 @@ import json
 from viaa.configuration import ConfigParser
 from viaa.observability import logging
 from mediahaven import MediaHaven
+from mediahaven.mediahaven import MediaHavenException
 from mediahaven.oauth2 import ROPCGrant, RequestTokenError
 
 logger = logging.get_logger(__name__, config=ConfigParser())
@@ -97,30 +98,6 @@ class MediahavenApi:
         else:
             return None
 
-    # TODO: convert call
-    def send_subtitles(self, upload_folder, metadata, tp):
-        # sends srt_file and xml_file to mediahaven
-        send_url = f"{self.API_SERVER}/resources/media/"
-        srt_path = os.path.join(upload_folder, tp['srt_file'])
-        xml_path = os.path.join(upload_folder, tp['xml_file'])
-
-        file_fields = {
-            'file': (tp['srt_file'], open(srt_path, 'rb')),
-            'metadata': (tp['xml_file'], open(xml_path, 'rb')),
-            'externalId': ('', f"{metadata['externalId']}_{tp['subtitle_type']}"),
-            'departmentId': ('', self.DEPARTMENT_ID),
-            'autoPublish': ('', 'true')
-        }
-
-        logger.info("posting subtitles to mam", data=file_fields)
-        response = self.session.post(
-            url=send_url,
-            auth=(self.api_user(tp['department']), self.API_PASSWORD),
-            files=file_fields,
-        )
-
-        return response.json()
-
     def get_publicatiestatus(self, department, pid):
         records = self.client.records.search(q=f"+(ExternalId:{pid})")
         if records.total_nr_of_results < 1:
@@ -156,27 +133,49 @@ class MediahavenApi:
         else:
             return False
 
-    # TODO: update call
     def update_metadata(self, department, fragment_id, external_id, xml_sidecar):
-        send_url = f"{self.API_SERVER}/resources/media/{fragment_id}"
-        # logger.info("syncing metadata to mediahaven...", data=xml_sidecar)
-        logger.info(
-            "Syncing fragment to mediahaven with sidecar post:", data=send_url)
+        try:
+            logger.info("syncing metadata to mediahaven...")
+            # form_data = {
+            #     'metadata': ('metadata.xml', xml_sidecar),
+            #     'externalId': ('', f"{external_id}"),
+            #     'departmentId': ('', self.DEPARTMENT_ID),
+            #     'autoPublish': ('', 'true')
+            # }
+
+            return {
+                'status': self.client.records.update(record_id=fragment_id, xml=xml_sidecar),
+                'errors': []
+            }
+        except MediaHavenException as me:
+            return {
+                'status': False,
+                'errors': [str(me)]
+            }
+
+    # TODO: convert call
+    def send_subtitles(self, upload_folder, metadata, tp):
+        # sends srt_file and xml_file to mediahaven
+        send_url = f"{self.API_SERVER}/resources/media/"
+        srt_path = os.path.join(upload_folder, tp['srt_file'])
+        xml_path = os.path.join(upload_folder, tp['xml_file'])
 
         file_fields = {
-            'metadata': ('metadata.xml', xml_sidecar),
-            'externalId': ('', f"{external_id}"),
+            'file': (tp['srt_file'], open(srt_path, 'rb')),
+            'metadata': (tp['xml_file'], open(xml_path, 'rb')),
+            'externalId': ('', f"{metadata['externalId']}_{tp['subtitle_type']}"),
             'departmentId': ('', self.DEPARTMENT_ID),
             'autoPublish': ('', 'true')
         }
 
+        logger.info("posting subtitles to mam", data=file_fields)
         response = self.session.post(
             url=send_url,
-            auth=(self.api_user(department), self.API_PASSWORD),
+            auth=(self.api_user(tp['department']), self.API_PASSWORD),
             files=file_fields,
         )
 
-        return response
+        return response.json()
 
     # below two methods are extra helpers only used by maintenance scripts
     # def get_object(self, object_id, department='testbeeld'):

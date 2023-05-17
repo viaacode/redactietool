@@ -37,7 +37,7 @@ class XMLSidecar:
         else:
             etree.SubElement(array_elem, field_attrib).text = ''
 
-    def sidecar_root(self):
+    def create_sidecar_root(self):
         MH_NS = 'https://zeticon.mediahaven.com/metadata/20.3/mh/'
         MHS_NS = 'https://zeticon.mediahaven.com/metadata/20.3/mhs/'
         XSI_NS = 'http://www.w3.org/2001/XMLSchema-instance'  # version="20.3"
@@ -56,7 +56,13 @@ class XMLSidecar:
             'xsi': XSI_NS
         }
 
-        root = etree.Element(
+        root = etree.Element('UpdateRecord')
+        # we leave title out here, seems to work fine without it
+        # etree.SubElement(root, "Title").text = "Titel hier"
+        metadata = etree.SubElement(root, "Metadata")
+
+        sidecar_root = etree.SubElement(
+            metadata,
             "{%s}Sidecar" % MHS_NS,
             {
                 'version': '20.3',
@@ -65,11 +71,12 @@ class XMLSidecar:
             nsmap=NSMAP
         )
 
-        return root, MH_NS, MHS_NS, XSI_NS
+        return root, sidecar_root, MH_NS, MHS_NS, XSI_NS
 
     def metadata_sidecar(self, metadata, tp):
-        root, MH_NS, MHS_NS, XSI_NS = self.sidecar_root()
-        rights = etree.SubElement(root, '{%s}RightsManagement' % MHS_NS)
+        root, sidecar_root, MH_NS, MHS_NS, XSI_NS = self.create_sidecar_root()
+        rights = etree.SubElement(
+            sidecar_root, '{%s}RightsManagement' % MHS_NS)
 
         perms = etree.SubElement(rights, '{%s}Permissions' % MH_NS)
         perms.set('strategy', 'OVERWRITE')
@@ -98,7 +105,7 @@ class XMLSidecar:
                          MH_NS).text = self.TESTBEELD_PERM_ID
         etree.SubElement(perms, '{%s}Export' % MH_NS).text = self.ADMIN_PERM_ID
 
-        mdprops = etree.SubElement(root, "{%s}Dynamic" % MHS_NS)
+        mdprops = etree.SubElement(sidecar_root, "{%s}Dynamic" % MHS_NS)
 
         # Alemene fields:
         # ===============
@@ -198,9 +205,10 @@ class XMLSidecar:
         cp = metadata['Dynamic']['CP']
         xml_pid = f"{tp['pid']}_{tp['subtitle_type']}"
 
-        root, MH_NS, MHS_NS, XSI_NS = self.sidecar_root()
+        root, sidecar_root, MH_NS, MHS_NS, XSI_NS = self.create_sidecar_root()
 
-        descriptive = etree.SubElement(root, '{%s}Descriptive' % MHS_NS)
+        descriptive = etree.SubElement(
+            sidecar_root, '{%s}Descriptive' % MHS_NS)
         etree.SubElement(descriptive, '{%s}Title' %
                          MH_NS).text = tp['srt_file']
         description = f"Subtitles for item {tp['pid']}"
@@ -208,7 +216,7 @@ class XMLSidecar:
             descriptive, '{%s}Description' % MH_NS).text = description
 
         rights = etree.SubElement(
-            root, '{%s}RightsManagement' % MHS_NS)  # of Structural?
+            sidecar_root, '{%s}RightsManagement' % MHS_NS)  # of Structural?
         permissions = etree.SubElement(rights, '{%s}Permissions' % MH_NS)
         etree.SubElement(permissions, '{%s}Read' %
                          MH_NS).text = self.TESTBEELD_PERM_ID
@@ -225,7 +233,7 @@ class XMLSidecar:
         etree.SubElement(permissions, '{%s}Export' %
                          MH_NS).text = self.ADMIN_PERM_ID
 
-        mdprops = etree.SubElement(root, "{%s}Dynamic" % MHS_NS)
+        mdprops = etree.SubElement(sidecar_root, "{%s}Dynamic" % MHS_NS)
 
         # set is_verwant_aan needs overwrite strategy and is needed for new items
         relations = etree.SubElement(mdprops, "dc_relations")
