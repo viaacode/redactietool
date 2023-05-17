@@ -12,7 +12,8 @@
 
 import os
 from lxml import etree
-from app.services.mh_properties import get_property, get_array_property
+from app.services.mh_properties import (get_title, dynamic_array,
+                                        get_property, get_array_property)  # get_property and get_array_property need deprecation!
 
 
 class XMLSidecar:
@@ -101,45 +102,46 @@ class XMLSidecar:
         # Alemene fields:
         # ===============
         # ontsluitingstitel
-        etree.SubElement(mdprops, "dc_title").text = get_property(
-            metadata, 'dc_title')
+        etree.SubElement(
+            mdprops, "dc_title").text = metadata['Dynamic']['dc_title']
 
         # uizenddatum
-        etree.SubElement(mdprops, "dcterms_issued").text = get_property(
-            metadata, 'dcterms_issued')
+        etree.SubElement(
+            mdprops, "dcterms_issued").text = metadata['Dynamic']['dcterms_issued']
 
         # serie
         dc_titles = etree.SubElement(mdprops, "dc_titles")
         dc_titles.set('strategy', 'OVERWRITE')
-        etree.SubElement(dc_titles, "serie").text = get_array_property(
-            metadata, 'dc_titles', 'serie')
+        etree.SubElement(dc_titles, "serie").text = get_title(
+            metadata, 'serie')
 
         # Inhoud fields:
         # ==============
         # avo_beschrijving
-        etree.SubElement(mdprops, "dcterms_abstract").text = get_property(
-            metadata, 'dcterms_abstract')
+        etree.SubElement(
+            mdprops, "dcterms_abstract").text = metadata['Dynamic']['dcterms_abstract']
 
         # Productie fields:
         # =================
         # dc_creators
+
         dc_creators = etree.SubElement(mdprops, "dc_creators")
         dc_creators.set('strategy', 'OVERWRITE')
-        for entry in get_property(metadata, 'dc_creators'):
+        for entry in dynamic_array(metadata, 'dc_creators'):
             etree.SubElement(
                 dc_creators, entry['attribute']).text = entry['value']
 
         # dc_contributors
         dc_creators = etree.SubElement(mdprops, "dc_contributors")
         dc_creators.set('strategy', 'OVERWRITE')
-        for entry in get_property(metadata, 'dc_contributors'):
+        for entry in dynamic_array(metadata, 'dc_contributors'):
             etree.SubElement(
                 dc_creators, entry['attribute']).text = entry['value']
 
         # dc_publishers
         dc_creators = etree.SubElement(mdprops, "dc_publishers")
         dc_creators.set('strategy', 'OVERWRITE')
-        for entry in get_property(metadata, 'dc_publishers'):
+        for entry in dynamic_array(metadata, 'dc_publishers'):
             etree.SubElement(
                 dc_creators, entry['attribute']).text = entry['value']
 
@@ -148,21 +150,22 @@ class XMLSidecar:
         # lom_type -> lom_learningresourcetype (Audio/Video)
         lom_type = etree.SubElement(mdprops, "lom_learningresourcetype")
         lom_type.set('strategy', 'OVERWRITE')
-        for kw in get_property(metadata, 'lom_learningresourcetype'):
+        for kw in dynamic_array(metadata, 'lom_learningresourcetype'):
             etree.SubElement(lom_type, kw['attribute']).text = kw['value']
 
         # eindgebruiker is multiselect
         lom_languages = etree.SubElement(mdprops, "lom_intendedenduserrole")
         lom_languages.set('strategy', 'OVERWRITE')
-        for kw in get_property(metadata, 'lom_intendedenduserrole'):
+        for kw in dynamic_array(metadata, 'lom_intendedenduserrole'):
             etree.SubElement(lom_languages, kw['attribute']).text = kw['value']
 
         # talen are multiselect
         lom_languages = etree.SubElement(mdprops, "lom_languages")
         lom_languages.set('strategy', 'OVERWRITE')
-        for kw in get_property(metadata, 'lom_languages'):
+        for kw in dynamic_array(metadata, 'lom_languages'):
             etree.SubElement(lom_languages, kw['attribute']).text = kw['value']
 
+        __import__('pdb').set_trace()
         # lom_onderwijsniveau is like keywords (onderwijsniveau)
         self.save_array_field(
             metadata, "lom_onderwijsniveau", mdprops, "Onderwijsniveau")
