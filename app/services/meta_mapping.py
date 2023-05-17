@@ -17,13 +17,11 @@ from viaa.configuration import ConfigParser
 from viaa.observability import logging
 
 # TODO: these setters will also need to be refactored
-from app.services.mh_properties import set_property
+# from app.services.mh_properties import set_property
 from app.services.xml_sidecar import XMLSidecar
 from app.services.input_escaping import markdown_to_html, cleanup_markdown, escape
 
 logger = logging.get_logger(__name__, config=ConfigParser())
-
-# get_md_array is now deprecated. we need this instead!
 
 
 def dynamic_array(mam_data, field_name):
@@ -38,7 +36,6 @@ def dynamic_array(mam_data, field_name):
             result.append({
                 'value': val,
                 'attribute': key,
-                'dottedKey': None  # not sure we need this
             })
 
     return result
@@ -54,7 +51,6 @@ def dynamic_field(mam_data, field_name, field_type):
         result.append({
             'value': val,
             'attribute': field_type,
-            'dottedKey': None,  # TODO: check if frontend can work without this
         })
 
     return result
@@ -68,6 +64,20 @@ def save_json_value(field_type, json_value, value_key):
         result[field_type].append(val[value_key])
 
     return result
+
+
+def save_array_field(mam_data, field_name, values):
+    mam_data['Dynamic'][field_name] = {}
+
+    # first clear out all fields
+    for val in values:
+        mam_data['Dynamic'][field_name][val['attribute']] = []
+
+    # now fill up arrays with the values
+    for val in values:
+        mam_data['Dynamic'][field_name][val['attribute']].append(val['value'])
+
+    return mam_data
 
 
 def get_title(mam_data, title_name):
@@ -244,11 +254,7 @@ class MetaMapping:
         if (themas and vakken and len(themas) > 0 and len(vakken) > 0):
             lom_legacy = "false"
 
-        mam_data = set_property(
-            mam_data, 'lom_legacy',
-            lom_legacy
-        )
-
+        mam_data['Dynamic']['lom_legacy'] = lom_legacy
         return mam_data
 
     def form_to_mh(self, request, mam_data):
@@ -261,7 +267,8 @@ class MetaMapping:
         # update fields we are allowed to alter in v2 structure:
         # mam_data['Dynamic']['PID'] = pid
         mam_data['Dynamic']['dc_title'] = request.form.get('ontsluitingstitel')
-        mam_data['Dynamic']['dcterms_issued'] = request.form.get('uitzenddatum')
+        mam_data['Dynamic']['dcterms_issued'] = request.form.get(
+            'uitzenddatum')
         mam_data['Dynamic']['dcterms_abstract'] = cleanup_markdown(
             request.form.get('avo_beschrijving')
         )
@@ -320,12 +327,11 @@ class MetaMapping:
             if publisher:
                 dc_publishers.append(publisher)
 
-        __import__('pdb').set_trace()
-
-        mam_data = set_property(mam_data, 'dc_creators', dc_creators)
-        mam_data = set_property(
-            mam_data, 'dc_contributors', dc_contributors)
-        mam_data = set_property(mam_data, 'dc_publishers', dc_publishers)
+        mam_data = save_array_field(mam_data, 'dc_creators', dc_creators)
+        mam_data = save_array_field(
+            mam_data, 'dc_contributors', dc_contributors
+        )
+        mam_data = save_array_field(mam_data, 'dc_publishers', dc_publishers)
 
         tp = self.form_params(pid, department, mam_data)
 
@@ -350,7 +356,8 @@ class MetaMapping:
 
     def xml_sidecar(self, metadata, tp):
         xml_data = XMLSidecar().metadata_sidecar(metadata, tp)
-        fragment_id = metadata['fragmentId']
-        external_id = metadata['externalId']
+        fragment_id = metadata['Internal']['FragmentId']
+        external_id = metadata['Administrative']['ExternalId']
 
+        print(" >>>> XML DATA = ", xml_data)
         return fragment_id, external_id, xml_data
