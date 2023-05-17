@@ -114,13 +114,6 @@ class MediahavenApi:
     def update_metadata(self, department, fragment_id, external_id, xml_sidecar):
         try:
             logger.info("syncing metadata to mediahaven...")
-            # form_data = {
-            #     'metadata': ('metadata.xml', xml_sidecar),
-            #     'externalId': ('', f"{external_id}"),
-            #     'departmentId': ('', self.DEPARTMENT_ID),
-            #     'autoPublish': ('', 'true')
-            # }
-
             return {
                 'status': self.client.records.update(record_id=fragment_id, xml=xml_sidecar),
                 'errors': []
