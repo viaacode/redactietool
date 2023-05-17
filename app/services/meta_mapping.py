@@ -253,22 +253,25 @@ class MetaMapping:
         pid = escape(request.form.get('pid'))
         department = escape(escape(request.form.get('department')))
 
-        # fields we can alter+save:
-        mam_data = set_property(
-            mam_data, 'dc_title',
-            request.form.get('ontsluitingstitel')
+        # update fields we are allowed to alter:
+        # ======================================
+        # mam_data['Dynamic']['PID'] = pid
+        mam_data['Dynamic']['dc_title'] = request.form.get('ontsluitingstitel')
+        mam_data['Dynamic']['dcterms_issued'] = request.form.get('uitzenddatum')
+        mam_data['Dynamic']['dcterms_abstract'] = cleanup_markdown(
+            request.form.get('avo_beschrijving')
         )
+        
+        mam_data['Dynamic']['dc_titles'] = {
+                "serie": [ request.form.get('serie') ]
+        }
+        mam_data['Dynamic']['lom_learningresourcetype'] = request.form.get('lom_type')
 
-        mam_data = set_property(
-            mam_data, 'dcterms_issued',
-            request.form.get('uitzenddatum')
-        )
 
-        # deze nog eventjes un-escaped
-        mam_data = set_property(
-            mam_data, 'dcterms_abstract',
-            cleanup_markdown(request.form.get('avo_beschrijving'))
-        )
+        print(" >>> mam_data  =", json.dumps(mam_data, indent=2))
+        print(" >>> FORM DATA =", request.form)
+        __import__('pdb').set_trace()
+
 
         # array value serie in subsection dc_titles
         mam_data = set_array_property(

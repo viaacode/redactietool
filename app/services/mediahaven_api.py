@@ -40,10 +40,10 @@ class MediahavenApi:
         # Create a ROPC grant
 
         # API_USER_PREFIX = os.environ.get('MEDIAHAVEN_USER_PREFIX', 'viaa@')
-        username = os.environ["MEDIAHAVEN_USER"]
+        username = os.environ.get('MEDIAHAVEN_USER', 'user')
         password = os.environ.get('MEDIAHAVEN_PASS', 'password')
-        client_id = os.environ["MEDIAHAVEN_CLIENT"]
-        client_secret = os.environ["MEDIAHAVEN_SECRET"]
+        client_id = os.environ.get('MEDIAHAVEN_CLIENT', 'client_id')
+        client_secret = os.environ.get('MEDIAHAVEN_SECRET', 'client_secret')
         grant = ROPCGrant(self.API_SERVER, client_id, client_secret)
 
         # Request a token
@@ -54,7 +54,6 @@ class MediahavenApi:
 
         self.client = MediaHaven(self.API_SERVER, grant)
 
-    # TODO: check if this now works
 
     def delete_fragment(self, frag_id):
         # del_url = f"{self.API_SERVER}/resources/media/{frag_id}"
@@ -62,6 +61,8 @@ class MediahavenApi:
         #     url=del_url,
         #     auth=(self.api_user(department), self.API_PASSWORD)
         # )
+    
+        # TODO: check if this now works
         del_url = f"delete_resource/{frag_id}"
 
         # what should we put for reason and event type here???
