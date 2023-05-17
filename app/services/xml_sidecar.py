@@ -200,7 +200,9 @@ class XMLSidecar:
 
         return xml_data
 
-    def subtitle_sidecar(self, metadata, tp):
+    # this wraps an extra UpdateRecord in the xml file. however since
+    # we use ftp upload, not sure it's needed here.
+    def subtitle_sidecar_v2(self, metadata, tp):
         cp_id = metadata['Dynamic']['CP_id']
         cp = metadata['Dynamic']['CP']
         xml_pid = f"{tp['pid']}_{tp['subtitle_type']}"
@@ -234,6 +236,89 @@ class XMLSidecar:
                          MH_NS).text = self.ADMIN_PERM_ID
 
         mdprops = etree.SubElement(sidecar_root, "{%s}Dynamic" % MHS_NS)
+
+        # set is_verwant_aan needs overwrite strategy and is needed for new items
+        relations = etree.SubElement(mdprops, "dc_relations")
+        relations.set('strategy', 'OVERWRITE')
+        etree.SubElement(relations, "is_verwant_aan").text = tp['pid']
+
+        etree.SubElement(mdprops, "CP_id").text = cp_id
+        # mediahaven computes external_id for us.
+        # etree.SubElement(mdprops, "external_id").text = xml_pid
+        etree.SubElement(mdprops, "PID").text = xml_pid
+        etree.SubElement(mdprops, "CP").text = cp
+        etree.SubElement(mdprops, "sp_name").text = 'borndigital'
+
+        xml_data = etree.tostring(
+            root, pretty_print=True, encoding="UTF-8", xml_declaration=True
+        ).decode()
+
+        return xml_data
+
+    def sidecar_root_v1(self):
+        MH_NS = 'https://zeticon.mediahaven.com/metadata/20.3/mh/'
+        MHS_NS = 'https://zeticon.mediahaven.com/metadata/20.3/mhs/'
+        XSI_NS = 'http://www.w3.org/2001/XMLSchema-instance'  # version="20.3"
+
+        schema_loc = etree.QName(
+            "http://www.w3.org/2001/XMLSchema-instance", "schemaLocation")
+        zeticon_mhs = 'https://zeticon.mediahaven.com/metadata/20.3/mhs/'
+        zeticon_mhs_xsd = 'https://zeticon.mediahaven.com/metadata/20.3/mhs.xsd'
+        zeticon_mh = 'https://zeticon.mediahaven.com/metadata/20.3/mh/'
+        zeticon_mh_xsd = 'https://zeticon.mediahaven.com/metadata/20.3/mh.xsd'
+        XSI_LOC = f"{zeticon_mhs} {zeticon_mhs_xsd} {zeticon_mh} {zeticon_mh_xsd}"
+
+        NSMAP = {
+            'mh': MH_NS,
+            'mhs': MHS_NS,
+            'xsi': XSI_NS
+        }
+
+        root = etree.Element(
+            "{%s}Sidecar" % MHS_NS,
+            {
+                'version': '20.3',
+                schema_loc: XSI_LOC
+            },
+            nsmap=NSMAP
+        )
+
+        return root, MH_NS, MHS_NS, XSI_NS
+
+    def subtitle_sidecar(self, metadata, tp):
+        cp_id = metadata['Dynamic']['CP_id']
+        cp = metadata['Dynamic']['CP']
+        xml_pid = f"{tp['pid']}_{tp['subtitle_type']}"
+
+        root, MH_NS, MHS_NS, XSI_NS = self.sidecar_root_v1()
+
+        descriptive = etree.SubElement(
+            root, '{%s}Descriptive' % MHS_NS)
+        etree.SubElement(descriptive, '{%s}Title' %
+                         MH_NS).text = tp['srt_file']
+        description = f"Subtitles for item {tp['pid']}"
+        etree.SubElement(
+            descriptive, '{%s}Description' % MH_NS).text = description
+
+        rights = etree.SubElement(
+            root, '{%s}RightsManagement' % MHS_NS)  # of Structural?
+        permissions = etree.SubElement(rights, '{%s}Permissions' % MH_NS)
+        etree.SubElement(permissions, '{%s}Read' %
+                         MH_NS).text = self.TESTBEELD_PERM_ID
+        etree.SubElement(permissions, '{%s}Read' %
+                         MH_NS).text = self.ONDERWIJS_PERM_ID
+        etree.SubElement(permissions, '{%s}Read' %
+                         MH_NS).text = self.ADMIN_PERM_ID
+        etree.SubElement(permissions, '{%s}Write' %
+                         MH_NS).text = self.TESTBEELD_PERM_ID
+        etree.SubElement(permissions, '{%s}Write' %
+                         MH_NS).text = self.ADMIN_PERM_ID
+        etree.SubElement(permissions, '{%s}Export' %
+                         MH_NS).text = self.TESTBEELD_PERM_ID
+        etree.SubElement(permissions, '{%s}Export' %
+                         MH_NS).text = self.ADMIN_PERM_ID
+
+        mdprops = etree.SubElement(root, "{%s}Dynamic" % MHS_NS)
 
         # set is_verwant_aan needs overwrite strategy and is needed for new items
         relations = etree.SubElement(mdprops, "dc_relations")

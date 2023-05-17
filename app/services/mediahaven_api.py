@@ -55,7 +55,6 @@ class MediahavenApi:
 
         self.client = MediaHaven(self.API_SERVER, grant)
 
- 
     def delete_old_subtitle(self, department, subtitle_file):
         items = self.client.records.search(
             q=f"+(originalFileName:{subtitle_file})")
@@ -141,12 +140,10 @@ class MediahavenApi:
         # send_url = f"{self.API_SERVER}/resources/media/"
         srt_path = os.path.join(upload_folder, tp['srt_file'])
         xml_path = os.path.join(upload_folder, tp['xml_file'])
-
         fragment_id = metadata['Internal']['FragmentId']
-        external_id = metadata['Administrative']['ExternalId']
 
-        sub_id = f"{external_id}_{tp['subtitle_type']}"
-
+        # external_id = metadata['Administrative']['ExternalId']
+        # sub_id = f"{external_id}_{tp['subtitle_type']}"
         file_fields = {
             'file': (tp['srt_file'], open(srt_path, 'rb')),
             # 'metadata': (tp['xml_file'], open(xml_path, 'rb')),
@@ -155,19 +152,13 @@ class MediahavenApi:
             # 'autoPublish': ('', 'true')
         }
 
-        #sub_records = self.client.records.search(q=f"+(ExternalId:{external_id})")
-        #fragment_id = sub_records[0].Internal.FragmentId
         # status = self.client.records.update(file_fields, record_id=fragment_id)
 
-        xml_sidecar = open(srt_path, 'rb').read()
+        xml_sidecar = open(xml_path, 'rb').read()
         return {
             'status': self.client.records.update(file_fields, record_id=fragment_id, xml=xml_sidecar),
             'errors': []
         }
-
-        
-        print("SEND SUBTITLES STATUS=" ,status)
-        return status
 
     # TODO: this should work but is untested as we always use ftp upload here instead
     def delete_fragment(self, frag_id):
