@@ -12,8 +12,7 @@
 
 import os
 from lxml import etree
-from app.services.mh_properties import (get_title, dynamic_array,
-                                        get_property, get_array_property)  # get_property and get_array_property need deprecation!
+from app.services.mh_properties import get_title, dynamic_array
 
 
 class XMLSidecar:
@@ -26,9 +25,20 @@ class XMLSidecar:
             'ADMIN_PERM_ID', 'config_admin_uuid')
 
     def save_array_field(self, metadata, fieldname, mdprops, field_attrib="multiselect"):
-        array_values = get_property(metadata, fieldname)
+        array_values = metadata['Dynamic'][fieldname]
         array_elem = etree.SubElement(mdprops, fieldname)
         array_elem.set('strategy', 'OVERWRITE')
+
+        # TODO: iterate a different structure like this here:
+        # array_values = {
+        # 'Onderwijsniveau': [
+        #   'https://w3id.org/onderwijs-vlaanderen/id/structuur/volwassenenonderwijs',
+        #   'https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-onderwijs',
+        #   'https://w3id.org/onderwijs-vlaanderen/id/structuur/secundair-onderwijs'
+        # ]
+        # }
+        return
+
         if array_values and len(array_values) > 0:
             for kw in array_values:
                 etree.SubElement(
@@ -124,7 +134,6 @@ class XMLSidecar:
         # Productie fields:
         # =================
         # dc_creators
-
         dc_creators = etree.SubElement(mdprops, "dc_creators")
         dc_creators.set('strategy', 'OVERWRITE')
         for entry in dynamic_array(metadata, 'dc_creators'):
@@ -165,7 +174,7 @@ class XMLSidecar:
         for kw in dynamic_array(metadata, 'lom_languages'):
             etree.SubElement(lom_languages, kw['attribute']).text = kw['value']
 
-        __import__('pdb').set_trace()
+        # TODO: save_array_field needs refactor here!
         # lom_onderwijsniveau is like keywords (onderwijsniveau)
         self.save_array_field(
             metadata, "lom_onderwijsniveau", mdprops, "Onderwijsniveau")
@@ -181,8 +190,8 @@ class XMLSidecar:
         self.save_array_field(metadata, "lom_vak", mdprops, "Vak")
 
         # lom_legacy "false" indien vakken + themas ingevuld
-        etree.SubElement(mdprops, "lom_legacy").text = get_property(
-            metadata, 'lom_legacy')
+        etree.SubElement(
+            mdprops, "lom_legacy").text = metadata['Dynamic']['lom_legacy']
 
         # trefwoorden / keywords are 'Sleutelwoord'
         self.save_array_field(metadata, "lom_keywords",
@@ -195,8 +204,8 @@ class XMLSidecar:
         return xml_data
 
     def subtitle_sidecar(self, metadata, tp):
-        cp_id = get_property(metadata, 'CP_id')
-        cp = get_property(metadata, 'CP')
+        cp_id = metadata['Dynamic']['CP_id']
+        cp = metadata['Dynamic']['CP']
         xml_pid = f"{tp['pid']}_{tp['subtitle_type']}"
 
         root, MH_NS, MHS_NS, XSI_NS = self.sidecar_root()
