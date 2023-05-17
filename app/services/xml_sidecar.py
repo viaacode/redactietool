@@ -25,24 +25,15 @@ class XMLSidecar:
             'ADMIN_PERM_ID', 'config_admin_uuid')
 
     def save_array_field(self, metadata, fieldname, mdprops, field_attrib="multiselect"):
-        array_values = metadata['Dynamic'][fieldname]
+        array_values = metadata['Dynamic'][fieldname][field_attrib]
         array_elem = etree.SubElement(mdprops, fieldname)
         array_elem.set('strategy', 'OVERWRITE')
 
-        # TODO: iterate a different structure like this here:
-        # array_values = {
-        # 'Onderwijsniveau': [
-        #   'https://w3id.org/onderwijs-vlaanderen/id/structuur/volwassenenonderwijs',
-        #   'https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-onderwijs',
-        #   'https://w3id.org/onderwijs-vlaanderen/id/structuur/secundair-onderwijs'
-        # ]
-        # }
-        return
-
         if array_values and len(array_values) > 0:
-            for kw in array_values:
+            for val in array_values:
                 etree.SubElement(
-                    array_elem, kw['attribute']).text = kw['value']
+                    array_elem, field_attrib
+                ).text = val
         else:
             etree.SubElement(array_elem, field_attrib).text = ''
 
@@ -174,7 +165,6 @@ class XMLSidecar:
         for kw in dynamic_array(metadata, 'lom_languages'):
             etree.SubElement(lom_languages, kw['attribute']).text = kw['value']
 
-        # TODO: save_array_field needs refactor here!
         # lom_onderwijsniveau is like keywords (onderwijsniveau)
         self.save_array_field(
             metadata, "lom_onderwijsniveau", mdprops, "Onderwijsniveau")
