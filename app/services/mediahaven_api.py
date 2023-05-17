@@ -55,28 +55,7 @@ class MediahavenApi:
 
         self.client = MediaHaven(self.API_SERVER, grant)
 
-    def delete_fragment(self, frag_id):
-        # del_url = f"{self.API_SERVER}/resources/media/{frag_id}"
-        # del_resp = self.session.delete(
-        #     url=del_url,
-        #     auth=(self.api_user(department), self.API_PASSWORD)
-        # )
-
-        # TODO: check if this now works
-        del_url = f"delete_resource/{frag_id}"
-
-        # what should we put for reason and event type here???
-        del_resp = self.client.delete(
-            del_url, Reason="reason", EventType="subtype")
-
-        logger.info(
-            "deleted old subtitle fragment",
-            data={
-                'fragment': frag_id,
-                'del_response': del_resp
-            }
-        )
-
+ 
     def delete_old_subtitle(self, department, subtitle_file):
         items = self.client.records.search(
             q=f"+(originalFileName:{subtitle_file})")
@@ -153,29 +132,54 @@ class MediahavenApi:
                 'errors': [str(me)]
             }
 
-    # TODO: convert call
+    # TODO: Can't get this to work here. Getting error update() got multiple values for argument 'record_id'
+    # BOTH BELOW METHODS ARE USED WHEN subtitle upload API is chosen. However right now we always upload using ftp
+    # so these are not used now in practice:
+    # look in redactietool.py tp['transfer_method'] -> which is now always empty, so we take the else part with FTP
     def send_subtitles(self, upload_folder, metadata, tp):
         # sends srt_file and xml_file to mediahaven
-        send_url = f"{self.API_SERVER}/resources/media/"
+        # send_url = f"{self.API_SERVER}/resources/media/"
         srt_path = os.path.join(upload_folder, tp['srt_file'])
         xml_path = os.path.join(upload_folder, tp['xml_file'])
 
+        fragment_id = metadata['Internal']['FragmentId']
+        external_id = metadata['Administrative']['ExternalId']
+
+        sub_id = f"{external_id}_{tp['subtitle_type']}"
+
         file_fields = {
             'file': (tp['srt_file'], open(srt_path, 'rb')),
-            'metadata': (tp['xml_file'], open(xml_path, 'rb')),
-            'externalId': ('', f"{metadata['externalId']}_{tp['subtitle_type']}"),
-            'departmentId': ('', self.DEPARTMENT_ID),
-            'autoPublish': ('', 'true')
+            # 'metadata': (tp['xml_file'], open(xml_path, 'rb')),
+            # 'externalId': ('', sub_id),
+            # 'departmentId': ('', self.DEPARTMENT_ID),
+            # 'autoPublish': ('', 'true')
         }
 
-        logger.info("posting subtitles to mam", data=file_fields)
-        response = self.session.post(
-            url=send_url,
-            auth=(self.api_user(tp['department']), self.API_PASSWORD),
-            files=file_fields,
-        )
+        #sub_records = self.client.records.search(q=f"+(ExternalId:{external_id})")
+        #fragment_id = sub_records[0].Internal.FragmentId
+        # status = self.client.records.update(file_fields, record_id=fragment_id)
 
-        return response.json()
+        xml_sidecar = open(srt_path, 'rb').read()
+        return {
+            'status': self.client.records.update(file_fields, record_id=fragment_id, xml=xml_sidecar),
+            'errors': []
+        }
+
+        
+        print("SEND SUBTITLES STATUS=" ,status)
+        return status
+
+    # TODO: this should work but is untested as we always use ftp upload here instead
+    def delete_fragment(self, frag_id):
+        del_resp = self.client.records.delete(record_id=frag_id)
+
+        logger.info(
+            "deleted old subtitle fragment",
+            data={
+                'fragment': frag_id,
+                'del_response': del_resp
+            }
+        )
 
     # below two methods are extra helpers only used by maintenance scripts
     # def get_object(self, object_id, department='testbeeld'):

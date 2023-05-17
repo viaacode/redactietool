@@ -420,6 +420,7 @@ def send_subtitles_to_mam():
             tp['xml_file'], tp['xml_sidecar'] = save_sidecar_xml(
                 upload_folder(), metadata, tp)
 
+        # THIS PART IS DISABLED IN OUR FRONTEND, AND WE ALWAYS USE FTP TO UPLOAD INSTEAD!
         if tp['transfer_method'] == 'api':
             mh_api = MediahavenApi()
             if tp['replace_existing'] == 'confirm':
@@ -436,6 +437,7 @@ def send_subtitles_to_mam():
             ):  # duplicate error can give 409 or 400, show dialog
                 return render_template('subtitles/confirm_replace.html', **tp)
         else:
+            print("TRANSFERRING SUBTITLES SRT WITH FTP!")
             # upload subtitle and xml sidecar with ftp instead
             ftp_uploader = FtpUploader()
             ftp_response = ftp_uploader.upload_subtitles(
