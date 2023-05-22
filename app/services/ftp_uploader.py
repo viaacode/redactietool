@@ -29,9 +29,9 @@ class FtpUploader:
     FTP_DIR = os.environ.get('FTP_DIR', '/FTP_DIR/')
 
     def ftp_client(self, server):
-        # We set a timout of 5 seconds, should be enough to connect
-        # not setting the timeout can cause the backend to wait indefinately here
-        ftp = FTP(server, timeout=30)
+        # We set a timout of max 7 seconds to be safe. 
+        # On localhost it works with timeout 3 also.
+        ftp = FTP(server, timeout=7)
         return ftp
 
     def upload_subtitles(self, upload_folder, metadata, tp):
