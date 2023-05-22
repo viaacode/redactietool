@@ -136,20 +136,18 @@ class MediahavenApi:
         # sub_id = f"{external_id}_{tp['subtitle_type']}"
         file_fields = {
             'file': (tp['srt_file'], open(srt_path, 'rb')),
-            # 'metadata': (tp['xml_file'], open(xml_path, 'rb')),
-            # 'externalId': ('', sub_id),
-            # 'departmentId': ('', self.DEPARTMENT_ID),
-            # 'autoPublish': ('', 'true')
+            'metadata': (tp['xml_file'], open(xml_path, 'rb')),
+            'externalId': ('', sub_id),
+            'departmentId': ('', self.DEPARTMENT_ID),
+            'autoPublish': ('', 'true')
         }
 
         print(" >>>>>>> fragment_id=", fragment_id)
         mh_status = self.client.records.update(
             file_fields,
             record_id=fragment_id,
-            xml=xml_sidecar
         )
 
-        xml_sidecar = open(xml_path, 'rb').read()
         return {
             'status': mh_status,
             'errors': []
@@ -166,6 +164,8 @@ class MediahavenApi:
                 'del_response': del_resp
             }
         )
+
+
 
     # below two methods are extra helpers only used by maintenance scripts
     # def get_object(self, object_id, department='testbeeld'):
