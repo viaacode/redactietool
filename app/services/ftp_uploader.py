@@ -31,7 +31,7 @@ class FtpUploader:
     def ftp_client(self, server):
         # We set a timout of 5 seconds, should be enough to connect
         # not setting the timeout can cause the backend to wait indefinately here
-        return FTP(server, timeout=5)
+        return FTP(server, timeout=30)
 
     def upload_subtitles(self, upload_folder, metadata, tp):
         try:
