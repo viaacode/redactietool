@@ -11,12 +11,8 @@ import os
 
 
 def flask_environment():
-    env = os.environ.get('FLASK_ENV', 'DEVELOPMENT')
+    env = os.environ.get('FLASK_ENV', 'DEVELOPMENT').upper()
     configs = {
-        'testing': 'app.config.TestConfig',
-        'development': 'app.config.DevConfig',
-        'production': 'app.config.PrdConfig',
-
         'TESTING': 'app.config.TestConfig',
         'DEVELOPMENT': 'app.config.DevConfig',
         'PRODUCTION': 'app.config.PrdConfig',
