@@ -124,10 +124,7 @@ class MediahavenApi:
                 'errors': [str(me)]
             }
 
-    # TODO: Can't get this to work here. Getting error update() got multiple values for argument 'record_id'
-    # BOTH BELOW METHODS ARE USED WHEN subtitle upload API is chosen. However right now we always upload using ftp
-    # so these are not used now in practice:
-    # look in redactietool.py tp['transfer_method'] -> which is now always empty, so we take the else part with FTP
+    # This is unused because we use FTP to upload our subs 
     def send_subtitles(self, upload_folder, metadata, tp):
         # sends srt_file and xml_file to mediahaven
         # send_url = f"{self.API_SERVER}/resources/media/"
@@ -145,11 +142,16 @@ class MediahavenApi:
             # 'autoPublish': ('', 'true')
         }
 
-        # status = self.client.records.update(file_fields, record_id=fragment_id)
+        print(" >>>>>>> fragment_id=", fragment_id)
+        mh_status = self.client.records.update(
+            file_fields,
+            record_id=fragment_id,
+            xml=xml_sidecar
+        )
 
         xml_sidecar = open(xml_path, 'rb').read()
         return {
-            'status': self.client.records.update(file_fields, record_id=fragment_id, xml=xml_sidecar),
+            'status': mh_status,
             'errors': []
         }
 
