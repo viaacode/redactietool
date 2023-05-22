@@ -142,7 +142,6 @@ class MediahavenApi:
             'autoPublish': ('', 'true')
         }
 
-        print(" >>>>>>> fragment_id=", fragment_id)
         mh_status = self.client.records.update(
             file_fields,
             record_id=fragment_id,
