@@ -53,14 +53,14 @@ def send_json_file():
     result_count = 0
 
     # verwant_aan for subs:
-    if(len(search_qry.split('dc_relationsis_verwant_aan:')) > 1):
+    if (len(search_qry.split('dc_relationsis_verwant_aan:')) > 1):
         json_file = search_qry.split('dc_relationsis_verwant_aan:')[
             1].split(')')[0].strip() + '.json'
         print("json file to fetch in sub_items=", json_file)
         result_count = 0
 
     # check if we search pid:
-    if(len(search_qry.split('ExternalId:')) > 1):
+    if (len(search_qry.split('ExternalId:')) > 1):
         result_count = 1
         json_file = search_qry.split('ExternalId:')[1].split(')')[
             0].strip() + '.json'

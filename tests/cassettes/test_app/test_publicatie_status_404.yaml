@@ -1,56 +1,123 @@
 interactions:
 - request:
-    body: null
+    body: grant_type=password&client_id=client_id&client_secret=client_secret&username=test_userd&password=test_pass
     headers:
       Accept:
-      - application/vnd.mediahaven.v2+json
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       Connection:
       - keep-alive
+      Content-Length:
+      - '172'
       Content-Type:
+      - application/x-www-form-urlencoded;charset=UTF-8
+      User-Agent:
+      - python-requests/2.24.0
+    method: POST
+    uri: https://archief-qas.viaa.be/auth/ropc.php
+  response:
+    body:
+      string: '{"refresh_token":"test_refresh","token_type":"bearer","access_token":"test_token","expires_in":7200}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - no-store, no-cache, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '142'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 22 May 2023 08:25:12 GMT
+      Expires:
+      - Thu, 19 Nov 1981 08:52:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx/1.18.0
+      Set-Cookie:
+      - AUTHPORTAL=rr51do366hvca00h0b9jm44soa; path=/;HttpOnly;Secure;SameSite=lax
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Correlation-ID:
+      - 2bd112c0317bfb197aed176ffdf36514
+      X-Frame-Options:
+      - DENY
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
       - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
       User-Agent:
       - python-requests/2.24.0
     method: GET
-    uri: https://archief-qas.viaa.be/mediahaven-rest-api/resources/media?q=%2B(ExternalId:randompid)&startIndex=0&nrOfResults=25
+    uri: https://archief-qas.viaa.be/mediahaven-rest-api/v2/records?q=%2B%28ExternalId%3Arandompid%29
   response:
     body:
-      string: '{"TotalNrOfResults":0,"StartIndex":0,"MediaDataList":[]}'
+      string: '{"NrOfResults":0,"StartIndex":0,"TotalNrOfResults":0,"Results":[]}'
     headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - content-type,authorization,Result-Count
       Cache-Control:
       - no-store, must-revalidate, pre-check=0, post-check=0, max-age=0, s-maxage=0
       Connection:
       - keep-alive
-      Content-Length:
-      - '56'
       Content-Type:
-      - application/vnd.mediahaven.v2+json
+      - application/json
       Date:
-      - Thu, 24 Mar 2022 09:06:17 GMT
+      - Mon, 22 May 2023 08:25:12 GMT
       Expires:
       - '0'
       Pragma:
       - no-cache
       Server:
-      - nginx/1.21.3
+      - nginx/1.18.0
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
       Via:
       - kong/0.13.1
+      X-Content-Type-Options:
+      - nosniff
       X-Correlation-ID:
-      - 483a2365ed7a8e1c8621af60fac64cfc
+      - dd62aa801a9c70926b152bdd804e7297
+      X-Frame-Options:
+      - DENY
       X-Kong-Proxy-Latency:
-      - '0'
+      - '31'
       X-Kong-Upstream-Latency:
-      - '1026'
-      X-MediaHavenVersion:
-      - '22.1'
+      - '7'
+      X-RateLimit-Limit-day:
+      - '2000'
+      X-RateLimit-Limit-minute:
+      - '150'
       X-RateLimit-Limit-second:
-      - '10'
+      - '25'
+      X-RateLimit-Remaining-day:
+      - '1908'
+      X-RateLimit-Remaining-minute:
+      - '144'
       X-RateLimit-Remaining-second:
-      - '9'
+      - '24'
+      X-XSS-Protection:
+      - 1; mode=block
       x-forwarded-proto:
+      - https
       - https
     status:
       code: 200

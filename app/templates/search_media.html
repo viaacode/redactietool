@@ -33,6 +33,20 @@ Ondertitels toevoegen
       </div>
       <input type="hidden" value="yes" name="redirect_subtitles" id="redirect_subtitles"/>
 
+      {% if SHOW_DEBUG_PIDS %}
+        <fieldset class="debug-pids">
+          <legend>Test pids voor Mediahaven QAS</legend>
+          <ul class="debug-pids">
+            <li> <a onclick="document.getElementById('pid_search').value='qs5d8ncx8c';">qs5d8ncx8c - video</a></li>
+            <li> <a onclick="document.getElementById('pid_search').value='qsxs5jbm5c';">qsxs5jbm5c - video</a></li>
+            <li> <a onclick="document.getElementById('pid_search').value='416sx8rc0n';">416sx8rc0n - video</a></li>
+            <li> <a onclick="document.getElementById('pid_search').value='qsf7664p39';">qsf7664p39 - video</a></li>
+            <li> <a onclick="document.getElementById('pid_search').value='qswd3px267';">qswd3px267 - audio</a></li>
+          </ul>
+        </fieldset>
+      {% endif %}
+
+
       {% include 'includes/flash_errors.html' %}
       
       <div class="buttons pt-2">

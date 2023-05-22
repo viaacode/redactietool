@@ -38,7 +38,6 @@ from app.services.subtitle_files import (
     save_subtitles, delete_files, save_sidecar_xml,
     move_subtitle, not_deleted, get_vtt_subtitles
 )
-from app.services.mh_properties import get_property
 from app.services.validation import (pid_error, upload_error, validate_input,
                                      validate_upload, validate_conversion)
 
@@ -261,7 +260,7 @@ def search_media():
         if len(session['samlUserdata']) > 0:
             attributes = session['samlUserdata'].items()
 
-    logger.info('search_media')
+    SHOW_DEBUG_PIDS = app.config['DEBUG'] is True
     return render_template('search_media.html', **locals())
 
 
@@ -311,14 +310,13 @@ def get_upload():
         department=department,
         mam_data=json.dumps(mam_data),
         subtitle_files=subfiles,
-        title=mam_data.get('title'),
-        keyframe=mam_data.get('previewImagePath'),
-        description=mam_data.get('description'),
-        created=get_property(mam_data, 'CreationDate'),
-        archived=get_property(mam_data, 'created_on'),
-        original_cp=get_property(mam_data, 'Original_CP'),
-        # for v2 mam_data['Internal']['PathToVideo']
-        video_url=mam_data.get('videoPath'),
+        title=mam_data.get('Descriptive').get('Title'),
+        description=mam_data.get('Descriptive').get('Description'),
+        created=mam_data.get('Descriptive').get('CreationDate'),
+        archived=mam_data.get('Descriptive').get('ArchiveDate'),
+        original_cp=mam_data.get('Dynamic').get('Original_CP'),
+        video_url=mam_data.get('Internal').get('PathToVideo'),
+        keyframe=mam_data.get('Internal').get('PathToKeyframe'),
         flowplayer_token=os.environ.get('FLOWPLAYER_TOKEN', 'set_in_secrets')
     )
 
@@ -351,12 +349,12 @@ def post_upload():
     })
 
     video_data = json.loads(tp['mam_data'])
-    tp['title'] = video_data.get('title')
+    tp['title'] = video_data.get('Descriptive').get('Title')
     tp['description'] = video_data.get('description')
-    tp['keyframe'] = video_data.get('previewImagePath')
-    tp['created'] = get_property(video_data, 'CreationDate')
-    tp['archived'] = get_property(video_data, 'created_on')
-    tp['original_cp'] = get_property(video_data, 'Original_CP')
+    tp['keyframe'] = video_data.get('Internal').get('PathToKeyframe')
+    tp['created'] = video_data.get('Descriptive').get('CreationDate')
+    tp['archived'] = video_data.get('Descriptive').get('ArchiveDate')
+    tp['original_cp'] = video_data.get('Dynamic').get('Original_CP')
     tp['flowplayer_token'] = os.environ.get(
         'FLOWPLAYER_TOKEN', 'set_in_secrets')
 
@@ -399,11 +397,10 @@ def send_subtitles_to_mam():
         'mh_response': request.form.get('mh_response'),
         'mam_data': request.form.get('mam_data'),
         'replace_existing': request.form.get('replace_existing'),
-        'transfer_method': request.form.get('transfer_method')
     }
 
     video_data = json.loads(tp['mam_data'])
-    tp['title'] = video_data.get('title')
+    tp['title'] = video_data.get('Descriptive').get('Title')
     tp['keyframe'] = video_data.get('previewImagePath')
     tp['flowplayer_token'] = os.environ.get(
         'FLOWPLAYER_TOKEN', 'set_in_secrets')
@@ -422,29 +419,13 @@ def send_subtitles_to_mam():
             tp['xml_file'], tp['xml_sidecar'] = save_sidecar_xml(
                 upload_folder(), metadata, tp)
 
-        if tp['transfer_method'] == 'api':
-            mh_api = MediahavenApi()
-            if tp['replace_existing'] == 'confirm':
-                mh_api.delete_old_subtitle(tp['department'], tp['srt_file'])
-
-            mh_response = mh_api.send_subtitles(upload_folder(), metadata, tp)
-            logger.info('send_to_mam', data=mh_response)
-            tp['mh_response'] = json.dumps(mh_response)
-
-            if not tp['replace_existing'] and (
-                (mh_response.get('status') == 409)
-                or
-                (mh_response.get('status') == 400)
-            ):  # duplicate error can give 409 or 400, show dialog
-                return render_template('subtitles/confirm_replace.html', **tp)
-        else:
-            # upload subtitle and xml sidecar with ftp instead
-            ftp_uploader = FtpUploader()
-            ftp_response = ftp_uploader.upload_subtitles(
-                upload_folder(), metadata, tp)
-            tp['mh_response'] = json.dumps(ftp_response)
-            if 'ftp_error' in ftp_response:
-                tp['mh_error'] = True
+        # upload subtitle and xml sidecar with ftp
+        ftp_uploader = FtpUploader()
+        ftp_response = ftp_uploader.upload_subtitles(
+            upload_folder(), metadata, tp)
+        tp['mh_response'] = json.dumps(ftp_response)
+        if 'ftp_error' in ftp_response:
+            tp['mh_error'] = True
 
         # cleanup temp files and show final page with mh request results
         delete_files(upload_folder(), tp)
@@ -540,13 +521,11 @@ def save_item_metadata():
     frag_id, ext_id, xml_sidecar = mm.xml_sidecar(mam_data, template_vars)
     response = mh_api.update_metadata(department, frag_id, ext_id, xml_sidecar)
 
-    if response.status_code >= 200 and response.status_code < 300:
-        print("Mediahaven save ok, status code=", response.status_code)
+    if response['status']:
         template_vars['mh_synced'] = True
     else:
         template_vars['mh_synced'] = False
-        template_vars['mh_errors'] = [response.json()['message']]
-        print("Mediahaven ERRORS= ", response.json())
+        template_vars['mh_errors'] = response['errors']
 
     # we can even do another GET call here to validate the changed modified timestamp
 

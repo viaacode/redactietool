@@ -1,0 +1,328 @@
+{
+  "Technical": {
+    "PronomId": "fmt/199",
+    "OriginalExtension": "mp4",
+    "DurationFrames": 174,
+    "EndFrames": 174,
+    "MimeType": "video/mp4",
+    "StartFrames": 0,
+    "Md5": "f85a9da375c74244e0b30705a6c55e69",
+    "VideoTechnical": "(unkown video codec) <unknown>x<unknown> (unkown video fps)fps (unkown video bit rate)bps",
+    "FileSize": 2070953,
+    "DurationTimeCode": "00:00:06.960",
+    "EndTimeCode": "00:00:06.960",
+    "StartTimeCode": "00:00:00.000",
+    "Width": null,
+    "Height": null,
+    "ImageSize": null,
+    "ImageOrientation": null,
+    "ImageQuality": null,
+    "AudioTechnical": null,
+    "VideoFormat": null,
+    "Exif": {},
+    "VideoCodec": null,
+    "VideoFps": null,
+    "VideoBitRate": null,
+    "AudioCodec": null,
+    "AudioChannels": null,
+    "AudioSampleRate": null,
+    "AudioBitRate": null,
+    "AudioTracks": {},
+    "BitRate": null,
+    "Origin": null,
+    "EssenceOffset": null,
+    "EditUnitByteSize": null,
+    "RunIn": null,
+    "FramesPerEditUnit": null,
+    "EditRate": null,
+    "IndexEditRate": null
+  },
+  "Structural": {
+    "HasChildren": false,
+    "FragmentStartFrames": 0,
+    "FragmentStartTimeCode": "00:00:00.000",
+    "FragmentEndTimeCode": "00:00:06.960",
+    "FragmentDurationFrames": 174,
+    "FragmentDurationTimeCode": "00:00:06.960",
+    "FragmentEndFrames": 174,
+    "Versioning": {
+      "Status": "Untracked",
+      "Version": 1
+    },
+    "Collections": {
+      "Collection": []
+    },
+    "Sets": {
+      "Set": []
+    },
+    "Newspapers": {
+      "Newspaper": []
+    },
+    "Relations": {},
+    "Fragments": {
+      "Fragment": []
+    },
+    "MainFragment": null,
+    "ReferenceCodes": {},
+    "ParentRecordId": null,
+    "ReferenceTitles": {},
+    "FieldDefinition": {},
+    "PreviewRecordId": null
+  },
+  "Descriptive": {
+    "CreationDate": "1937-01-01T00:00:00.000000Z",
+    "Description": "Optocht van kinderen met trommels en vlaggen naar grot, openluchtvergadering, pick-nick, plechtig lof.",
+    "OriginalFilename": "qsxs5jbm5c.mp4",
+    "RightsOwner": "DataHandler",
+    "UploadedBy": "bulkupload@testbeeld",
+    "KeyframeStart": 83,
+    "Title": "Meivaart der Antwerpsche Patronaten | De",
+    "CreationDateLegacy": null,
+    "Rights": null,
+    "Keywords": {
+      "Keyword": []
+    },
+    "Categories": {
+      "Category": []
+    },
+    "LimitedCategories": {},
+    "Publisher": null,
+    "Authors": {},
+    "Location": null,
+    "Address": {},
+    "NonPreferredTerm": null,
+    "Publications": {
+      "Comment": []
+    },
+    "OriginalPath": null,
+    "Position": {}
+  },
+  "Dynamic": {
+    "digitisation_format": "2K ( 2048x1556)",
+    "lom_languages": {
+      "multiselect": [
+        "nl"
+      ]
+    },
+    "value_cp": "5 essential, HR digitisation",
+    "lom_keywords": {
+      "Sleutelwoord": [
+        "Belgium",
+        "geschiedenis",
+        "reportage"
+      ]
+    },
+    "dc_source": "Meivaart der Antwerpsche Patronaten  De.mp4",
+    "type_viaa": "film",
+    "lom_vak": {
+      "Vak": [
+        "https://w3id.org/onderwijs-vlaanderen/id/vak/frans",
+        "https://w3id.org/onderwijs-vlaanderen/id/vak/latijn",
+        "https://w3id.org/onderwijs-vlaanderen/id/vak/mens-en-maatschappij"
+      ]
+    },
+    "gauge": "16mm",
+    "dc_creators": {
+      "Maker": [
+        "test maker"
+      ]
+    },
+    "lom_learningresourcetype": {
+      "multiselect": [
+        "Video"
+      ]
+    },
+    "batch_pickup_date": "2015-11-09",
+    "created_on": "2015-08-20T16:08:08",
+    "dc_title": "Optocht",
+    "dcterms_abstract": "Optocht van kinderen met _trommels_ en **vlaggen**\n\n*   een\n*   twee",
+    "updated_by": "Victor De Vocht",
+    "image_sound": "image",
+    "premis": "<premis:premis version=\"2.3\" xmlns:premis=\"info:lc/xmlns/premis-v2\"><premis:event xmlns:premis=\"info:lc/xmlns/premis-v2\" xmlns:mets=\"http://www.loc.gov/METS/\" xmlns:revtmd=\"http://nwtssite.nwts.nara/schema/\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n\t\t\t\t\t\t<premis:eventIdentifier>\n\t\t\t\t\t\t\t<premis:eventIdentifierType>SP Event</premis:eventIdentifierType>\n\t\t\t\t\t\t\t<premis:eventIdentifierValue>INSPECTION-EVENT</premis:eventIdentifierValue>\n\t\t\t\t\t\t</premis:eventIdentifier>\n\t\t\t\t\t\t<premis:eventType>INSPECTION</premis:eventType>\n\t\t\t\t\t\t<premis:eventDateTime>2018-11-26</premis:eventDateTime>\n\t\t\t\t\t\t<premis:eventDetail>inspection and manual cleaning of carrier and emulsion side</premis:eventDetail>\n\t\t\t\t\t\t<premis:eventOutcomeInformation>\n\t\t\t\t\t\t\t<premis:eventOutcome>y</premis:eventOutcome>\n\t\t\t\t\t\t</premis:eventOutcomeInformation>\n\t\t\t\t\t\t<premis:linkingAgentIdentifier>\n\t\t\t\t\t\t\t<premis:linkingAgentIdentifierType>SP Agent</premis:linkingAgentIdentifierType>\n\t\t\t\t\t\t\t<premis:linkingAgentIdentifierValue>Bigit Oldenburg Dombo,service provider employee</premis:linkingAgentIdentifierValue>\n\t\t\t\t\t\t</premis:linkingAgentIdentifier>\n\t\t\t\t\t\t<premis:linkingObjectIdentifier>\n\t\t\t\t\t\t\t<premis:linkingObjectIdentifierType>Carrier PID</premis:linkingObjectIdentifierType>\n\t\t\t\t\t\t\t<premis:linkingObjectIdentifierValue>1j9765cj05</premis:linkingObjectIdentifierValue>\n\t\t\t\t\t\t</premis:linkingObjectIdentifier>\n\t\t\t\t\t</premis:event>\n\t\t\t\t<premis:event xmlns:premis=\"info:lc/xmlns/premis-v2\" xmlns:mets=\"http://www.loc.gov/METS/\" xmlns:revtmd=\"http://nwtssite.nwts.nara/schema/\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n\t\t\t\t\t\t<premis:eventIdentifier>\n\t\t\t\t\t\t\t<premis:eventIdentifierType>SP Event</premis:eventIdentifierType>\n\t\t\t\t\t\t\t<premis:eventIdentifierValue>DIGITIZATION-EVENT</premis:eventIdentifierValue>\n\t\t\t\t\t\t</premis:eventIdentifier>\n\t\t\t\t\t\t<premis:eventType>DIGITIZATION</premis:eventType>\n\t\t\t\t\t\t<premis:eventDateTime>2018-12-04</premis:eventDateTime>\n\t\t\t\t\t\t<premis:eventDetail>Perforation stabilised, Frameline shifts</premis:eventDetail>\n\t\t\t\t\t\t<premis:eventOutcomeInformation>\n\t\t\t\t\t\t\t<premis:eventOutcome>y</premis:eventOutcome>\n\t\t\t\t\t\t</premis:eventOutcomeInformation>\n\t\t\t\t\t\t<premis:linkingAgentIdentifier>\n\t\t\t\t\t\t\t<premis:linkingAgentIdentifierType>SP Agent</premis:linkingAgentIdentifierType>\n\t\t\t\t\t\t\t<premis:linkingAgentIdentifierValue>MWA Nova,flashtransfer choice 626</premis:linkingAgentIdentifierValue>\n\t\t\t\t\t\t</premis:linkingAgentIdentifier>\n\t\t\t\t\t\t<premis:linkingObjectIdentifier>\n\t\t\t\t\t\t\t<premis:linkingObjectIdentifierType>Carrier PID</premis:linkingObjectIdentifierType>\n\t\t\t\t\t\t\t<premis:linkingObjectIdentifierValue>1j9765cj05_zip.zip</premis:linkingObjectIdentifierValue>\n\t\t\t\t\t\t</premis:linkingObjectIdentifier>\n\t\t\t\t\t</premis:event>\n\t\t\t\t<premis:event xmlns:premis=\"info:lc/xmlns/premis-v2\" xmlns:mets=\"http://www.loc.gov/METS/\" xmlns:revtmd=\"http://nwtssite.nwts.nara/schema/\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n\t\t\t\t\t\t<premis:eventIdentifier>\n\t\t\t\t\t\t\t<premis:eventIdentifierType>SP Event</premis:eventIdentifierType>\n\t\t\t\t\t\t\t<premis:eventIdentifierValue>EDITING-EVENT</premis:eventIdentifierValue>\n\t\t\t\t\t\t</premis:eventIdentifier>\n\t\t\t\t\t\t<premis:eventType>EDITING</premis:eventType>\n\t\t\t\t\t\t<premis:eventDateTime>2018-12-07</premis:eventDateTime>\n\t\t\t\t\t\t<premis:eventDetail>16fps</premis:eventDetail>\n\t\t\t\t\t\t<premis:eventOutcomeInformation>\n\t\t\t\t\t\t\t<premis:eventOutcome>y</premis:eventOutcome>\n\t\t\t\t\t\t</premis:eventOutcomeInformation>\n\t\t\t\t\t\t<premis:linkingAgentIdentifier>\n\t\t\t\t\t\t\t<premis:linkingAgentIdentifierType>SP Agent</premis:linkingAgentIdentifierType>\n\t\t\t\t\t\t\t<premis:linkingAgentIdentifierValue>Premiere Pro, Adobe</premis:linkingAgentIdentifierValue>\n\t\t\t\t\t\t</premis:linkingAgentIdentifier>\n\t\t\t\t\t\t<premis:linkingObjectIdentifier>\n\t\t\t\t\t\t\t<premis:linkingObjectIdentifierType>Carrier PID</premis:linkingObjectIdentifierType>\n\t\t\t\t\t\t\t<premis:linkingObjectIdentifierValue>1j9765cj05_mezzanine.mov</premis:linkingObjectIdentifierValue>\n\t\t\t\t\t\t</premis:linkingObjectIdentifier>\n\t\t\t\t\t</premis:event>\n\t\t\t\t</premis:premis>",
+    "aspect_ratio": "1:37",
+    "dc_subjects": {
+      "Trefwoord": [
+        "reportage",
+        "Silent Movie",
+        "Belgium"
+      ]
+    },
+    "batch_id": "FLMB01",
+    "num_reels": "1",
+    "is_there_a_sync_point": "No",
+    "dcterms_issued": "1937-05-04",
+    "projection_speed": "Unknown",
+    "lom_legacy": "false",
+    "dc_identifier_localid": "BE/942855/547/35",
+    "PID": "qsxs5jbm5c",
+    "CP": "testbeeld",
+    "batch_name": "FLMB01",
+    "estimate_preparation_time_for_digitisation": "1:00:00",
+    "dc_rights_licenses": {
+      "multiselect": [
+        "VIAA-INTRA_CP-METADATA-ALL",
+        "VIAA-ONDERWIJS",
+        "VIAA-ONDERZOEK",
+        "VIAA-PUBLIEK-METADATA-LTD"
+      ]
+    },
+    "updated_on": "2016-09-08T11:09:09",
+    "barcode_image_reels": "AFLM_KAD_000151",
+    "film_base": "acetate",
+    "lto_id": "IM0218L5",
+    "dc_relations": {
+      "is_verwant_aan": [
+        "1j9765cj05"
+      ]
+    },
+    "dc_identifier_localids": {
+      "Bestandsnaam": [
+        "Meivaart der Antwerpsche Patronaten  De.xml"
+      ]
+    },
+    "physical_state_film": "film in good state",
+    "lom_onderwijsniveau": {
+      "Onderwijsniveau": [
+        "https://w3id.org/onderwijs-vlaanderen/id/structuur/kleuteronderwijs"
+      ]
+    },
+    "dc_contributors": {
+      "Aanwezig": [
+        "test aanwezig"
+      ]
+    },
+    "lom_thema": {
+      "Thema": [
+        "https://data.hetarchief.be/id/onderwijs/thema/moderne-talen",
+        "https://data.hetarchief.be/id/onderwijs/thema/literatuur",
+        "https://data.hetarchief.be/id/onderwijs/thema/klassieke-talen"
+      ]
+    },
+    "created_by": "Noortje",
+    "dcterms_created": "1937-uu-uu",
+    "duration_viaa": "0:00:00",
+    "estimate_manual_cleaning_time": "0:00:00",
+    "lom_intendedenduserrole": {
+      "multiselect": [
+        "Student"
+      ]
+    },
+    "record_status": "awaiting review CP",
+    "Original_CP_ID": "OR-154dn75",
+    "material_type": "Print",
+    "sp_name": "borndigital",
+    "subtitles": "No",
+    "Original_CP": "amsab",
+    "length": "66 Meter",
+    "is_the_sound_sync": "No",
+    "color_or_bw": "B/W",
+    "dc_titles": {
+      "serie": [
+        "test"
+      ]
+    },
+    "CP_id": "OR-h41jm1d",
+    "dc_rights_comment": "test",
+    "NeedsPublicationDateMigration": "true"
+  },
+  "Administrative": {
+    "LastModifiedDate": "2022-10-04T15:30:53.010000Z",
+    "IsSynchronized": false,
+    "OrganisationName": "testbeeld",
+    "Workflow": "CineNova",
+    "ArchiveDate": "2019-10-16T13:46:14.000000Z",
+    "RecordStatus": "Published",
+    "IsAccess": false,
+    "Type": "video",
+    "IsOriginal": true,
+    "IsPreservation": false,
+    "DepartmentName": "testbeeld",
+    "UserLastModifiedDate": "2022-10-04T15:30:53.010000Z",
+    "OrganisationLongName": "testbeeld",
+    "RecordType": "Record",
+    "PublicationDate": "2021-09-15T09:52:38.660000Z",
+    "ExternalId": "qsxs5jbm5c",
+    "DeleteStatus": "NotDeleted",
+    "MainRecordType": "Record",
+    "OrganisationExternalId": "OR-h41jm1d",
+    "ExternalUrl": null,
+    "IngestTape": null,
+    "LogicalDeletionDate": null,
+    "ChildOrderFields": {},
+    "RejectionDate": null,
+    "ExternalUse": null
+  },
+  "Internal": {
+    "PathToVideo": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4/browse.mp4",
+    "PathToKeyframe": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4/keyframes/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb401edfc6f7a3b466fbd52c7d29a88a1f3.jpg",
+    "PathToPreview": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4/browse.mp4",
+    "Browses": {
+      "Browse": [
+        {
+          "BaseUrl": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4",
+          "PathToKeyframe": "keyframes/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb401edfc6f7a3b466fbd52c7d29a88a1f3.jpg",
+          "PathToKeyframeThumb": "keyframes-thumb/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb401edfc6f7a3b466fbd52c7d29a88a1f3.jpg",
+          "PathToVideo": "browse.mp4",
+          "HasKeyframes": true,
+          "Container": "mp4",
+          "Label": "mp4",
+          "FileSize": 1343490,
+          "Height": 468,
+          "VideoCodec": "h264",
+          "BitRate": 1544241,
+          "Width": 832,
+          "VideoBitRate": 1540858,
+          "VideoFps": "25"
+        }
+      ]
+    },
+    "BrowseStatus": "completed",
+    "RecordId": "77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4",
+    "IsInIngestSpace": false,
+    "OrganisationId": "111",
+    "ContainsGeoData": false,
+    "OriginalStatus": "completed",
+    "IsFragment": false,
+    "UploadedById": "ff111a7a-efd0-44e3-8816-0905572421da",
+    "HasKeyframes": true,
+    "MediaObjectId": "77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4",
+    "ArchiveStatus": "on_disk",
+    "FragmentId": "77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb401edfc6f7a3b466fbd52c7d29a88a1f3",
+    "PathToKeyframeThumb": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4/keyframes-thumb/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb401edfc6f7a3b466fbd52c7d29a88a1f3.jpg",
+    "DepartmentId": "dd111b7a-efd0-44e3-8816-0905572421da",
+    "IngestSpaceId": null,
+    "Distributions": {
+      "Distribution": []
+    },
+    "Profiles": {}
+  },
+  "RightsManagement": {
+    "Permissions": {
+      "Write": [
+        "dd111b7a-efd0-44e3-8816-0905572421da",
+        "df100b7a-efd0-44e3-8816-0905572421da",
+        "b75571b1-d7a3-4d6f-939e-deb345c1078a"
+      ],
+      "Export": [
+        "dd111b7a-efd0-44e3-8816-0905572421da",
+        "df100b7a-efd0-44e3-8816-0905572421da",
+        "b75571b1-d7a3-4d6f-939e-deb345c1078a"
+      ],
+      "Read": [
+        "dd111b7a-efd0-44e3-8816-0905572421da",
+        "df100b7a-efd0-44e3-8816-0905572421da",
+        "b75571b1-d7a3-4d6f-939e-deb345c1078a"
+      ]
+    },
+    "ExpiryDate": null,
+    "ExpiryStatus": null,
+    "Zone": {}
+  },
+  "Context": {
+    "IsEditable": true,
+    "IsDeletable": true,
+    "IsPublic": false,
+    "IsExportable": true,
+    "Profiles": []
+  }
+}

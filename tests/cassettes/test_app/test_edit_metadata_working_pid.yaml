@@ -1,116 +1,135 @@
 interactions:
 - request:
-    body: null
+    body: grant_type=password&client_id=client_id&client_secret=client_secret&username=test_userd&password=test_pass
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       Connection:
       - keep-alive
+      Content-Length:
+      - '172'
       Content-Type:
+      - application/x-www-form-urlencoded;charset=UTF-8
+      User-Agent:
+      - python-requests/2.24.0
+    method: POST
+    uri: https://archief-qas.viaa.be/auth/ropc.php
+  response:
+    body:
+      string: '{"refresh_token":"test_refresh","token_type":"bearer","access_token":"test_token","expires_in":7200}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - no-store, no-cache, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '142'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 22 May 2023 08:25:03 GMT
+      Expires:
+      - Thu, 19 Nov 1981 08:52:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx/1.18.0
+      Set-Cookie:
+      - AUTHPORTAL=8cmv23nkrokaa0m56sc5v7eti1; path=/;HttpOnly;Secure;SameSite=lax
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Correlation-ID:
+      - b85e56c2c86e7f6953f3b0edd973808e
+      X-Frame-Options:
+      - DENY
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
       - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
       User-Agent:
       - python-requests/2.24.0
     method: GET
-    uri: https://archief-qas.viaa.be/mediahaven-rest-api/resources/media?q=%2B(ExternalId:qs5d8ncx8c)&startIndex=0&nrOfResults=25
+    uri: https://archief-qas.viaa.be/mediahaven-rest-api/v2/records?q=%2B%28ExternalId%3Aqs5d8ncx8c%29
   response:
     body:
-      string: "{\"totalNrOfResults\":1,\"startIndex\":0,\"mediaDataList\":[{\"offsetFrames\":0,\"fragmentStartFrames\":0,\"fragmentEndFrames\":1368,\"fragmentDurationFrames\":1368,\"offsetTimeCode\":\"00:00:00.000\",\"fragmentStartTimeCode\":\"00:00:00.000\",\"fragmentEndTimeCode\":\"00:00:54.720\",\"fragmentDurationTimeCode\":\"00:00:54.720\",\"mediaObjectId\":\"babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c\",\"fragmentId\":\"babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550\",\"externalId\":\"qs5d8ncx8c\",\"title\":\"ATP
-        Swiss Indoors Day 3C\",\"description\":\"Dit is het veld voor de originele
-        hoofdbeschrijving.\",\"date\":\"2019:10:23 00:00:00\",\"previewImagePath\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/keyframes/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"thumbnailImagePath\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/keyframes-thumb/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"videoPath\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/browse.mp4\",\"originalFileName\":\"qs5d8ncx8c.mp4\",\"width\":0,\"height\":0,\"keywords\":[],\"type\":\"Video\",\"authors\":[],\"lastModifiedDate\":\"2022-03-23T18:40:11Z\",\"archiveDate\":\"2019-10-25T08:26:32Z\",\"exportable\":true,\"editable\":true,\"deletable\":true,\"isPublic\":false,\"ingestSpaceId\":\"\",\"isInIngestSpace\":false,\"status\":\"FINISHED\",\"browseStatus\":\"completed\",\"originalStatus\":\"completed\",\"archiveStatus\":\"on_disk\",\"workflow\":\"dailies\",\"mdProperties\":[{\"value\":[{\"value\":\"EVS\",\"attribute\":\"serie\",\"dottedKey\":null}],\"attribute\":\"dc_titles\",\"dottedKey\":null},{\"value\":[{\"value\":\"tennismatch\",\"attribute\":\"Sleutelwoord\",\"dottedKey\":null}],\"attribute\":\"lom_keywords\",\"dottedKey\":null},{\"subKey\":\"multiselect\",\"value\":[{\"value\":\"nl\",\"attribute\":\"multiselect\",\"dottedKey\":null},{\"value\":\"fr\",\"attribute\":\"multiselect\",\"dottedKey\":null}],\"attribute\":\"lom_languages\",\"dottedKey\":null},{\"subKey\":\"multiselect\",\"value\":[{\"value\":\"Secundair
-        onderwijs\",\"attribute\":\"multiselect\",\"dottedKey\":null}],\"attribute\":\"lom_context\",\"dottedKey\":null},{\"subKey\":\"multiselect\",\"value\":[{\"value\":\"VIAA-ONDERWIJS\",\"attribute\":\"multiselect\",\"dottedKey\":null},{\"value\":\"VIAA-ONDERZOEK\",\"attribute\":\"multiselect\",\"dottedKey\":null},{\"value\":\"VIAA-INTRA_CP-CONTENT\",\"attribute\":\"multiselect\",\"dottedKey\":null},{\"value\":\"VIAA-INTRA_CP-METADATA-ALL\",\"attribute\":\"multiselect\",\"dottedKey\":null},{\"value\":\"VIAA-PUBLIEK-METADATA-LTD\",\"attribute\":\"multiselect\",\"dottedKey\":null}],\"attribute\":\"dc_rights_licenses\",\"dottedKey\":null},{\"value\":[{\"value\":\"https://w3id.org/onderwijs-vlaanderen/id/vak/oud-hebreeuws\",\"attribute\":\"Vak\",\"dottedKey\":null}],\"attribute\":\"lom_vak\",\"dottedKey\":null},{\"value\":[{\"value\":\"Dit
-        is een veld voor make-up.\",\"attribute\":\"Make-up\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor auteur.\",\"attribute\":\"Auteur\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor verontschuldigd.\",\"attribute\":\"Verontschuldigd\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor aanwezig.\",\"attribute\":\"Aanwezig\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor presenter.\",\"attribute\":\"Aanwezig\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor arrangeur.\",\"attribute\":\"Arrangeur\",\"dottedKey\":null},{\"value\":\"Dit
-        is nog een veld voor arrangeur.\",\"attribute\":\"Arrangeur\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor commentator.\",\"attribute\":\"Commentator\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor geluid.\",\"attribute\":\"Geluid\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor adviseur.\",\"attribute\":\"Adviseur\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor voorzitter.\",\"attribute\":\"Voorzitter\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor omroeper.\",\"attribute\":\"Omroeper\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor onderzoeker.\",\"attribute\":\"Onderzoeker\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor dirigent.\",\"attribute\":\"Dirigent\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor post-productie.\",\"attribute\":\"Post-productie\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor reporter.\",\"attribute\":\"Reporter\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor geluidsman.\",\"attribute\":\"Geluidsman\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor producer.\",\"attribute\":\"Producer\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor scenarist.\",\"attribute\":\"Scenarist\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor cameraman.\",\"attribute\":\"Cameraman\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor belichting.\",\"attribute\":\"Belichting\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor grafisch ontwerper.\",\"attribute\":\"GrafischOntwerper\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor nieuwsanker.\",\"attribute\":\"Nieuwsanker\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor archivaris.\",\"attribute\":\"Archivaris\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor sponsor.\",\"attribute\":\"Sponsor\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor vertaler.\",\"attribute\":\"Vertaler\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor verteller.\",\"attribute\":\"Verteller\",\"dottedKey\":null},{\"value\":\"presenter
-        testje\",\"attribute\":\"Presenter\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor bijdrager.\",\"attribute\":\"Bijdrager\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor afwezig.\",\"attribute\":\"Afwezig\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor uitvoerder.\",\"attribute\":\"Uitvoerder\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor kunstenaar.\",\"attribute\":\"Kunstenaar\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor muzikant.\",\"attribute\":\"Muzikant\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor co-producer.\",\"attribute\":\"Co-producer\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor fotografie.\",\"attribute\":\"Fotografie\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor componist.\",\"attribute\":\"Componist\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor soundtrack.\",\"attribute\":\"Soundtrack\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor assistent.\",\"attribute\":\"Assistent\",\"dottedKey\":null}],\"attribute\":\"dc_contributors\",\"dottedKey\":null},{\"value\":[{\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/klassieke-talen\",\"attribute\":\"Thema\",\"dottedKey\":null}],\"attribute\":\"lom_thema\",\"dottedKey\":null},{\"value\":[{\"value\":\"Dit
-        is een veld voor kunstenaar.\",\"attribute\":\"Kunstenaar\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor opdrachtgever.\",\"attribute\":\"Opdrachtgever\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor productiehuis.\",\"attribute\":\"Productiehuis\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor performer.\",\"attribute\":\"Performer\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor choreograaf.\",\"attribute\":\"Choreograaf\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor producer.\",\"attribute\":\"Producer\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor danser.\",\"attribute\":\"Danser\",\"dottedKey\":null},{\"value\":\"Dit
-        is nog een veld voor danser.\",\"attribute\":\"Danser\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor fotograaf.\",\"attribute\":\"Fotograaf\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor regisseur.\",\"attribute\":\"Regisseur\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor auteur.\",\"attribute\":\"Auteur\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor muzikant.\",\"attribute\":\"Muzikant\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor acteur.\",\"attribute\":\"Acteur\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor schrijver.\",\"attribute\":\"Schrijver\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor componist.\",\"attribute\":\"Componist\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor interviewer.\",\"attribute\":\"Interviewer\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor maker.\",\"attribute\":\"Maker\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor archiefvormer.\",\"attribute\":\"Archiefvormer\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor cineast.\",\"attribute\":\"Cineast\",\"dottedKey\":null},{\"value\":\"Test
-        ofzo documentairemaker\",\"attribute\":\"Documentairemaker\",\"dottedKey\":null}],\"attribute\":\"dc_creators\",\"dottedKey\":null},{\"value\":[{\"value\":\"https://w3id.org/onderwijs-vlaanderen/id/structuur/volwassenenonderwijs\",\"attribute\":\"Onderwijsniveau\",\"dottedKey\":null},{\"value\":\"https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-onderwijs\",\"attribute\":\"Onderwijsniveau\",\"dottedKey\":null}],\"attribute\":\"lom_onderwijsniveau\",\"dottedKey\":null},{\"value\":[{\"value\":\"Rechtenhouder:
-        CHSRF Rechteninfo: Swiss TV rights: For full EBU members only within EBU territory,
-        maximum usage 3 minutes per day.\",\"attribute\":\"Licentiehouder\",\"dottedKey\":null}],\"attribute\":\"dc_rights_rightsHolders\",\"dottedKey\":null},{\"value\":[{\"value\":\"ATP
-        Swiss Indoors Day 3C.mp4\",\"attribute\":\"Bestandsnaam\",\"dottedKey\":null},{\"value\":\"AIM10049123\",\"attribute\":\"MEDIA_ID\",\"dottedKey\":null}],\"attribute\":\"dc_identifier_localids\",\"dottedKey\":null},{\"value\":[{\"value\":\"EBU
-        SPORT\",\"attribute\":\"Publisher\",\"dottedKey\":null},{\"value\":\"Dit is
-        een veld voor distributeur.\",\"attribute\":\"Distributeur\",\"dottedKey\":null},{\"value\":\"Dit
-        is nog een veld voor distributeur.\",\"attribute\":\"Distributeur\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor persagentschap.\",\"attribute\":\"Persagentschap\",\"dottedKey\":null},{\"value\":\"Dit
-        is een veld voor exposant.\",\"attribute\":\"Exposant\",\"dottedKey\":null}],\"attribute\":\"dc_publishers\",\"dottedKey\":null},{\"value\":[{\"value\":\"qsx34mmm4g\",\"attribute\":\"is_verwant_aan\",\"dottedKey\":null}],\"attribute\":\"dc_relations\",\"dottedKey\":null},{\"value\":[{\"value\":\"https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-1e-graad\",\"attribute\":\"Onderwijsgraad\",\"dottedKey\":null},{\"value\":\"https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-2e-graad\",\"attribute\":\"Onderwijsgraad\",\"dottedKey\":null},{\"value\":\"https://w3id.org/onderwijs-vlaanderen/id/structuur/secundair-3e-graad\",\"attribute\":\"Onderwijsgraad\",\"dottedKey\":null}],\"attribute\":\"lom_onderwijsgraad\",\"dottedKey\":null},{\"subKey\":\"multiselect\",\"value\":[{\"value\":\"Video\",\"attribute\":\"multiselect\",\"dottedKey\":null}],\"attribute\":\"lom_learningresourcetype\",\"dottedKey\":null},{\"subKey\":\"multiselect\",\"value\":[{\"value\":\"Secundair
-        1ste graad\",\"attribute\":\"multiselect\",\"dottedKey\":null},{\"value\":\"Secundair
-        2de graad\",\"attribute\":\"multiselect\",\"dottedKey\":null},{\"value\":\"Secundair
-        3de graad\",\"attribute\":\"multiselect\",\"dottedKey\":null}],\"attribute\":\"lom_typicalagerange\",\"dottedKey\":null},{\"subKey\":\"multiselect\",\"value\":[{\"value\":\"Docent\",\"attribute\":\"multiselect\",\"dottedKey\":null},{\"value\":\"Student\",\"attribute\":\"multiselect\",\"dottedKey\":null},{\"value\":\"Systeembeheerder\",\"attribute\":\"multiselect\",\"dottedKey\":null}],\"attribute\":\"lom_intendedenduserrole\",\"dottedKey\":null},{\"subKey\":\"multiselect\",\"value\":[{\"value\":\"lichamelijke
-        opvoeding - sport\",\"attribute\":\"multiselect\",\"dottedKey\":null}],\"attribute\":\"lom_classification\",\"dottedKey\":null},{\"value\":\"OR-rf5kf25\",\"attribute\":\"Original_CP_ID\",\"dottedKey\":null},{\"value\":\"ATP
-        Swiss Indoors Day 3C.mp4\",\"attribute\":\"dc_source\",\"dottedKey\":null},{\"value\":\"2019:10:23
-        00:00:00\",\"attribute\":\"CreationDate\",\"dottedKey\":null},{\"value\":\"nieuw\",\"attribute\":\"vrt_status\",\"dottedKey\":null},{\"value\":\"false\",\"attribute\":\"lom_legacy\",\"dottedKey\":null},{\"value\":\"video\",\"attribute\":\"type_viaa\",\"dottedKey\":null},{\"value\":\"borndigital\",\"attribute\":\"sp_name\",\"dottedKey\":null},{\"value\":\"Dit
-        is het veld voor de transcriptie.\",\"attribute\":\"dc_description_transcriptie\",\"dottedKey\":null},{\"value\":\"2019-10-23\",\"attribute\":\"dcterms_created\",\"dottedKey\":null},{\"value\":\"Dit
-        is het veld voor de ontsluitingstitel.\",\"attribute\":\"dc_title\",\"dottedKey\":null},{\"value\":\"true\",\"attribute\":\"NeedsPublicationDateMigration\",\"dottedKey\":null},{\"value\":\"qs5d8ncx8c\",\"attribute\":\"PID\",\"dottedKey\":null},{\"value\":\"testbeeld\",\"attribute\":\"CP\",\"dottedKey\":null},{\"value\":\"Dit
-        is het veld voor de ondertitels.\",\"attribute\":\"dc_description_ondertitels\",\"dottedKey\":null},{\"value\":\"sport\",\"attribute\":\"dc_description_categorie\",\"dottedKey\":null},{\"value\":\"true\",\"attribute\":\"vrt_has_been_broadcasted\",\"dottedKey\":null},{\"value\":\"VRT\",\"attribute\":\"Original_CP\",\"dottedKey\":null},{\"value\":\"Dit
-        is het veld voor de cast.\",\"attribute\":\"dc_description_cast\",\"dottedKey\":null},{\"value\":\"Dit
+      string: "{\"NrOfResults\":1,\"StartIndex\":0,\"TotalNrOfResults\":1,\"Results\":[{\"Technical\":{\"PronomId\":\"fmt/199\",\"OriginalExtension\":\"mp4\",\"DurationFrames\":1368,\"EndFrames\":1368,\"MimeType\":\"video/mp4\",\"StartFrames\":0,\"Md5\":\"e4e594d16c1c2758073677a52ad69be0\",\"VideoTechnical\":\"(unkown
+        video codec) \\u003cunknown\\u003ex\\u003cunknown\\u003e (unkown video fps)fps
+        (unkown video bit rate)bps\",\"FileSize\":11593972,\"DurationTimeCode\":\"00:00:54.720\",\"EndTimeCode\":\"00:00:54.720\",\"StartTimeCode\":\"00:00:00.000\",\"Width\":null,\"Height\":null,\"ImageSize\":null,\"ImageOrientation\":null,\"ImageQuality\":null,\"AudioTechnical\":null,\"VideoFormat\":null,\"Exif\":{},\"VideoCodec\":null,\"VideoFps\":null,\"VideoBitRate\":null,\"AudioCodec\":null,\"AudioChannels\":null,\"AudioSampleRate\":null,\"AudioBitRate\":null,\"AudioTracks\":{},\"BitRate\":null,\"Origin\":null,\"EssenceOffset\":null,\"EditUnitByteSize\":null,\"RunIn\":null,\"FramesPerEditUnit\":null,\"EditRate\":null,\"IndexEditRate\":null},\"Structural\":{\"HasChildren\":false,\"FragmentStartFrames\":0,\"FragmentStartTimeCode\":\"00:00:00.000\",\"FragmentEndTimeCode\":\"00:00:54.720\",\"FragmentDurationFrames\":1368,\"FragmentDurationTimeCode\":\"00:00:54.720\",\"FragmentEndFrames\":1368,\"Versioning\":{\"Status\":\"Untracked\",\"Version\":1},\"Collections\":{\"Collection\":[]},\"Sets\":{\"Set\":[]},\"Newspapers\":{\"Newspaper\":[]},\"Relations\":{},\"Fragments\":{\"Fragment\":[]},\"MainFragment\":null,\"ReferenceCodes\":{},\"ParentRecordId\":null,\"ReferenceTitles\":{},\"FieldDefinition\":{},\"PreviewRecordId\":null},\"Descriptive\":{\"CreationDate\":\"2019-10-22T22:00:00.000000Z\",\"Description\":\"Dit
+        is het veld voor de originele hoofdbeschrijving.\",\"OriginalFilename\":\"qs5d8ncx8c.mp4\",\"RightsOwner\":\"\xA9
+        vrt\",\"UploadedBy\":\"bulkupload@testbeeld\",\"KeyframeStart\":666,\"Title\":\"ATP
+        Swiss Indoors Day 3C\",\"CreationDateLegacy\":null,\"Rights\":null,\"Keywords\":{\"Keyword\":[]},\"Categories\":{\"Category\":[]},\"LimitedCategories\":{},\"Publisher\":null,\"Authors\":{},\"Location\":null,\"Address\":{},\"NonPreferredTerm\":null,\"Publications\":{\"Comment\":[]},\"OriginalPath\":null,\"Position\":{}},\"Dynamic\":{\"lom_context\":{\"multiselect\":[\"Secundair
+        onderwijs\"]},\"lom_languages\":{\"multiselect\":[\"nl\"]},\"lom_keywords\":{\"Sleutelwoord\":[\"tennis\",\"sport\"]},\"dc_source\":\"ATP
+        Swiss Indoors Day 3C.mp4\",\"type_viaa\":\"video\",\"ebu_objectType\":\"footage\",\"lom_vak\":{\"Vak\":[\"https://w3id.org/onderwijs-vlaanderen/id/vak/sport\"]},\"dc_creators\":{\"Kunstenaar\":[\"Dit
+        is een veld voor kunstenaar.\"],\"Opdrachtgever\":[\"Dit is een veld voor
+        opdrachtgever.\"],\"Productiehuis\":[\"Dit is een veld voor productiehuis.\",\"Nog
+        een productiehuis 222\"],\"Performer\":[\"Dit is een veld voor performer.\"],\"Choreograaf\":[\"Dit
+        is een veld voor choreograaf.\"],\"Producer\":[\"Dit is een veld voor producer.\"],\"Danser\":[\"Dit
+        is een veld voor danser.\",\"Tweede veld voor extra danser.\"],\"Fotograaf\":[\"Dit
+        is een veld voor fotograaf.\"],\"Regisseur\":[\"Dit is een veld voor regisseur.\"],\"Auteur\":[\"Dit
+        is een veld voor auteur.\"],\"Muzikant\":[\"Dit is een veld voor muzikant.\"],\"Acteur\":[\"Dit
+        is een veld voor acteur.\"],\"Schrijver\":[\"Dit is een veld voor schrijver.\"],\"Componist\":[\"Dit
+        is een veld voor componist.\"],\"Interviewer\":[\"Dit is een veld voor interviewer.\"],\"Maker\":[\"Dit
+        is een veld voor maker.\"],\"Archiefvormer\":[\"Dit is een veld voor archiefvormer.\"],\"Cineast\":[\"Dit
+        is een veld voor cineast.\"],\"Documentairemaker\":[\"Test ofzo documentairemaker\"]},\"lom_learningresourcetype\":{\"multiselect\":[\"Video\"]},\"dc_description_lang\":\"Dit
         is het veld voor de originele uitgebreide beschrijving.\\n\\n[Swiss Indoors
         round of 8]?\\nATP Swiss Indoors Day 3:  A. de Minaur vs. T. Fritz : 6:3 /
-        6:3\\n?\\nOpnamelocatie: BaselBaselSWITZERLANDEUROPE\",\"attribute\":\"dc_description_lang\",\"dottedKey\":null},{\"value\":\"OR-h41jm1d\",\"attribute\":\"CP_id\",\"dottedKey\":null},{\"value\":\"AIM10049123\",\"attribute\":\"dc_identifier_localid\",\"dottedKey\":null},{\"value\":\"2019-10-23\",\"attribute\":\"dcterms_issued\",\"dottedKey\":null},{\"value\":\"Dit
-        is het veld voor de programma omschrijving.\",\"attribute\":\"dc_description_programma\",\"dottedKey\":null},{\"value\":\"[2019-10-22T22:00:00Z
-        TO 2019-10-23T21:59:59.999Z]\",\"attribute\":\"dcterms_created_index\",\"dottedKey\":null},{\"value\":\"\xA9
-        vrt\",\"attribute\":\"RightsOwner\",\"dottedKey\":null},{\"value\":\"footage\",\"attribute\":\"ebu_objectType\",\"dottedKey\":null},{\"value\":\"[2019-10-22T22:00:00Z
-        TO 2019-10-23T21:59:59.999Z]\",\"attribute\":\"dcterms_issued_index\",\"dottedKey\":null},{\"value\":\"Onderwijs
-        beschrijving test\\n\\nEerste paragraaf hier wat _cursieve tekst en wat_ **vette
-        tekst** en ook **_vette en cursieve tekst_**\\n\\nDan nog een link hier testen:
-        [meemoo](https://meemoo.be)\\n\\nTweede paragraaf\\n\\nDerde paragraaf\\n\\nDan
-        wat lijstjes:\\n\\n*   eerste item\\n*   tweede **item**\\n\\n**Test text
-        met \\u0026 erin**\\n\\nEn genummerde lijst:\\n\\n1.  eerste nummer\\n2.  tweede
-        nummer\\n\\nQAS: [https://redactie-qas.hetarchief.be/](https://redactie-qas.hetarchief.be/)\\n\\nPRD:
-        [https://redactie.hetarchief.be](https://redactie.hetarchief.be)\",\"attribute\":\"dcterms_abstract\",\"dottedKey\":null}],\"relations\":{}}]}"
+        6:3\\n?\\nOpnamelocatie: BaselBaselSWITZERLANDEUROPE\",\"dc_rights_rightsHolders\":{\"Licentiehouder\":[\"Rechtenhouder:
+        CHSRF Rechteninfo: Swiss TV rights: For full EBU members only within EBU territory,
+        maximum usage 3 minutes per day.\"]},\"dc_title\":\"Dit is het veld voor de
+        ontsluitingstitel.\",\"dcterms_abstract\":\"Onderwijs beschrijving test\\n\\nEerste
+        paragraaf hier wat _cursieve bewerken hier tekst_ en\\n\\nwat **vette tekst**
+        en ook **_vette en cursieve tekst_**\\n\\nDan nog een link hier testen: [meemoo](https://meemoo.be)\\n\\nTweede
+        paragraaf\\n\\nDerde paragraaf\\n\\nDan wat lijstjes:\\n\\n*   eerste item\\n*
+        \  tweede **item**\\n\\n**Test text met \\u0026 erin**\\n\\nEn genummerde
+        lijst:\\n\\n1.  eerste nummer\\n2.  tweede nummer\\n\\nQAS: [https://redactie-qas.hetarchief.be/](https://redactie-qas.hetarchief.be/)\\n\\nPRD:
+        [https://redactie.hetarchief.be](https://redactie.hetarchief.be)\",\"vrt_status\":\"nieuw\",\"dcterms_issued\":\"2019-10-23\",\"dc_description_cast\":\"Dit
+        is het veld voor de cast.\",\"lom_legacy\":\"false\",\"dc_identifier_localid\":\"AIM10049123\",\"PID\":\"qs5d8ncx8c\",\"CP\":\"testbeeld\",\"dc_rights_licenses\":{\"multiselect\":[\"VIAA-ONDERWIJS\",\"VIAA-ONDERZOEK\",\"VIAA-INTRA_CP-CONTENT\",\"VIAA-INTRA_CP-METADATA-ALL\",\"VIAA-PUBLIEK-METADATA-LTD\"]},\"dc_description_categorie\":\"sport\",\"dc_description_transcriptie\":\"Dit
+        is het veld voor de transcriptie.\",\"lom_typicalagerange\":{\"multiselect\":[\"Secundair
+        1ste graad\",\"Secundair 2de graad\",\"Secundair 3de graad\"]},\"dc_relations\":{\"is_verwant_aan\":[\"qsx34mmm4g\"]},\"dc_publishers\":{\"Publisher\":[\"EBU
+        SPORT\"],\"Distributeur\":[\"Dit is een veld voor distributeur.\",\"Dit is
+        nog een veld voor distributeur.\"],\"Persagentschap\":[\"Dit is een veld voor
+        persagentschap.\"],\"Exposant\":[\"Dit is een veld voor exposant.\"]},\"dc_identifier_localids\":{\"Bestandsnaam\":[\"ATP
+        Swiss Indoors Day 3C.mp4\"],\"MEDIA_ID\":[\"AIM10049123\"]},\"lom_onderwijsniveau\":{\"Onderwijsniveau\":[\"https://w3id.org/onderwijs-vlaanderen/id/structuur/volwassenenonderwijs\",\"https://w3id.org/onderwijs-vlaanderen/id/structuur/secundair-onderwijs\"]},\"dc_contributors\":{\"Make-up\":[\"Dit
+        is een veld voor make-up.\"],\"Auteur\":[\"Dit is een veld voor auteur.\"],\"Verontschuldigd\":[\"Dit
+        is een veld voor verontschuldigd.\"],\"Aanwezig\":[\"Dit is een veld voor
+        aanwezig.\",\"Dit is een veld voor presenter.\"],\"Arrangeur\":[\"Dit is een
+        veld voor arrangeur.\",\"Dit is nog een veld voor arrangeur.\"],\"Commentator\":[\"Dit
+        is een veld voor commentator.\"],\"Geluid\":[\"Dit is een veld voor geluid.\"],\"Adviseur\":[\"Dit
+        is een veld voor adviseur.\"],\"Voorzitter\":[\"Dit is een veld voor voorzitter.\"],\"Omroeper\":[\"Dit
+        is een veld voor omroeper.\"],\"Onderzoeker\":[\"Dit is een veld voor onderzoeker.\"],\"Dirigent\":[\"Dit
+        is een veld voor dirigent.\"],\"Post-productie\":[\"Dit is een veld voor post-productie.\"],\"Reporter\":[\"Dit
+        is een veld voor reporter.\"],\"Geluidsman\":[\"Dit is een veld voor geluidsman.\"],\"Producer\":[\"Dit
+        is een veld voor producer.\"],\"Scenarist\":[\"Dit is een veld voor scenarist.\"],\"Cameraman\":[\"Dit
+        is een veld voor cameraman.\"],\"Belichting\":[\"Dit is een veld voor belichting.\"],\"GrafischOntwerper\":[\"Dit
+        is een veld voor grafisch ontwerper.\"],\"Nieuwsanker\":[\"Dit is een veld
+        voor nieuwsanker.\"],\"Archivaris\":[\"Dit is een veld voor archivaris.\"],\"Sponsor\":[\"Dit
+        is een veld voor sponsor.\"],\"Vertaler\":[\"Dit is een veld voor vertaler.\"],\"Verteller\":[\"Dit
+        is een veld voor verteller.\"],\"Presenter\":[\"presenter testje\"],\"Bijdrager\":[\"Dit
+        is een veld voor bijdrager.\"],\"Afwezig\":[\"Dit is een veld voor afwezig.\"],\"Uitvoerder\":[\"Dit
+        is een veld voor uitvoerder.\"],\"Kunstenaar\":[\"Dit is een veld voor kunstenaar.\"],\"Muzikant\":[\"Dit
+        is een veld voor muzikant.\"],\"Co-producer\":[\"Dit is een veld voor co-producer.\"],\"Fotografie\":[\"Dit
+        is een veld voor fotografie.\"],\"Componist\":[\"Dit is een veld voor componist.\"],\"Soundtrack\":[\"Dit
+        is een veld voor soundtrack.\"],\"Assistent\":[\"Dit is een veld voor assistent.\"]},\"lom_thema\":{\"Thema\":[\"https://data.hetarchief.be/id/onderwijs/thema/nederlandse-taal\"]},\"dc_description_ondertitels\":\"Dit
+        is het veld voor de ondertitels.\",\"dc_description_programma\":\"Dit is het
+        veld voor de programma omschrijving.\",\"dcterms_created\":\"2019-10-23\",\"lom_intendedenduserrole\":{\"multiselect\":[\"Docent\",\"Student\"]},\"Original_CP_ID\":\"OR-rf5kf25\",\"sp_name\":\"borndigital\",\"lom_onderwijsgraad\":{\"Onderwijsgraad\":[\"https://w3id.org/onderwijs-vlaanderen/id/structuur/secundair-2e-graad\"]},\"Original_CP\":\"VRT\",\"vrt_has_been_broadcasted\":\"true\",\"dc_titles\":{\"serie\":[\"EVS\"]},\"CP_id\":\"OR-h41jm1d\",\"NeedsPublicationDateMigration\":\"true\",\"lom_classification\":{\"multiselect\":[\"lichamelijke
+        opvoeding - sport\"]}},\"Administrative\":{\"LastModifiedDate\":\"2023-05-22T07:37:39.783000Z\",\"IsSynchronized\":false,\"OrganisationName\":\"testbeeld\",\"Workflow\":\"dailies\",\"ArchiveDate\":\"2019-10-25T08:26:32.000000Z\",\"RecordStatus\":\"Published\",\"IsAccess\":false,\"Type\":\"video\",\"IsOriginal\":true,\"IsPreservation\":false,\"DepartmentName\":\"testbeeld\",\"UserLastModifiedDate\":\"2023-05-22T07:37:39.783000Z\",\"OrganisationLongName\":\"testbeeld\",\"RecordType\":\"Record\",\"PublicationDate\":\"2021-09-15T09:58:03.580000Z\",\"ExternalId\":\"qs5d8ncx8c\",\"DeleteStatus\":\"NotDeleted\",\"MainRecordType\":\"Record\",\"OrganisationExternalId\":\"OR-h41jm1d\",\"ExternalUrl\":null,\"IngestTape\":null,\"LogicalDeletionDate\":null,\"ChildOrderFields\":{},\"RejectionDate\":null,\"ExternalUse\":null},\"Internal\":{\"PathToVideo\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/browse.mp4\",\"PathToKeyframe\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/keyframes/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"PathToPreview\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/browse.mp4\",\"Browses\":{\"Browse\":[{\"BaseUrl\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c\",\"PathToKeyframe\":\"keyframes/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"PathToKeyframeThumb\":\"keyframes-thumb/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"PathToVideo\":\"browse.mp4\",\"HasKeyframes\":true,\"Container\":\"mp4\",\"Label\":\"mp4\",\"FileSize\":12202933,\"AudioTracks\":{\"Track\":[{\"Channels\":2}]},\"Height\":468,\"VideoCodec\":\"h264\",\"Width\":832,\"AudioChannels\":2,\"AudioCodec\":\"aac\",\"BitRate\":1783728,\"AudioSampleRate\":44100,\"VideoBitRate\":1521071,\"AudioBitRate\":705600,\"VideoFps\":\"25\"},{\"BaseUrl\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c\",\"PathToKeyframe\":\"keyframes/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"PathToKeyframeThumb\":\"keyframes-thumb/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"PathToVideo\":\"peak-0.json\",\"HasKeyframes\":false,\"Container\":\"peak\",\"Label\":\"peak-0\",\"FileSize\":3176,\"BitRate\":8,\"AudioSampleRate\":10,\"AudioCodec\":\"audiowaveform\"}]},\"BrowseStatus\":\"completed\",\"RecordId\":\"babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c\",\"IsInIngestSpace\":false,\"OrganisationId\":\"111\",\"ContainsGeoData\":false,\"OriginalStatus\":\"completed\",\"IsFragment\":false,\"UploadedById\":\"ff111a7a-efd0-44e3-8816-0905572421da\",\"HasKeyframes\":true,\"MediaObjectId\":\"babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c\",\"ArchiveStatus\":\"on_disk\",\"FragmentId\":\"babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550\",\"PathToKeyframeThumb\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/keyframes-thumb/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"DepartmentId\":\"dd111b7a-efd0-44e3-8816-0905572421da\",\"IngestSpaceId\":null,\"Distributions\":{\"Distribution\":[]},\"Profiles\":{}},\"RightsManagement\":{\"Permissions\":{\"Write\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Export\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Read\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"26276bde-be5f-4e17-a40a-49dceb722c64\",\"715d478f-3557-4036-8723-d8aca63be23d\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"]},\"ExpiryDate\":null,\"ExpiryStatus\":null,\"Zone\":{}},\"Context\":{\"IsEditable\":true,\"IsDeletable\":true,\"IsPublic\":false,\"IsExportable\":true,\"Profiles\":[]}}]}"
     headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - content-type,authorization,Result-Count
       Cache-Control:
       - no-store, must-revalidate, pre-check=0, post-check=0, max-age=0, s-maxage=0
       Connection:
@@ -118,32 +137,47 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 24 Mar 2022 09:02:13 GMT
+      - Mon, 22 May 2023 08:25:03 GMT
       Expires:
       - '0'
       Pragma:
       - no-cache
       Server:
-      - nginx/1.21.3
+      - nginx/1.18.0
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       Transfer-Encoding:
       - chunked
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
       Via:
       - kong/0.13.1
+      X-Content-Type-Options:
+      - nosniff
       X-Correlation-ID:
-      - 4ad592cd80b91dfac4612b70fa52eeac
+      - 39a40ad1678f3bc4161f78ed51587ece
+      X-Frame-Options:
+      - DENY
       X-Kong-Proxy-Latency:
-      - '0'
+      - '27'
       X-Kong-Upstream-Latency:
-      - '638'
-      X-MediaHavenVersion:
-      - '22.1'
+      - '18'
+      X-RateLimit-Limit-day:
+      - '2000'
+      X-RateLimit-Limit-minute:
+      - '150'
       X-RateLimit-Limit-second:
-      - '10'
+      - '25'
+      X-RateLimit-Remaining-day:
+      - '1911'
+      X-RateLimit-Remaining-minute:
+      - '147'
       X-RateLimit-Remaining-second:
-      - '9'
+      - '24'
+      X-XSS-Protection:
+      - 1; mode=block
       x-forwarded-proto:
+      - https
       - https
     status:
       code: 200

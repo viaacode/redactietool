@@ -1,29 +1,82 @@
 interactions:
 - request:
-    body: null
+    body: grant_type=password&client_id=client_id&client_secret=client_secret&username=test_userd&password=test_pass
     headers:
       Accept:
-      - application/vnd.mediahaven.v2+json
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       Connection:
       - keep-alive
+      Content-Length:
+      - '172'
       Content-Type:
+      - application/x-www-form-urlencoded;charset=UTF-8
+      User-Agent:
+      - python-requests/2.24.0
+    method: POST
+    uri: https://archief-qas.viaa.be/auth/ropc.php
+  response:
+    body:
+      string: '{"refresh_token":"test_refresh","token_type":"bearer","access_token":"test_token","expires_in":7200}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - no-store, no-cache, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '142'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 22 May 2023 08:25:10 GMT
+      Expires:
+      - Thu, 19 Nov 1981 08:52:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx/1.18.0
+      Set-Cookie:
+      - AUTHPORTAL=hv1b8bpjduacq0967cdfcsaej9; path=/;HttpOnly;Secure;SameSite=lax
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Correlation-ID:
+      - 935dc02d82c495211de8247828092b52
+      X-Frame-Options:
+      - DENY
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
       - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
       User-Agent:
       - python-requests/2.24.0
     method: GET
-    uri: https://archief-qas.viaa.be/mediahaven-rest-api/resources/media?q=%2B(ExternalId:qs5d8ncx8c)&startIndex=0&nrOfResults=25
+    uri: https://archief-qas.viaa.be/mediahaven-rest-api/v2/records?q=%2B%28ExternalId%3Aqs5d8ncx8c%29
   response:
     body:
-      string: "{\"TotalNrOfResults\":1,\"StartIndex\":0,\"MediaDataList\":[{\"Internal\":{\"PathToVideo\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/browse.mp4\",\"PathToKeyframe\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/keyframes/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"PathToPreview\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/keyframes/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"Browses\":{\"Browse\":[{\"BaseUrl\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c\",\"PathToKeyframe\":\"keyframes/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"PathToKeyframeThumb\":\"keyframes-thumb/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"PathToVideo\":\"browse.mp4\",\"HasKeyframes\":true,\"Container\":\"mp4\",\"Label\":\"mp4\",\"FileSize\":12202933,\"AudioTracks\":{\"Track\":[{\"Channels\":2}]},\"Height\":468,\"VideoCodec\":\"h264\",\"Width\":832,\"AudioChannels\":2,\"AudioCodec\":\"aac\",\"BitRate\":1783728,\"AudioSampleRate\":44100,\"VideoBitRate\":1521071,\"AudioBitRate\":705600,\"VideoFps\":\"25\"},{\"BaseUrl\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c\",\"PathToKeyframe\":\"keyframes/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"PathToKeyframeThumb\":\"keyframes-thumb/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"PathToVideo\":\"peak-0.json\",\"HasKeyframes\":false,\"Container\":\"peak\",\"Label\":\"peak-0\",\"FileSize\":3176,\"BitRate\":8,\"AudioSampleRate\":10,\"AudioCodec\":\"audiowaveform\"}]},\"BrowseStatus\":\"completed\",\"RecordId\":\"babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c\",\"IsInIngestSpace\":false,\"OrganisationId\":\"111\",\"ContainsGeoData\":false,\"OriginalStatus\":\"completed\",\"IsFragment\":false,\"UploadedById\":\"ff111a7a-efd0-44e3-8816-0905572421da\",\"HasKeyframes\":true,\"MediaObjectId\":\"babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c\",\"ArchiveStatus\":\"on_disk\",\"FragmentId\":\"babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550\",\"PathToKeyframeThumb\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/keyframes-thumb/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"DepartmentId\":\"dd111b7a-efd0-44e3-8816-0905572421da\",\"IngestSpaceId\":null},\"Dynamic\":{\"lom_context\":{\"multiselect\":[\"Secundair
-        onderwijs\"]},\"lom_languages\":{\"multiselect\":[\"nl\",\"fr\"]},\"lom_keywords\":{\"Sleutelwoord\":[\"tennismatch\"]},\"dc_source\":\"ATP
-        Swiss Indoors Day 3C.mp4\",\"type_viaa\":\"video\",\"ebu_objectType\":\"footage\",\"lom_vak\":{\"Vak\":[\"https://w3id.org/onderwijs-vlaanderen/id/vak/oud-hebreeuws\"]},\"dcterms_issued_index\":\"[2019-10-22T22:00:00Z
-        TO 2019-10-23T21:59:59.999Z]\",\"dc_creators\":{\"Kunstenaar\":[\"Dit is een
-        veld voor kunstenaar.\"],\"Opdrachtgever\":[\"Dit is een veld voor opdrachtgever.\"],\"Productiehuis\":[\"Dit
-        is een veld voor productiehuis.\"],\"Performer\":[\"Dit is een veld voor performer.\"],\"Choreograaf\":[\"Dit
+      string: "{\"NrOfResults\":1,\"StartIndex\":0,\"TotalNrOfResults\":1,\"Results\":[{\"Technical\":{\"PronomId\":\"fmt/199\",\"OriginalExtension\":\"mp4\",\"DurationFrames\":1368,\"EndFrames\":1368,\"MimeType\":\"video/mp4\",\"StartFrames\":0,\"Md5\":\"e4e594d16c1c2758073677a52ad69be0\",\"VideoTechnical\":\"(unkown
+        video codec) \\u003cunknown\\u003ex\\u003cunknown\\u003e (unkown video fps)fps
+        (unkown video bit rate)bps\",\"FileSize\":11593972,\"DurationTimeCode\":\"00:00:54.720\",\"EndTimeCode\":\"00:00:54.720\",\"StartTimeCode\":\"00:00:00.000\",\"Width\":null,\"Height\":null,\"ImageSize\":null,\"ImageOrientation\":null,\"ImageQuality\":null,\"AudioTechnical\":null,\"VideoFormat\":null,\"Exif\":{},\"VideoCodec\":null,\"VideoFps\":null,\"VideoBitRate\":null,\"AudioCodec\":null,\"AudioChannels\":null,\"AudioSampleRate\":null,\"AudioBitRate\":null,\"AudioTracks\":{},\"BitRate\":null,\"Origin\":null,\"EssenceOffset\":null,\"EditUnitByteSize\":null,\"RunIn\":null,\"FramesPerEditUnit\":null,\"EditRate\":null,\"IndexEditRate\":null},\"Structural\":{\"HasChildren\":false,\"FragmentStartFrames\":0,\"FragmentStartTimeCode\":\"00:00:00.000\",\"FragmentEndTimeCode\":\"00:00:54.720\",\"FragmentDurationFrames\":1368,\"FragmentDurationTimeCode\":\"00:00:54.720\",\"FragmentEndFrames\":1368,\"Versioning\":{\"Status\":\"Untracked\",\"Version\":1},\"Collections\":{\"Collection\":[]},\"Sets\":{\"Set\":[]},\"Newspapers\":{\"Newspaper\":[]},\"Relations\":{},\"Fragments\":{\"Fragment\":[]},\"MainFragment\":null,\"ReferenceCodes\":{},\"ParentRecordId\":null,\"ReferenceTitles\":{},\"FieldDefinition\":{},\"PreviewRecordId\":null},\"Descriptive\":{\"CreationDate\":\"2019-10-22T22:00:00.000000Z\",\"Description\":\"Dit
+        is het veld voor de originele hoofdbeschrijving.\",\"OriginalFilename\":\"qs5d8ncx8c.mp4\",\"RightsOwner\":\"\xA9
+        vrt\",\"UploadedBy\":\"bulkupload@testbeeld\",\"KeyframeStart\":666,\"Title\":\"ATP
+        Swiss Indoors Day 3C\",\"CreationDateLegacy\":null,\"Rights\":null,\"Keywords\":{\"Keyword\":[]},\"Categories\":{\"Category\":[]},\"LimitedCategories\":{},\"Publisher\":null,\"Authors\":{},\"Location\":null,\"Address\":{},\"NonPreferredTerm\":null,\"Publications\":{\"Comment\":[]},\"OriginalPath\":null,\"Position\":{}},\"Dynamic\":{\"lom_context\":{\"multiselect\":[\"Secundair
+        onderwijs\"]},\"lom_languages\":{\"multiselect\":[\"nl\"]},\"lom_keywords\":{\"Sleutelwoord\":[\"tennis\",\"sport\"]},\"dc_source\":\"ATP
+        Swiss Indoors Day 3C.mp4\",\"type_viaa\":\"video\",\"ebu_objectType\":\"footage\",\"lom_vak\":{\"Vak\":[\"https://w3id.org/onderwijs-vlaanderen/id/vak/sport\"]},\"dc_creators\":{\"Kunstenaar\":[\"Dit
+        is een veld voor kunstenaar.\"],\"Opdrachtgever\":[\"Dit is een veld voor
+        opdrachtgever.\"],\"Productiehuis\":[\"Dit is een veld voor productiehuis.\",\"Nog
+        een productiehuis 222\"],\"Performer\":[\"Dit is een veld voor performer.\"],\"Choreograaf\":[\"Dit
         is een veld voor choreograaf.\"],\"Producer\":[\"Dit is een veld voor producer.\"],\"Danser\":[\"Dit
-        is een veld voor danser.\",\"Dit is nog een veld voor danser.\"],\"Fotograaf\":[\"Dit
+        is een veld voor danser.\",\"Tweede veld voor extra danser.\"],\"Fotograaf\":[\"Dit
         is een veld voor fotograaf.\"],\"Regisseur\":[\"Dit is een veld voor regisseur.\"],\"Auteur\":[\"Dit
         is een veld voor auteur.\"],\"Muzikant\":[\"Dit is een veld voor muzikant.\"],\"Acteur\":[\"Dit
         is een veld voor acteur.\"],\"Schrijver\":[\"Dit is een veld voor schrijver.\"],\"Componist\":[\"Dit
@@ -36,20 +89,19 @@ interactions:
         CHSRF Rechteninfo: Swiss TV rights: For full EBU members only within EBU territory,
         maximum usage 3 minutes per day.\"]},\"dc_title\":\"Dit is het veld voor de
         ontsluitingstitel.\",\"dcterms_abstract\":\"Onderwijs beschrijving test\\n\\nEerste
-        paragraaf hier wat _cursieve tekst en wat_ **vette tekst** en ook **_vette
-        en cursieve tekst_**\\n\\nDan nog een link hier testen: [meemoo](https://meemoo.be)\\n\\nTweede
+        paragraaf hier wat _cursieve bewerken hier tekst_ en\\n\\nwat **vette tekst**
+        en ook **_vette en cursieve tekst_**\\n\\nDan nog een link hier testen: [meemoo](https://meemoo.be)\\n\\nTweede
         paragraaf\\n\\nDerde paragraaf\\n\\nDan wat lijstjes:\\n\\n*   eerste item\\n*
         \  tweede **item**\\n\\n**Test text met \\u0026 erin**\\n\\nEn genummerde
         lijst:\\n\\n1.  eerste nummer\\n2.  tweede nummer\\n\\nQAS: [https://redactie-qas.hetarchief.be/](https://redactie-qas.hetarchief.be/)\\n\\nPRD:
-        [https://redactie.hetarchief.be](https://redactie.hetarchief.be)\",\"vrt_status\":\"nieuw\",\"dcterms_created_index\":\"[2019-10-22T22:00:00Z
-        TO 2019-10-23T21:59:59.999Z]\",\"dcterms_issued\":\"2019-10-23\",\"dc_description_cast\":\"Dit
+        [https://redactie.hetarchief.be](https://redactie.hetarchief.be)\",\"vrt_status\":\"nieuw\",\"dcterms_issued\":\"2019-10-23\",\"dc_description_cast\":\"Dit
         is het veld voor de cast.\",\"lom_legacy\":\"false\",\"dc_identifier_localid\":\"AIM10049123\",\"PID\":\"qs5d8ncx8c\",\"CP\":\"testbeeld\",\"dc_rights_licenses\":{\"multiselect\":[\"VIAA-ONDERWIJS\",\"VIAA-ONDERZOEK\",\"VIAA-INTRA_CP-CONTENT\",\"VIAA-INTRA_CP-METADATA-ALL\",\"VIAA-PUBLIEK-METADATA-LTD\"]},\"dc_description_categorie\":\"sport\",\"dc_description_transcriptie\":\"Dit
         is het veld voor de transcriptie.\",\"lom_typicalagerange\":{\"multiselect\":[\"Secundair
         1ste graad\",\"Secundair 2de graad\",\"Secundair 3de graad\"]},\"dc_relations\":{\"is_verwant_aan\":[\"qsx34mmm4g\"]},\"dc_publishers\":{\"Publisher\":[\"EBU
         SPORT\"],\"Distributeur\":[\"Dit is een veld voor distributeur.\",\"Dit is
         nog een veld voor distributeur.\"],\"Persagentschap\":[\"Dit is een veld voor
         persagentschap.\"],\"Exposant\":[\"Dit is een veld voor exposant.\"]},\"dc_identifier_localids\":{\"Bestandsnaam\":[\"ATP
-        Swiss Indoors Day 3C.mp4\"],\"MEDIA_ID\":[\"AIM10049123\"]},\"lom_onderwijsniveau\":{\"Onderwijsniveau\":[\"https://w3id.org/onderwijs-vlaanderen/id/structuur/volwassenenonderwijs\",\"https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-onderwijs\"]},\"dc_contributors\":{\"Make-up\":[\"Dit
+        Swiss Indoors Day 3C.mp4\"],\"MEDIA_ID\":[\"AIM10049123\"]},\"lom_onderwijsniveau\":{\"Onderwijsniveau\":[\"https://w3id.org/onderwijs-vlaanderen/id/structuur/volwassenenonderwijs\",\"https://w3id.org/onderwijs-vlaanderen/id/structuur/secundair-onderwijs\"]},\"dc_contributors\":{\"Make-up\":[\"Dit
         is een veld voor make-up.\"],\"Auteur\":[\"Dit is een veld voor auteur.\"],\"Verontschuldigd\":[\"Dit
         is een veld voor verontschuldigd.\"],\"Aanwezig\":[\"Dit is een veld voor
         aanwezig.\",\"Dit is een veld voor presenter.\"],\"Arrangeur\":[\"Dit is een
@@ -69,50 +121,63 @@ interactions:
         is een veld voor uitvoerder.\"],\"Kunstenaar\":[\"Dit is een veld voor kunstenaar.\"],\"Muzikant\":[\"Dit
         is een veld voor muzikant.\"],\"Co-producer\":[\"Dit is een veld voor co-producer.\"],\"Fotografie\":[\"Dit
         is een veld voor fotografie.\"],\"Componist\":[\"Dit is een veld voor componist.\"],\"Soundtrack\":[\"Dit
-        is een veld voor soundtrack.\"],\"Assistent\":[\"Dit is een veld voor assistent.\"]},\"lom_thema\":{\"Thema\":[\"https://data.hetarchief.be/id/onderwijs/thema/klassieke-talen\"]},\"dc_description_ondertitels\":\"Dit
+        is een veld voor soundtrack.\"],\"Assistent\":[\"Dit is een veld voor assistent.\"]},\"lom_thema\":{\"Thema\":[\"https://data.hetarchief.be/id/onderwijs/thema/nederlandse-taal\"]},\"dc_description_ondertitels\":\"Dit
         is het veld voor de ondertitels.\",\"dc_description_programma\":\"Dit is het
-        veld voor de programma omschrijving.\",\"dcterms_created\":\"2019-10-23\",\"lom_intendedenduserrole\":{\"multiselect\":[\"Docent\",\"Student\",\"Systeembeheerder\"]},\"Original_CP_ID\":\"OR-rf5kf25\",\"sp_name\":\"borndigital\",\"lom_onderwijsgraad\":{\"Onderwijsgraad\":[\"https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-1e-graad\",\"https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-2e-graad\",\"https://w3id.org/onderwijs-vlaanderen/id/structuur/secundair-3e-graad\"]},\"Original_CP\":\"VRT\",\"vrt_has_been_broadcasted\":\"true\",\"dc_titles\":{\"serie\":[\"EVS\"]},\"CP_id\":\"OR-h41jm1d\",\"NeedsPublicationDateMigration\":\"true\",\"lom_classification\":{\"multiselect\":[\"lichamelijke
-        opvoeding - sport\"]}},\"RightsManagement\":{\"Permissions\":{\"Write\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Export\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Read\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"26276bde-be5f-4e17-a40a-49dceb722c64\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"]},\"ExpiryDate\":null,\"ExpiryStatus\":null},\"Structural\":{\"HasChildren\":false,\"FragmentStartFrames\":0,\"FragmentStartTimeCode\":\"00:00:00.000\",\"FragmentEndTimeCode\":\"00:00:54.720\",\"FragmentDurationFrames\":1368,\"FragmentDurationTimeCode\":\"00:00:54.720\",\"FragmentEndFrames\":1368,\"Versioning\":{\"Status\":\"Untracked\",\"Version\":1},\"Sets\":{\"Set\":[]},\"Collections\":{\"Collection\":[]},\"Newspapers\":{\"Newspaper\":[]},\"Relations\":{},\"Fragments\":{}},\"Administrative\":{\"LastModifiedDate\":\"2022-03-23T18:40:11Z\",\"IsSynchronized\":false,\"OrganisationName\":\"testbeeld\",\"Workflow\":\"dailies\",\"ArchiveDate\":\"2019:10:25
-        10:26:32\",\"RecordStatus\":\"Published\",\"IsAccess\":false,\"Type\":\"video\",\"IsOriginal\":true,\"IsPreservation\":false,\"DepartmentName\":\"testbeeld\",\"UserLastModifiedDate\":\"2022-03-23T18:40:11.745000Z\",\"OrganisationLongName\":\"testbeeld\",\"RecordType\":\"Record\",\"PublicationDate\":\"2021-09-15T09:58:03.580000Z\",\"ExternalId\":\"qs5d8ncx8c\",\"DeleteStatus\":\"NotDeleted\",\"MainRecordType\":\"Record\",\"OrganisationExternalId\":\"OR-h41jm1d\",\"IngestTape\":null},\"Descriptive\":{\"CreationDate\":\"2019:10:23
-        00:00:00\",\"Description\":\"Dit is het veld voor de originele hoofdbeschrijving.\",\"OriginalFilename\":\"qs5d8ncx8c.mp4\",\"RightsOwner\":\"\xA9
-        vrt\",\"UploadedBy\":\"bulkupload@testbeeld\",\"KeyframeStart\":666,\"Title\":\"ATP
-        Swiss Indoors Day 3C\",\"Rights\":null,\"Keywords\":{\"Keyword\":[]},\"Categories\":{\"Category\":[]},\"Publisher\":null,\"Authors\":{},\"Location\":null,\"Address\":{},\"NonPreferredTerm\":null,\"Publications\":null},\"Technical\":{\"PronomId\":\"fmt/199\",\"OriginalExtension\":\"mp4\",\"DurationFrames\":1368,\"EndFrames\":1368,\"MimeType\":\"video/mp4\",\"StartFrames\":0,\"Md5\":\"e4e594d16c1c2758073677a52ad69be0\",\"VideoTechnical\":\"(unkown
-        video codec) \\u003cunknown\\u003ex\\u003cunknown\\u003e (unkown video fps)fps
-        (unkown video bit rate)bps\",\"FileSize\":11593972,\"DurationTimeCode\":\"00:00:54.720\",\"EndTimeCode\":\"00:00:54.720\",\"StartTimeCode\":\"00:00:00.000\",\"Width\":null,\"Height\":null,\"ImageSize\":null,\"ImageOrientation\":null,\"ImageQuality\":null,\"AudioTechnical\":null,\"VideoFormat\":null,\"VideoCodec\":null,\"VideoFps\":null,\"VideoBitRate\":null,\"BitRate\":null},\"Context\":{\"IsEditable\":true,\"IsDeletable\":true,\"IsPublic\":false,\"IsExportable\":true}}]}"
+        veld voor de programma omschrijving.\",\"dcterms_created\":\"2019-10-23\",\"lom_intendedenduserrole\":{\"multiselect\":[\"Docent\",\"Student\"]},\"Original_CP_ID\":\"OR-rf5kf25\",\"sp_name\":\"borndigital\",\"lom_onderwijsgraad\":{\"Onderwijsgraad\":[\"https://w3id.org/onderwijs-vlaanderen/id/structuur/secundair-2e-graad\"]},\"Original_CP\":\"VRT\",\"vrt_has_been_broadcasted\":\"true\",\"dc_titles\":{\"serie\":[\"EVS\"]},\"CP_id\":\"OR-h41jm1d\",\"NeedsPublicationDateMigration\":\"true\",\"lom_classification\":{\"multiselect\":[\"lichamelijke
+        opvoeding - sport\"]}},\"Administrative\":{\"LastModifiedDate\":\"2023-05-22T07:37:39.783000Z\",\"IsSynchronized\":false,\"OrganisationName\":\"testbeeld\",\"Workflow\":\"dailies\",\"ArchiveDate\":\"2019-10-25T08:26:32.000000Z\",\"RecordStatus\":\"Published\",\"IsAccess\":false,\"Type\":\"video\",\"IsOriginal\":true,\"IsPreservation\":false,\"DepartmentName\":\"testbeeld\",\"UserLastModifiedDate\":\"2023-05-22T07:37:39.783000Z\",\"OrganisationLongName\":\"testbeeld\",\"RecordType\":\"Record\",\"PublicationDate\":\"2021-09-15T09:58:03.580000Z\",\"ExternalId\":\"qs5d8ncx8c\",\"DeleteStatus\":\"NotDeleted\",\"MainRecordType\":\"Record\",\"OrganisationExternalId\":\"OR-h41jm1d\",\"ExternalUrl\":null,\"IngestTape\":null,\"LogicalDeletionDate\":null,\"ChildOrderFields\":{},\"RejectionDate\":null,\"ExternalUse\":null},\"Internal\":{\"PathToVideo\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/browse.mp4\",\"PathToKeyframe\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/keyframes/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"PathToPreview\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/browse.mp4\",\"Browses\":{\"Browse\":[{\"BaseUrl\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c\",\"PathToKeyframe\":\"keyframes/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"PathToKeyframeThumb\":\"keyframes-thumb/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"PathToVideo\":\"browse.mp4\",\"HasKeyframes\":true,\"Container\":\"mp4\",\"Label\":\"mp4\",\"FileSize\":12202933,\"AudioTracks\":{\"Track\":[{\"Channels\":2}]},\"Height\":468,\"VideoCodec\":\"h264\",\"Width\":832,\"AudioChannels\":2,\"AudioCodec\":\"aac\",\"BitRate\":1783728,\"AudioSampleRate\":44100,\"VideoBitRate\":1521071,\"AudioBitRate\":705600,\"VideoFps\":\"25\"},{\"BaseUrl\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c\",\"PathToKeyframe\":\"keyframes/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"PathToKeyframeThumb\":\"keyframes-thumb/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"PathToVideo\":\"peak-0.json\",\"HasKeyframes\":false,\"Container\":\"peak\",\"Label\":\"peak-0\",\"FileSize\":3176,\"BitRate\":8,\"AudioSampleRate\":10,\"AudioCodec\":\"audiowaveform\"}]},\"BrowseStatus\":\"completed\",\"RecordId\":\"babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c\",\"IsInIngestSpace\":false,\"OrganisationId\":\"111\",\"ContainsGeoData\":false,\"OriginalStatus\":\"completed\",\"IsFragment\":false,\"UploadedById\":\"ff111a7a-efd0-44e3-8816-0905572421da\",\"HasKeyframes\":true,\"MediaObjectId\":\"babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c\",\"ArchiveStatus\":\"on_disk\",\"FragmentId\":\"babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550\",\"PathToKeyframeThumb\":\"https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/keyframes-thumb/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg\",\"DepartmentId\":\"dd111b7a-efd0-44e3-8816-0905572421da\",\"IngestSpaceId\":null,\"Distributions\":{\"Distribution\":[]},\"Profiles\":{}},\"RightsManagement\":{\"Permissions\":{\"Write\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Export\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Read\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"26276bde-be5f-4e17-a40a-49dceb722c64\",\"715d478f-3557-4036-8723-d8aca63be23d\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"]},\"ExpiryDate\":null,\"ExpiryStatus\":null,\"Zone\":{}},\"Context\":{\"IsEditable\":true,\"IsDeletable\":true,\"IsPublic\":false,\"IsExportable\":true,\"Profiles\":[]}}]}"
     headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - content-type,authorization,Result-Count
       Cache-Control:
       - no-store, must-revalidate, pre-check=0, post-check=0, max-age=0, s-maxage=0
       Connection:
       - keep-alive
       Content-Type:
-      - application/vnd.mediahaven.v2+json
+      - application/json
       Date:
-      - Thu, 24 Mar 2022 09:02:14 GMT
+      - Mon, 22 May 2023 08:25:10 GMT
       Expires:
       - '0'
       Pragma:
       - no-cache
       Server:
-      - nginx/1.21.3
+      - nginx/1.18.0
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       Transfer-Encoding:
       - chunked
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
       Via:
       - kong/0.13.1
+      X-Content-Type-Options:
+      - nosniff
       X-Correlation-ID:
-      - dddc203a16d0122d7084dc1311dd2acd
+      - be137500f449ec1957adc16c1cca5ed3
+      X-Frame-Options:
+      - DENY
       X-Kong-Proxy-Latency:
-      - '0'
+      - '26'
       X-Kong-Upstream-Latency:
-      - '622'
-      X-MediaHavenVersion:
-      - '22.1'
+      - '42'
+      X-RateLimit-Limit-day:
+      - '2000'
+      X-RateLimit-Limit-minute:
+      - '150'
       X-RateLimit-Limit-second:
-      - '10'
+      - '25'
+      X-RateLimit-Remaining-day:
+      - '1909'
+      X-RateLimit-Remaining-minute:
+      - '145'
       X-RateLimit-Remaining-second:
-      - '9'
+      - '24'
+      X-XSS-Protection:
+      - 1; mode=block
       x-forwarded-proto:
+      - https
       - https
     status:
       code: 200

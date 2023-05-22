@@ -75,6 +75,23 @@ brew install libxml2 libxmlsec1 pkg-config
 ```
 
 ```
+brew tap-new $USER/local
+brew extract --version=1.2.37 libxmlsec1 $USER/local
+brew uninstall libxmlsec1
+brew install $USER/local/libxmlsec1@1.2.37
+```
+Now lxml works again. Later when lxml is fixed to work with newer libxmlsec1 again we can revert this like so:
+```
+
+# once python-xmlsec supports 1.3+ we can do following to undo it:
+# brew uninstall $USER/local/libxmlsec1@1.2.37
+# brew untap $USER/local
+```
+
+UPDATE for mac currently the libxmlsec1 installed with brew is a version that's incompatible with python package.
+We need to use this until 
+
+```
 $ vi .config/pip/pip.conf
 
 insert following:
