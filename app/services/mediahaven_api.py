@@ -55,7 +55,6 @@ class MediahavenApi:
 
         self.client = MediaHaven(self.API_SERVER, grant)
 
-
     def find_item_by_pid(self, department, pid):
         records = self.client.records.search(q=f"+(ExternalId:{pid})")
 
