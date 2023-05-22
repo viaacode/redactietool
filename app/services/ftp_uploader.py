@@ -45,7 +45,7 @@ class FtpUploader:
 
             ftp = self.ftp_client(self.FTP_SERVER)
             ftp.login(self.FTP_USER, self.FTP_PASS)
-        
+
             # set pasv flag so we don't get timeouts
             ftp.set_pasv(False)
 
