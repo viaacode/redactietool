@@ -582,6 +582,7 @@ def test_update_metadata(client):
     }, follow_redirects=True)
 
     assert res.status_code == 200
+    print(">>>>>>>>    RESULT=", res.data.decode())
     assert 'werden opgeslagen' in res.data.decode()
 
 

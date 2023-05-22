@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: grant_type=password&client_id=client_id&client_secret=client_secret&username=test_userd&password=test_pass
+    body: grant_type=password&client_id=test_client_id&client_secret=test_client_secret&username=testuser&password=test_pass
     headers:
       Accept:
       - application/json
@@ -18,7 +18,7 @@ interactions:
     uri: https://archief-qas.viaa.be/auth/ropc.php
   response:
     body:
-      string: '{"refresh_token":"test_refresh_token","token_type":"bearer","access_token":"test_token","expires_in":7200}'
+      string: '{"refresh_token":"refresh_token_test","token_type":"bearer","access_token":"access_token_test","expires_in":7200}'
     headers:
       Access-Control-Allow-Origin:
       - '*'
@@ -31,7 +31,7 @@ interactions:
       Content-Type:
       - application/json; charset=UTF-8
       Date:
-      - Mon, 22 May 2023 08:25:13 GMT
+      - Mon, 22 May 2023 10:05:53 GMT
       Expires:
       - Thu, 19 Nov 1981 08:52:00 GMT
       Pragma:
@@ -39,11 +39,11 @@ interactions:
       Server:
       - nginx/1.18.0
       Set-Cookie:
-      - AUTHPORTAL=p2smc7vngrrqatlbihdulf2m4m; path=/;HttpOnly;Secure;SameSite=lax
+      - AUTHPORTAL=t7do99magtkamfttsobr2ot6dq; path=/;HttpOnly;Secure;SameSite=lax
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       X-Correlation-ID:
-      - 8c1acd45bbf8a7f4d4998b9c77536759
+      - a3d04e8b21d2c03c9febfad78064de11
       X-Frame-Options:
       - DENY
     status:
@@ -86,7 +86,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 May 2023 08:25:13 GMT
+      - Mon, 22 May 2023 10:05:53 GMT
       Expires:
       - '0'
       Pragma:
@@ -104,13 +104,13 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Correlation-ID:
-      - 90d4c472c19d76c6f254d3419b9ab099
+      - 2ec04b483f2c2dc5d9b8f750d0df0456
       X-Frame-Options:
       - DENY
       X-Kong-Proxy-Latency:
-      - '28'
+      - '243'
       X-Kong-Upstream-Latency:
-      - '8'
+      - '62'
       X-RateLimit-Limit-day:
       - '2000'
       X-RateLimit-Limit-minute:
@@ -118,9 +118,9 @@ interactions:
       X-RateLimit-Limit-second:
       - '25'
       X-RateLimit-Remaining-day:
-      - '1907'
+      - '1905'
       X-RateLimit-Remaining-minute:
-      - '143'
+      - '149'
       X-RateLimit-Remaining-second:
       - '24'
       X-XSS-Protection:
@@ -138,10 +138,10 @@ interactions:
       version=\"20.3\" xsi:schemaLocation=\"https://zeticon.mediahaven.com/metadata/20.3/mhs/
       https://zeticon.mediahaven.com/metadata/20.3/mhs.xsd https://zeticon.mediahaven.com/metadata/20.3/mh/
       https://zeticon.mediahaven.com/metadata/20.3/mh.xsd\">\n      <mhs:RightsManagement>\n
-      \       <mh:Permissions strategy=\"OVERWRITE\">\n          <mh:Read>config_testbeeld_uuid</mh:Read>\n
-      \         <mh:Read>config_admin_uuid</mh:Read>\n          <mh:Write>config_testbeeld_uuid</mh:Write>\n
-      \         <mh:Write>config_admin_uuid</mh:Write>\n          <mh:Export>config_testbeeld_uuid</mh:Export>\n
-      \         <mh:Export>config_admin_uuid</mh:Export>\n        </mh:Permissions>\n
+      \       <mh:Permissions strategy=\"OVERWRITE\">\n          <mh:Read>dd111b7a-efd0-44e3-8816-0905572421da</mh:Read>\n
+      \         <mh:Read>b75571b1-d7a3-4d6f-939e-deb345c1078a</mh:Read>\n          <mh:Write>dd111b7a-efd0-44e3-8816-0905572421da</mh:Write>\n
+      \         <mh:Write>b75571b1-d7a3-4d6f-939e-deb345c1078a</mh:Write>\n          <mh:Export>dd111b7a-efd0-44e3-8816-0905572421da</mh:Export>\n
+      \         <mh:Export>b75571b1-d7a3-4d6f-939e-deb345c1078a</mh:Export>\n        </mh:Permissions>\n
       \     </mhs:RightsManagement>\n      <mhs:Dynamic>\n        <dc_title>Fietsstraten
       in centrum Gent</dc_title>\n        <dcterms_issued>2021-11-21</dcterms_issued>\n
       \       <dc_titles strategy=\"OVERWRITE\">\n          <serie>Serie veld test</serie>\n
@@ -173,7 +173,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2965'
+      - '3067'
       User-Agent:
       - python-requests/2.24.0
       content-type:
@@ -182,7 +182,15 @@ interactions:
     uri: https://archief-qas.viaa.be/mediahaven-rest-api/v2/records/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b
   response:
     body:
-      string: '{"Status":400,"Message":"Permissions contains invalid group ids: config_testbeeld_uuid,config_admin_uuid","Code":"EPARAMINV"}'
+      string: '{"Technical":{"VideoTechnical":"(unkown video codec) \u003cunknown\u003ex\u003cunknown\u003e
+        (unkown video fps)fps (unkown video bit rate)bps","PronomId":"fmt/199","OriginalExtension":"mp4","DurationFrames":1514,"FileSize":32226974,"EndFrames":1514,"MimeType":"video/mp4","DurationTimeCode":"00:01:00.560","StartFrames":0,"EndTimeCode":"00:01:00.560","Md5":"2ac00d6101e4f5cc7bcb04f925405357","StartTimeCode":"00:00:00.000","Width":null,"Height":null,"ImageSize":null,"ImageOrientation":null,"ImageQuality":null,"AudioTechnical":null,"VideoFormat":null,"Exif":{},"VideoCodec":null,"VideoFps":null,"VideoBitRate":null,"AudioCodec":null,"AudioChannels":null,"AudioSampleRate":null,"AudioBitRate":null,"AudioTracks":{},"BitRate":null,"Origin":null,"EssenceOffset":null,"EditUnitByteSize":null,"RunIn":null,"FramesPerEditUnit":null,"EditRate":null,"IndexEditRate":null},"Structural":{"FragmentEndTimeCode":"00:01:00.560","HasChildren":false,"FragmentStartFrames":0,"FragmentDurationFrames":1514,"FragmentDurationTimeCode":"00:01:00.560","FragmentStartTimeCode":"00:00:00.000","FragmentEndFrames":1514,"Versioning":{"Status":"Untracked","Version":1},"Collections":{"Collection":[]},"Sets":{"Set":[]},"Newspapers":{"Newspaper":[]},"Relations":{},"Fragments":{"Fragment":[]},"MainFragment":null,"ReferenceCodes":{},"ParentRecordId":null,"ReferenceTitles":{},"FieldDefinition":{},"PreviewRecordId":null},"Descriptive":{"CreationDate":"2019-05-28T07:34:30.000000Z","UploadedBy":"bulkupload@testbeeld","KeyframeStart":41,"Description":"QAS
+        20.1 ingest test","OriginalFilename":"qsf7664p39.mp4","Title":"QAS 20.1 ingest
+        test - Fietsstraten in centrum Gent","RightsOwner":"MP4 Sound Media Handler","CreationDateLegacy":null,"Rights":null,"Keywords":{"Keyword":[]},"Categories":{"Category":[]},"LimitedCategories":{},"Publisher":null,"Authors":{},"Location":null,"Address":{},"NonPreferredTerm":null,"Publications":{"Comment":[]},"OriginalPath":null,"Position":{}},"Dynamic":{"lom_languages":{"multiselect":["nl"]},"lom_keywords":{"Sleutelwoord":["Belgium"]},"dc_source":"QAS_20.mp4","dc_relations":{"is_verwant_aan":["qsvx05z57z"]},"dc_publishers":{"Distributeur":["distributeur
+        test"]},"dc_identifier_localids":{"Bestandsnaam":["QAS_20.mp4"]},"lom_vak":{"Vak":["https://w3id.org/onderwijs-vlaanderen/id/vak/ict"]},"lom_onderwijsniveau":{"Onderwijsniveau":["https://w3id.org/onderwijs-vlaanderen/id/structuur/hoger-onderwijs","https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-onderwijs"]},"dc_creators":{"Maker":["maker
+        test"]},"dc_contributors":{"Bijdrager":["bijdrager test2"]},"lom_learningresourcetype":{"multiselect":["Video"]},"lom_thema":{"Thema":["https://data.hetarchief.be/id/onderwijs/thema/sport-en-spel"]},"dc_title":"Fietsstraten
+        in centrum Gent","dcterms_abstract":"Beschrijving test 1234","lom_intendedenduserrole":{"multiselect":["Student"]},"Original_CP_ID":"OR-h41jm06","dc_description":"QAS
+        20.1 ingest test","dcterms_issued":"2021-11-21","sp_name":"borndigital","lom_legacy":"false","lom_onderwijsgraad":{"Onderwijsgraad":["https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-1e-graad"]},"Original_CP":"AVS","dc_identifier_localid":"08_H264","PID":"qsf7664p39","CP":"testbeeld","dc_titles":{"serie":["Serie
+        veld test"]},"dc_rights_licenses":{"multiselect":["VIAA-ONDERWIJS","VIAA-ONDERZOEK","VIAA-INTRA_CP-CONTENT","VIAA-INTRA_CP-METADATA-ALL","VIAA-PUBLIEK-METADATA-LTD"]},"CP_id":"OR-h41jm1d","NeedsPublicationDateMigration":"true"},"Administrative":{"LastModifiedDate":"2023-05-22T10:05:54.048000Z","IsSynchronized":false,"IsOriginal":true,"OrganisationName":"testbeeld","Workflow":"borndigital","IsPreservation":false,"DepartmentName":"testbeeld","UserLastModifiedDate":"2023-05-22T10:05:54.048000Z","ArchiveDate":"2020-06-19T10:56:45.000000Z","OrganisationLongName":"testbeeld","RecordType":"Record","RecordStatus":"Published","IsAccess":false,"PublicationDate":"2021-09-15T09:52:03.104000Z","ExternalId":"qsf7664p39","DeleteStatus":"NotDeleted","Type":"video","MainRecordType":"Record","OrganisationExternalId":"OR-h41jm1d","ExternalUrl":null,"IngestTape":null,"LogicalDeletionDate":null,"ChildOrderFields":{},"RejectionDate":null,"ExternalUse":null},"Internal":{"PathToVideo":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/browse.mp4","OriginalStatus":"completed","PathToKeyframe":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/keyframes/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg","IsFragment":false,"PathToPreview":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/browse.mp4","UploadedById":"ff111a7a-efd0-44e3-8816-0905572421da","Distributions":{},"HasKeyframes":true,"Browses":{"Browse":[{"BaseUrl":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec","PathToKeyframe":"keyframes/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg","PathToKeyframeThumb":"keyframes-thumb/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg","PathToVideo":"browse.mp4","HasKeyframes":"1","Container":"mp4","Label":"mp4","FileSize":"13558871","AudioTracks":{"Track":[{"Channels":2}]},"Height":468,"VideoCodec":"h264","Width":832,"AudioChannels":2,"AudioCodec":"aac","BitRate":1789654,"AudioSampleRate":44100,"VideoBitRate":1542619,"AudioBitRate":705600,"VideoFps":"25"},{"BaseUrl":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec","PathToKeyframe":"keyframes/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg","PathToKeyframeThumb":"keyframes-thumb/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg","PathToVideo":"peak-0.json","HasKeyframes":"0","Container":"peak","Label":"peak-0","FileSize":"4172","BitRate":8,"AudioSampleRate":10,"AudioCodec":"audiowaveform"}]},"MediaObjectId":"70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec","ArchiveStatus":"on_disk","BrowseStatus":"completed","RecordId":"70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec","IsInIngestSpace":false,"OrganisationId":"111","FragmentId":"70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b","PathToKeyframeThumb":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/keyframes-thumb/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg","ContainsGeoData":false,"DepartmentId":"dd111b7a-efd0-44e3-8816-0905572421da","IngestSpaceId":null,"Profiles":{}},"RightsManagement":{"Permissions":{"Read":["dd111b7a-efd0-44e3-8816-0905572421da","b75571b1-d7a3-4d6f-939e-deb345c1078a"],"Write":["dd111b7a-efd0-44e3-8816-0905572421da","b75571b1-d7a3-4d6f-939e-deb345c1078a"],"Export":["dd111b7a-efd0-44e3-8816-0905572421da","b75571b1-d7a3-4d6f-939e-deb345c1078a"]},"ExpiryDate":null,"ExpiryStatus":null,"Zone":{}},"Context":{"IsEditable":true,"IsDeletable":true,"IsPublic":false,"IsExportable":true,"Profiles":[]}}'
     headers:
       Access-Control-Allow-Origin:
       - '*'
@@ -195,7 +203,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 May 2023 08:25:13 GMT
+      - Mon, 22 May 2023 10:05:54 GMT
       Expires:
       - '0'
       Pragma:
@@ -213,13 +221,13 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Correlation-ID:
-      - a3fc35002f85c049ea58709d2902f480
+      - eb0085533cea54a5a6fe9334b26bfbb7
       X-Frame-Options:
       - DENY
       X-Kong-Proxy-Latency:
-      - '26'
+      - '25'
       X-Kong-Upstream-Latency:
-      - '79'
+      - '270'
       X-RateLimit-Limit-day:
       - '2000'
       X-RateLimit-Limit-minute:
@@ -227,9 +235,9 @@ interactions:
       X-RateLimit-Limit-second:
       - '25'
       X-RateLimit-Remaining-day:
-      - '1906'
+      - '1904'
       X-RateLimit-Remaining-minute:
-      - '142'
+      - '148'
       X-RateLimit-Remaining-second:
       - '23'
       X-XSS-Protection:
@@ -238,6 +246,6 @@ interactions:
       - https
       - https
     status:
-      code: 400
+      code: 200
       message: ''
 version: 1
