@@ -8,7 +8,6 @@
 import pytest
 import io
 import os
-import yaml
 import json
 
 from unittest.mock import MagicMock
@@ -191,9 +190,8 @@ def test_valid_subtitle(client):
     filename = 'testing_good.srt'
     filepath = os.path.join('./tests/test_subs', filename)
 
-    with open('./tests/test_subs/mam_data.yml', "r") as f:
-        mam_data = json.loads(yaml.safe_load(f)['response'])[
-            'mediaDataList'][0]
+    with open('./tests/test_subs/mam_data.json') as mam_json_file:
+        mam_data = json.load(mam_json_file)
 
     res = client.post("/upload", data={
         'pid': 'qsxs5jbm5c',
@@ -218,9 +216,8 @@ def test_valid_subtitle_capitals(client):
     filename = 'test_good2.SRT'
     filepath = os.path.join('./tests/test_subs', filename)
 
-    with open('./tests/test_subs/mam_data.yml', "r") as f:
-        mam_data = json.loads(yaml.safe_load(f)['response'])[
-            'mediaDataList'][0]
+    with open('./tests/test_subs/mam_data.json') as mam_json_file:
+        mam_data = json.load(mam_json_file)
 
     res = client.post("/upload", data={
         'pid': 'qsxs5jbm5c',
@@ -270,9 +267,8 @@ def test_subtitle_videoplayer_route_unknownfile(client):
 
 @pytest.mark.vcr
 def test_send_to_mam_shows_confirmation(client):
-    with open('./tests/test_subs/mam_data.yml', "r") as f:
-        mam_data = json.loads(yaml.safe_load(f)['response'])[
-            'mediaDataList'][0]
+    with open('./tests/test_subs/mam_data.json') as mam_json_file:
+        mam_data = json.load(mam_json_file)
 
     res = client.post("/send_to_mam", data={
         'pid': 'qsxs5jbm5c',
@@ -291,9 +287,8 @@ def test_send_to_mam_shows_confirmation(client):
 
 @pytest.mark.vcr
 def test_send_to_mam_confirm_works(client):
-    with open('./tests/test_subs/mam_data.yml', "r") as f:
-        mam_data = json.loads(yaml.safe_load(f)['response'])[
-            'mediaDataList'][0]
+    with open('./tests/test_subs/mam_data.json') as mam_json_file:
+        mam_data = json.load(mam_json_file)
 
     # replace existing subtitle now
     res = client.post("/send_to_mam", data={
@@ -314,9 +309,8 @@ def test_send_to_mam_confirm_works(client):
 
 @pytest.mark.vcr
 def test_send_to_mam_cancel_works(client):
-    with open('./tests/test_subs/mam_data.yml', "r") as f:
-        mam_data = json.loads(yaml.safe_load(f)['response'])[
-            'mediaDataList'][0]
+    with open('./tests/test_subs/mam_data.json') as mam_json_file:
+        mam_data = json.load(mam_json_file)
 
     # replace existing subtitle now
     res = client.post("/send_to_mam", data={
@@ -614,9 +608,8 @@ def test_valid_subtitle_for_ftp(client):
     filename = 'testing_good.srt'
     filepath = os.path.join('./tests/test_subs', filename)
 
-    with open('./tests/test_subs/mam_data.yml', "r") as f:
-        mam_data = json.loads(yaml.safe_load(f)['response'])[
-            'mediaDataList'][0]
+    with open('./tests/test_subs/mam_data.json') as mam_json_file:
+        mam_data = json.load(mam_json_file)
 
     res = client.post("/upload", data={
         'pid': 'qsxs5jbm5c',
@@ -638,9 +631,8 @@ def test_valid_subtitle_for_ftp(client):
 
 @pytest.mark.vcr
 def test_subtitle_ftp_upload(client, mocker):
-    with open('./tests/test_subs/mam_data.yml', "r") as f:
-        mam_data = json.loads(yaml.safe_load(f)['response'])[
-            'mediaDataList'][0]
+    with open('./tests/test_subs/mam_data.json') as mam_json_file:
+        mam_data = json.load(mam_json_file)
 
     # mock ftp calls
     ftp_mock = MagicMock()

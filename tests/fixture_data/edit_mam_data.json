@@ -1,291 +1,528 @@
 {
-  "offsetFrames": 0,
-  "fragmentStartFrames": 0,
-  "fragmentEndFrames": 1514,
-  "fragmentDurationFrames": 1514,
-  "offsetTimeCode": "00:00:00.000",
-  "fragmentStartTimeCode": "00:00:00.000",
-  "fragmentEndTimeCode": "00:01:00.560",
-  "fragmentDurationTimeCode": "00:01:00.560",
-  "mediaObjectId": "70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec",
-  "fragmentId": "70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b",
-  "externalId": "qsf7664p39",
-  "title": "QAS 20.1 ingest test - Fietsstraten in centrum Gent",
-  "description": "QAS 20.1 ingest test",
-  "date": "2019:05:28 09:34:30",
-  "previewImagePath": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/keyframes/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg",
-  "thumbnailImagePath": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/keyframes-thumb/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg",
-  "videoPath": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/browse.mp4",
-  "originalFileName": "qsf7664p39.mp4",
-  "width": 0,
-  "height": 0,
-  "keywords": [],
-  "type": "Video",
-  "authors": [],
-  "lastModifiedDate": "2022-02-04T09:15:24Z",
-  "archiveDate": "2020-06-19T10:56:45Z",
-  "exportable": true,
-  "editable": true,
-  "deletable": true,
-  "isPublic": false,
-  "ingestSpaceId": "",
-  "isInIngestSpace": false,
-  "status": "FINISHED",
-  "browseStatus": "completed",
-  "originalStatus": "completed",
-  "archiveStatus": "on_disk",
-  "workflow": "borndigital",
-  "mdProperties": [
-    {
-      "value": [
-        {
-          "value": "Belgium",
-          "attribute": "Sleutelwoord",
-          "dottedKey": null
-        }
+  "Technical": {
+    "PronomId": "fmt/199",
+    "OriginalExtension": "mp4",
+    "DurationFrames": 1368,
+    "EndFrames": 1368,
+    "MimeType": "video/mp4",
+    "StartFrames": 0,
+    "Md5": "e4e594d16c1c2758073677a52ad69be0",
+    "VideoTechnical": "(unkown video codec) <unknown>x<unknown> (unkown video fps)fps (unkown video bit rate)bps",
+    "FileSize": 11593972,
+    "DurationTimeCode": "00:00:54.720",
+    "EndTimeCode": "00:00:54.720",
+    "StartTimeCode": "00:00:00.000",
+    "Width": null,
+    "Height": null,
+    "ImageSize": null,
+    "ImageOrientation": null,
+    "ImageQuality": null,
+    "AudioTechnical": null,
+    "VideoFormat": null,
+    "Exif": {},
+    "VideoCodec": null,
+    "VideoFps": null,
+    "VideoBitRate": null,
+    "AudioCodec": null,
+    "AudioChannels": null,
+    "AudioSampleRate": null,
+    "AudioBitRate": null,
+    "AudioTracks": {},
+    "BitRate": null,
+    "Origin": null,
+    "EssenceOffset": null,
+    "EditUnitByteSize": null,
+    "RunIn": null,
+    "FramesPerEditUnit": null,
+    "EditRate": null,
+    "IndexEditRate": null
+  },
+  "Structural": {
+    "HasChildren": false,
+    "FragmentStartFrames": 0,
+    "FragmentStartTimeCode": "00:00:00.000",
+    "FragmentEndTimeCode": "00:00:54.720",
+    "FragmentDurationFrames": 1368,
+    "FragmentDurationTimeCode": "00:00:54.720",
+    "FragmentEndFrames": 1368,
+    "Versioning": {
+      "Status": "Untracked",
+      "Version": 1
+    },
+    "Collections": {
+      "Collection": []
+    },
+    "Sets": {
+      "Set": []
+    },
+    "Newspapers": {
+      "Newspaper": []
+    },
+    "Relations": {},
+    "Fragments": {
+      "Fragment": []
+    },
+    "MainFragment": null,
+    "ReferenceCodes": {},
+    "ParentRecordId": null,
+    "ReferenceTitles": {},
+    "FieldDefinition": {},
+    "PreviewRecordId": null
+  },
+  "Descriptive": {
+    "CreationDate": "2019-10-22T22:00:00.000000Z",
+    "Description": "Dit is het veld voor de originele hoofdbeschrijving.",
+    "OriginalFilename": "qs5d8ncx8c.mp4",
+    "RightsOwner": "\u00c2\u00a9 vrt",
+    "UploadedBy": "bulkupload@testbeeld",
+    "KeyframeStart": 666,
+    "Title": "ATP Swiss Indoors Day 3C",
+    "CreationDateLegacy": null,
+    "Rights": null,
+    "Keywords": {
+      "Keyword": []
+    },
+    "Categories": {
+      "Category": []
+    },
+    "LimitedCategories": {},
+    "Publisher": null,
+    "Authors": {},
+    "Location": null,
+    "Address": {},
+    "NonPreferredTerm": null,
+    "Publications": {
+      "Comment": []
+    },
+    "OriginalPath": null,
+    "Position": {}
+  },
+  "Dynamic": {
+    "lom_context": {
+      "multiselect": [
+        "Secundair onderwijs"
+      ]
+    },
+    "lom_languages": {
+      "multiselect": [
+        "nl"
+      ]
+    },
+    "lom_keywords": {
+      "Sleutelwoord": [
+        "tennis",
+        "sport"
+      ]
+    },
+    "dc_source": "ATP Swiss Indoors Day 3C.mp4",
+    "type_viaa": "video",
+    "ebu_objectType": "footage",
+    "lom_vak": {
+      "Vak": [
+        "https://w3id.org/onderwijs-vlaanderen/id/vak/sport"
+      ]
+    },
+    "dc_creators": {
+      "Kunstenaar": [
+        "Dit is een veld voor kunstenaar."
       ],
-      "attribute": "lom_keywords",
-      "dottedKey": null
-    },
-    {
-      "subKey": "multiselect",
-      "value": [
-        {
-          "value": "nl",
-          "attribute": "multiselect",
-          "dottedKey": null
-        }
+      "Opdrachtgever": [
+        "Dit is een veld voor opdrachtgever."
       ],
-      "attribute": "lom_languages",
-      "dottedKey": null
-    },
-    {
-      "value": [
-        {
-          "value": "qsvx05z57z",
-          "attribute": "is_verwant_aan",
-          "dottedKey": null
-        }
+      "Productiehuis": [
+        "Dit is een veld voor productiehuis.",
+        "Nog een productiehuis 222"
       ],
-      "attribute": "dc_relations",
-      "dottedKey": null
-    },
-    {
-      "value": [
-        {
-          "value": "QAS_20.mp4",
-          "attribute": "Bestandsnaam",
-          "dottedKey": null
-        }
+      "Performer": [
+        "Dit is een veld voor performer."
       ],
-      "attribute": "dc_identifier_localids",
-      "dottedKey": null
-    },
-    {
-      "value": [
-        {
-          "value": "https://data.meemoo.be/term/onderwijs/vak/administratie",
-          "attribute": "Vak",
-          "dottedKey": null
-        },
-        {
-          "value": "https://data.meemoo.be/term/onderwijs/vak/agrarische-technieken",
-          "attribute": "Vak",
-          "dottedKey": null
-        },
-        {
-          "value": "https://data.meemoo.be/term/onderwijs/vak/natuurwetenschappen",
-          "attribute": "Vak",
-          "dottedKey": null
-        }
+      "Choreograaf": [
+        "Dit is een veld voor choreograaf."
       ],
-      "attribute": "lom_vak",
-      "dottedKey": null
-    },
-    {
-      "value": [
-        {
-          "value": "https://data.meemoo.be/term/onderwijs/niveau/hoger-onderwijs",
-          "attribute": "multiselect",
-          "dottedKey": null
-        },
-        {
-          "value": "https://data.meemoo.be/term/onderwijs/niveau/lager-onderwijs",
-          "attribute": "multiselect",
-          "dottedKey": null
-        },
-        {
-          "value": "https://data.meemoo.be/term/onderwijs/niveau/secundair-onderwijs",
-          "attribute": "multiselect",
-          "dottedKey": null
-        },
-        {
-          "value": "https://data.meemoo.be/term/onderwijs/niveau/volwassenenonderwijs",
-          "attribute": "multiselect",
-          "dottedKey": null
-        }
+      "Producer": [
+        "Dit is een veld voor producer."
       ],
-      "attribute": "lom_onderwijsniveau",
-      "dottedKey": null
-    },
-    {
-      "subKey": "multiselect",
-      "value": [
-        {
-          "value": "Video",
-          "attribute": "multiselect",
-          "dottedKey": null
-        }
+      "Danser": [
+        "Dit is een veld voor danser.",
+        "Tweede veld voor extra danser."
       ],
-      "attribute": "lom_learningresourcetype",
-      "dottedKey": null
-    },
-    {
-      "value": [
-        {
-          "value": "https://data.meemoo.be/term/onderwijs/thema/voeding-en-horeca",
-          "attribute": "Thema",
-          "dottedKey": null
-        },
-        {
-          "value": "https://data.meemoo.be/term/onderwijs/thema/gezondheid-en-gezondheidszorg",
-          "attribute": "Thema",
-          "dottedKey": null
-        },
-        {
-          "value": "https://data.meemoo.be/term/onderwijs/thema/milieu-en-ecologie",
-          "attribute": "Thema",
-          "dottedKey": null
-        }
+      "Fotograaf": [
+        "Dit is een veld voor fotograaf."
       ],
-      "attribute": "lom_thema",
-      "dottedKey": null
-    },
-    {
-      "subKey": "multiselect",
-      "value": [
-        {
-          "value": "Student",
-          "attribute": "multiselect",
-          "dottedKey": null
-        }
+      "Regisseur": [
+        "Dit is een veld voor regisseur."
       ],
-      "attribute": "lom_intendedenduserrole",
-      "dottedKey": null
-    },
-    {
-      "value": [
-        {
-          "value": "https://data.meemoo.be/term/onderwijs/graad/secundair-1ste-graad",
-          "attribute": "multiselect",
-          "dottedKey": null
-        }
+      "Auteur": [
+        "Dit is een veld voor auteur."
       ],
-      "attribute": "lom_onderwijsgraad",
-      "dottedKey": null
-    },
-    {
-      "subKey": "multiselect",
-      "value": [
-        {
-          "value": "VIAA-ONDERWIJS",
-          "attribute": "multiselect",
-          "dottedKey": null
-        },
-        {
-          "value": "VIAA-ONDERZOEK",
-          "attribute": "multiselect",
-          "dottedKey": null
-        },
-        {
-          "value": "VIAA-INTRA_CP-CONTENT",
-          "attribute": "multiselect",
-          "dottedKey": null
-        },
-        {
-          "value": "VIAA-INTRA_CP-METADATA-ALL",
-          "attribute": "multiselect",
-          "dottedKey": null
-        },
-        {
-          "value": "VIAA-PUBLIEK-METADATA-LTD",
-          "attribute": "multiselect",
-          "dottedKey": null
-        }
+      "Muzikant": [
+        "Dit is een veld voor muzikant."
       ],
-      "attribute": "dc_rights_licenses",
-      "dottedKey": null
+      "Acteur": [
+        "Dit is een veld voor acteur."
+      ],
+      "Schrijver": [
+        "Dit is een veld voor schrijver."
+      ],
+      "Componist": [
+        "Dit is een veld voor componist."
+      ],
+      "Interviewer": [
+        "Dit is een veld voor interviewer."
+      ],
+      "Maker": [
+        "Dit is een veld voor maker."
+      ],
+      "Archiefvormer": [
+        "Dit is een veld voor archiefvormer."
+      ],
+      "Cineast": [
+        "Dit is een veld voor cineast."
+      ],
+      "Documentairemaker": [
+        "Test ofzo documentairemaker"
+      ]
     },
-    {
-      "value": "OR-h41jm06",
-      "attribute": "Original_CP_ID",
-      "dottedKey": null
+    "lom_learningresourcetype": {
+      "multiselect": [
+        "Video"
+      ]
     },
-    {
-      "value": "QAS_20.mp4",
-      "attribute": "dc_source",
-      "dottedKey": null
+    "dc_description_lang": "Dit is het veld voor de originele uitgebreide beschrijving.\n\n[Swiss Indoors round of 8]?\nATP Swiss Indoors Day 3:  A. de Minaur vs. T. Fritz : 6:3 / 6:3\n?\nOpnamelocatie: BaselBaselSWITZERLANDEUROPE",
+    "dc_rights_rightsHolders": {
+      "Licentiehouder": [
+        "Rechtenhouder: CHSRF Rechteninfo: Swiss TV rights: For full EBU members only within EBU territory, maximum usage 3 minutes per day."
+      ]
     },
-    {
-      "value": "QAS 20.1 ingest test",
-      "attribute": "dc_description",
-      "dottedKey": null
+    "dc_title": "Dit is het veld voor de ontsluitingstitel.",
+    "dcterms_abstract": "Onderwijs beschrijving test\n\nEerste paragraaf hier wat _cursieve bewerken hier tekst_ en\n\nwat **vette tekst** en ook **_vette en cursieve tekst_**\n\nDan nog een link hier testen: [meemoo](https://meemoo.be)\n\nTweede paragraaf\n\nDerde paragraaf\n\nDan wat lijstjes:\n\n*   eerste item\n*   tweede **item**\n\n**Test text met & erin**\n\nEn genummerde lijst:\n\n1.  eerste nummer\n2.  tweede nummer\n\nQAS: [https://redactie-qas.hetarchief.be/](https://redactie-qas.hetarchief.be/)\n\nPRD: [https://redactie.hetarchief.be](https://redactie.hetarchief.be)",
+    "vrt_status": "nieuw",
+    "dcterms_issued": "2019-10-23",
+    "dc_description_cast": "Dit is het veld voor de cast.",
+    "lom_legacy": "false",
+    "dc_identifier_localid": "AIM10049123",
+    "PID": "qs5d8ncx8c",
+    "CP": "testbeeld",
+    "dc_rights_licenses": {
+      "multiselect": [
+        "VIAA-ONDERWIJS",
+        "VIAA-ONDERZOEK",
+        "VIAA-INTRA_CP-CONTENT",
+        "VIAA-INTRA_CP-METADATA-ALL",
+        "VIAA-PUBLIEK-METADATA-LTD"
+      ]
     },
-    {
-      "value": "2019:05:28 09:34:30",
-      "attribute": "CreationDate",
-      "dottedKey": null
+    "dc_description_categorie": "sport",
+    "dc_description_transcriptie": "Dit is het veld voor de transcriptie.",
+    "lom_typicalagerange": {
+      "multiselect": [
+        "Secundair 1ste graad",
+        "Secundair 2de graad",
+        "Secundair 3de graad"
+      ]
     },
-    {
-      "value": "true",
-      "attribute": "lom_legacy",
-      "dottedKey": null
+    "dc_relations": {
+      "is_verwant_aan": [
+        "qsx34mmm4g"
+      ]
     },
-    {
-      "value": "borndigital",
-      "attribute": "sp_name",
-      "dottedKey": null
+    "dc_publishers": {
+      "Publisher": [
+        "EBU SPORT"
+      ],
+      "Distributeur": [
+        "Dit is een veld voor distributeur.",
+        "Dit is nog een veld voor distributeur."
+      ],
+      "Persagentschap": [
+        "Dit is een veld voor persagentschap."
+      ],
+      "Exposant": [
+        "Dit is een veld voor exposant."
+      ]
     },
-    {
-      "value": "QAS 20.1 ingest test - Fietsstraten in centrum Gent",
-      "attribute": "dc_title",
-      "dottedKey": null
+    "dc_identifier_localids": {
+      "Bestandsnaam": [
+        "ATP Swiss Indoors Day 3C.mp4"
+      ],
+      "MEDIA_ID": [
+        "AIM10049123"
+      ]
     },
-    {
-      "value": "true",
-      "attribute": "NeedsPublicationDateMigration",
-      "dottedKey": null
+    "lom_onderwijsniveau": {
+      "Onderwijsniveau": [
+        "https://w3id.org/onderwijs-vlaanderen/id/structuur/volwassenenonderwijs",
+        "https://w3id.org/onderwijs-vlaanderen/id/structuur/secundair-onderwijs"
+      ]
     },
-    {
-      "value": "qsf7664p39",
-      "attribute": "PID",
-      "dottedKey": null
+    "dc_contributors": {
+      "Make-up": [
+        "Dit is een veld voor make-up."
+      ],
+      "Auteur": [
+        "Dit is een veld voor auteur."
+      ],
+      "Verontschuldigd": [
+        "Dit is een veld voor verontschuldigd."
+      ],
+      "Aanwezig": [
+        "Dit is een veld voor aanwezig.",
+        "Dit is een veld voor presenter."
+      ],
+      "Arrangeur": [
+        "Dit is een veld voor arrangeur.",
+        "Dit is nog een veld voor arrangeur."
+      ],
+      "Commentator": [
+        "Dit is een veld voor commentator."
+      ],
+      "Geluid": [
+        "Dit is een veld voor geluid."
+      ],
+      "Adviseur": [
+        "Dit is een veld voor adviseur."
+      ],
+      "Voorzitter": [
+        "Dit is een veld voor voorzitter."
+      ],
+      "Omroeper": [
+        "Dit is een veld voor omroeper."
+      ],
+      "Onderzoeker": [
+        "Dit is een veld voor onderzoeker."
+      ],
+      "Dirigent": [
+        "Dit is een veld voor dirigent."
+      ],
+      "Post-productie": [
+        "Dit is een veld voor post-productie."
+      ],
+      "Reporter": [
+        "Dit is een veld voor reporter."
+      ],
+      "Geluidsman": [
+        "Dit is een veld voor geluidsman."
+      ],
+      "Producer": [
+        "Dit is een veld voor producer."
+      ],
+      "Scenarist": [
+        "Dit is een veld voor scenarist."
+      ],
+      "Cameraman": [
+        "Dit is een veld voor cameraman."
+      ],
+      "Belichting": [
+        "Dit is een veld voor belichting."
+      ],
+      "GrafischOntwerper": [
+        "Dit is een veld voor grafisch ontwerper."
+      ],
+      "Nieuwsanker": [
+        "Dit is een veld voor nieuwsanker."
+      ],
+      "Archivaris": [
+        "Dit is een veld voor archivaris."
+      ],
+      "Sponsor": [
+        "Dit is een veld voor sponsor."
+      ],
+      "Vertaler": [
+        "Dit is een veld voor vertaler."
+      ],
+      "Verteller": [
+        "Dit is een veld voor verteller."
+      ],
+      "Presenter": [
+        "presenter testje"
+      ],
+      "Bijdrager": [
+        "Dit is een veld voor bijdrager."
+      ],
+      "Afwezig": [
+        "Dit is een veld voor afwezig."
+      ],
+      "Uitvoerder": [
+        "Dit is een veld voor uitvoerder."
+      ],
+      "Kunstenaar": [
+        "Dit is een veld voor kunstenaar."
+      ],
+      "Muzikant": [
+        "Dit is een veld voor muzikant."
+      ],
+      "Co-producer": [
+        "Dit is een veld voor co-producer."
+      ],
+      "Fotografie": [
+        "Dit is een veld voor fotografie."
+      ],
+      "Componist": [
+        "Dit is een veld voor componist."
+      ],
+      "Soundtrack": [
+        "Dit is een veld voor soundtrack."
+      ],
+      "Assistent": [
+        "Dit is een veld voor assistent."
+      ]
     },
-    {
-      "value": "testbeeld",
-      "attribute": "CP",
-      "dottedKey": null
+    "lom_thema": {
+      "Thema": [
+        "https://data.hetarchief.be/id/onderwijs/thema/nederlandse-taal"
+      ]
     },
-    {
-      "value": "AVS",
-      "attribute": "Original_CP",
-      "dottedKey": null
+    "dc_description_ondertitels": "Dit is het veld voor de ondertitels.",
+    "dc_description_programma": "Dit is het veld voor de programma omschrijving.",
+    "dcterms_created": "2019-10-23",
+    "lom_intendedenduserrole": {
+      "multiselect": [
+        "Docent",
+        "Student"
+      ]
     },
-    {
-      "value": "OR-h41jm1d",
-      "attribute": "CP_id",
-      "dottedKey": null
+    "Original_CP_ID": "OR-rf5kf25",
+    "sp_name": "borndigital",
+    "lom_onderwijsgraad": {
+      "Onderwijsgraad": [
+        "https://w3id.org/onderwijs-vlaanderen/id/structuur/secundair-2e-graad"
+      ]
     },
-    {
-      "value": "08_H264",
-      "attribute": "dc_identifier_localid",
-      "dottedKey": null
+    "Original_CP": "VRT",
+    "vrt_has_been_broadcasted": "true",
+    "dc_titles": {
+      "serie": [
+        "EVS"
+      ]
     },
-    {
-      "value": "MP4 Sound Media Handler",
-      "attribute": "RightsOwner",
-      "dottedKey": null
+    "CP_id": "OR-h41jm1d",
+    "NeedsPublicationDateMigration": "true",
+    "lom_classification": {
+      "multiselect": [
+        "lichamelijke opvoeding - sport"
+      ]
     }
-  ],
-  "relations": {}
+  },
+  "Administrative": {
+    "LastModifiedDate": "2023-05-17T15:37:27.828000Z",
+    "IsSynchronized": false,
+    "OrganisationName": "testbeeld",
+    "Workflow": "dailies",
+    "ArchiveDate": "2019-10-25T08:26:32.000000Z",
+    "RecordStatus": "Published",
+    "IsAccess": false,
+    "Type": "video",
+    "IsOriginal": true,
+    "IsPreservation": false,
+    "DepartmentName": "testbeeld",
+    "UserLastModifiedDate": "2023-05-17T15:37:27.828000Z",
+    "OrganisationLongName": "testbeeld",
+    "RecordType": "Record",
+    "PublicationDate": "2021-09-15T09:58:03.580000Z",
+    "ExternalId": "qs5d8ncx8c",
+    "DeleteStatus": "NotDeleted",
+    "MainRecordType": "Record",
+    "OrganisationExternalId": "OR-h41jm1d",
+    "ExternalUrl": null,
+    "IngestTape": null,
+    "LogicalDeletionDate": null,
+    "ChildOrderFields": {},
+    "RejectionDate": null,
+    "ExternalUse": null
+  },
+  "Internal": {
+    "PathToVideo": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/browse.mp4",
+    "PathToKeyframe": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/keyframes/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg",
+    "PathToPreview": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/browse.mp4",
+    "Browses": {
+      "Browse": [
+        {
+          "BaseUrl": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c",
+          "PathToKeyframe": "keyframes/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg",
+          "PathToKeyframeThumb": "keyframes-thumb/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg",
+          "PathToVideo": "browse.mp4",
+          "HasKeyframes": true,
+          "Container": "mp4",
+          "Label": "mp4",
+          "FileSize": 12202933,
+          "AudioTracks": {
+            "Track": [
+              {
+                "Channels": 2
+              }
+            ]
+          },
+          "Height": 468,
+          "VideoCodec": "h264",
+          "Width": 832,
+          "AudioChannels": 2,
+          "AudioCodec": "aac",
+          "BitRate": 1783728,
+          "AudioSampleRate": 44100,
+          "VideoBitRate": 1521071,
+          "AudioBitRate": 705600,
+          "VideoFps": "25"
+        },
+        {
+          "BaseUrl": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c",
+          "PathToKeyframe": "keyframes/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg",
+          "PathToKeyframeThumb": "keyframes-thumb/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg",
+          "PathToVideo": "peak-0.json",
+          "HasKeyframes": false,
+          "Container": "peak",
+          "Label": "peak-0",
+          "FileSize": 3176,
+          "BitRate": 8,
+          "AudioSampleRate": 10,
+          "AudioCodec": "audiowaveform"
+        }
+      ]
+    },
+    "BrowseStatus": "completed",
+    "RecordId": "babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c",
+    "IsInIngestSpace": false,
+    "OrganisationId": "111",
+    "ContainsGeoData": false,
+    "OriginalStatus": "completed",
+    "IsFragment": false,
+    "UploadedById": "ff111a7a-efd0-44e3-8816-0905572421da",
+    "HasKeyframes": true,
+    "MediaObjectId": "babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c",
+    "ArchiveStatus": "on_disk",
+    "FragmentId": "babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550",
+    "PathToKeyframeThumb": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1c/keyframes-thumb/babc1f04f7094092a3189877a3d257feb60c344813264e8e9c45cd502997bb1ce13b348a791c40a593110e1ee4266550.jpg",
+    "DepartmentId": "dd111b7a-efd0-44e3-8816-0905572421da",
+    "IngestSpaceId": null,
+    "Distributions": {
+      "Distribution": []
+    },
+    "Profiles": {}
+  },
+  "RightsManagement": {
+    "Permissions": {
+      "Write": [
+        "dd111b7a-efd0-44e3-8816-0905572421da",
+        "b75571b1-d7a3-4d6f-939e-deb345c1078a"
+      ],
+      "Export": [
+        "dd111b7a-efd0-44e3-8816-0905572421da",
+        "b75571b1-d7a3-4d6f-939e-deb345c1078a"
+      ],
+      "Read": [
+        "dd111b7a-efd0-44e3-8816-0905572421da",
+        "26276bde-be5f-4e17-a40a-49dceb722c64",
+        "b75571b1-d7a3-4d6f-939e-deb345c1078a"
+      ]
+    },
+    "ExpiryDate": null,
+    "ExpiryStatus": null,
+    "Zone": {}
+  },
+  "Context": {
+    "IsEditable": true,
+    "IsDeletable": true,
+    "IsPublic": false,
+    "IsExportable": true,
+    "Profiles": []
+  }
 }

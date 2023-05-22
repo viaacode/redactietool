@@ -1,7 +1,7 @@
 interactions:
 - request:
     body: '{"_source": false, "suggest": {"keyword-suggest": {"prefix": "zoek", "completion":
-      {"field": "lom_keywords.suggest"}}}}'
+      {"field": "lom_keywords.suggest", "skip_duplicates": true, "size": 10}}}}'
     headers:
       Accept:
       - '*/*'
@@ -10,7 +10,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '119'
+      - '156'
       Content-Type:
       - application/json
       User-Agent:
@@ -20,25 +20,23 @@ interactions:
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAAMyTwY6bMBCGXyXyGSzbwAa47alV1cs2rbRqtLIcGMAJYIJNSRrl3Tuw2W4urVKp
-        rVZYyAO/Z/x7Pp+IM2ZH0tAjTjeQSzM4khaqtuARaSvV55akJ1Q5VZM0iDxihywDa4sBY8Ew3umu
-        g5ykOC+UrqcpR900H3rA5esTmTPNEt3mcCApUd+M3CsrtYPG+oIJ7nPus9DxJeV3NApolATEI63J
-        AeXB/lHyz8evq3j1LhKbD5X/8SEb8X8Pypp23uOxm5S6rqFUtVR9OTTQOgmHDDqnUfSqxrSLRnWd
-        bstFYYY2x3e/KDTU+WJdm0bu4DgaNE/tUJZg3RM5n70/9SH4ZCVYslcf7nE7flnx8NP9fnmsq/g+
-        fr8sHt6iD+GzwBeJ4wFlMWWCcnH3tnw8nT1SaXcNKALWqIO0memRBUYxflasJ/GllxMsl/76Pz8h
-        pA4OCD/5bmCHRk1RWMAYU9TQlq6ab4mZSXqG+kqvMqcBF8lf4o3HGfqMO44HmVCBW5uxkBdqc5PN
-        tNo5CV4V0odJGUZ8H06UvzjilE0YXlWG3m1vrixCygIaRPFvK2/iKChwJFO//1Ll2zyPLB6TqNrG
-        +f+u/C8833baYyXyZdJtohmHC7lTn5/wOf8AAAD//wMATAD9AaEFAAA=
+        H4sIAAAAAAAAAKyR3W6DMAyF38XXgBJ+2sKrVBVKiSEZhVASCl3Fu8+s27Tugt0g5SK2j/35JA9w
+        xtSQ8Z0HTjcoczM4yEpxsehBbpXopYXsQTInLpCFzAM7FAVaWw7fca27DiVkVCuFvnxeZw+Udr9b
+        qdqIKbeF6ZEEAcVPxfFEYjtUFVpCP6DG+2h66f+kjoTHiWrwbrAGD0xZWqSYRlywrZyCLKZs57Rp
+        l4EvelE4jdSU61biREPEzeRXYXPtsLF+yMLIZ4nPQsfDgMcB2wchS5YGd+9oU5CmGBpsadVlCJmD
+        Pk6rOOHXeFxSX454QKZfyNi7t43J50MSlXTS3f9ka8nhtsZdHKmJd/1eruLpJwulUWKrn4+22cvb
+        czQ6nnJerS7QCOK3G5u/TSyZYlamh1W26WRPeLet8VGF8sDUW1yuwp3ZnMxvyblI6o6rP+TTfJrn
+        DwAAAP//AwBRLWRaQQQAAA==
     headers:
-      Set-Cookie:
-      - 0522f9a53ec9eba81c627d432b4539d3=b06190e8ce67aeb6cafa0c946d25d4a2; path=/;
-        HttpOnly
       content-encoding:
       - gzip
       content-length:
-      - '497'
+      - '358'
       content-type:
       - application/json; charset=UTF-8
+      set-cookie:
+      - 0522f9a53ec9eba81c627d432b4539d3=bccbe1f18d363cc3d46a18b15c541b3e; path=/;
+        HttpOnly
     status:
       code: 200
       message: OK

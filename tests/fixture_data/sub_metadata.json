@@ -1,0 +1,317 @@
+{
+  "Technical": {
+    "VideoTechnical": "(unkown video codec) <unknown>x<unknown> (unkown video fps)fps (unkown video bit rate)bps",
+    "PronomId": "fmt/199",
+    "OriginalExtension": "mp4",
+    "DurationFrames": 1514,
+    "FileSize": 32226974,
+    "EndFrames": 1514,
+    "MimeType": "video/mp4",
+    "DurationTimeCode": "00:01:00.560",
+    "StartFrames": 0,
+    "EndTimeCode": "00:01:00.560",
+    "Md5": "2ac00d6101e4f5cc7bcb04f925405357",
+    "StartTimeCode": "00:00:00.000",
+    "Width": null,
+    "Height": null,
+    "ImageSize": null,
+    "ImageOrientation": null,
+    "ImageQuality": null,
+    "AudioTechnical": null,
+    "VideoFormat": null,
+    "Exif": {},
+    "VideoCodec": null,
+    "VideoFps": null,
+    "VideoBitRate": null,
+    "AudioCodec": null,
+    "AudioChannels": null,
+    "AudioSampleRate": null,
+    "AudioBitRate": null,
+    "AudioTracks": {},
+    "BitRate": null,
+    "Origin": null,
+    "EssenceOffset": null,
+    "EditUnitByteSize": null,
+    "RunIn": null,
+    "FramesPerEditUnit": null,
+    "EditRate": null,
+    "IndexEditRate": null
+  },
+  "Structural": {
+    "FragmentEndTimeCode": "00:01:00.560",
+    "HasChildren": false,
+    "FragmentStartFrames": 0,
+    "FragmentDurationFrames": 1514,
+    "FragmentDurationTimeCode": "00:01:00.560",
+    "FragmentStartTimeCode": "00:00:00.000",
+    "FragmentEndFrames": 1514,
+    "Versioning": {
+      "Status": "Untracked",
+      "Version": 1
+    },
+    "Collections": {
+      "Collection": []
+    },
+    "Sets": {
+      "Set": []
+    },
+    "Newspapers": {
+      "Newspaper": []
+    },
+    "Relations": {},
+    "Fragments": {
+      "Fragment": []
+    },
+    "MainFragment": null,
+    "ReferenceCodes": {},
+    "ParentRecordId": null,
+    "ReferenceTitles": {},
+    "FieldDefinition": {},
+    "PreviewRecordId": null
+  },
+  "Descriptive": {
+    "CreationDate": "2019-05-28T07:34:30.000000Z",
+    "UploadedBy": "bulkupload@testbeeld",
+    "KeyframeStart": 41,
+    "Description": "QAS 20.1 ingest test",
+    "OriginalFilename": "qsf7664p39.mp4",
+    "Title": "QAS 20.1 ingest test - Fietsstraten in centrum Gent",
+    "RightsOwner": "MP4 Sound Media Handler",
+    "CreationDateLegacy": null,
+    "Rights": null,
+    "Keywords": {
+      "Keyword": []
+    },
+    "Categories": {
+      "Category": []
+    },
+    "LimitedCategories": {},
+    "Publisher": null,
+    "Authors": {},
+    "Location": null,
+    "Address": {},
+    "NonPreferredTerm": null,
+    "Publications": {
+      "Comment": []
+    },
+    "OriginalPath": null,
+    "Position": {}
+  },
+  "Dynamic": {
+    "lom_languages": {
+      "multiselect": [
+        "nl"
+      ]
+    },
+    "lom_keywords": {
+      "Sleutelwoord": [
+        "Belgium"
+      ]
+    },
+    "dc_source": "QAS_20.mp4",
+    "dc_relations": {
+      "is_verwant_aan": [
+        "qsvx05z57z"
+      ]
+    },
+    "dc_publishers": {
+      "Distributeur": [
+        "distributeur test"
+      ]
+    },
+    "dc_identifier_localids": {
+      "Bestandsnaam": [
+        "QAS_20.mp4"
+      ]
+    },
+    "lom_vak": {
+      "Vak": [
+        "https://w3id.org/onderwijs-vlaanderen/id/vak/ict"
+      ]
+    },
+    "lom_onderwijsniveau": {
+      "Onderwijsniveau": [
+        "https://w3id.org/onderwijs-vlaanderen/id/structuur/hoger-onderwijs",
+        "https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-onderwijs"
+      ]
+    },
+    "dc_creators": {
+      "Maker": [
+        "maker test"
+      ]
+    },
+    "dc_contributors": {
+      "Bijdrager": [
+        "bijdrager test2"
+      ]
+    },
+    "lom_learningresourcetype": {
+      "multiselect": [
+        "Video"
+      ]
+    },
+    "lom_thema": {
+      "Thema": [
+        "https://data.hetarchief.be/id/onderwijs/thema/sport-en-spel"
+      ]
+    },
+    "dc_title": "Fietsstraten in centrum Gent",
+    "dcterms_abstract": "Beschrijving test 1234",
+    "lom_intendedenduserrole": {
+      "multiselect": [
+        "Student"
+      ]
+    },
+    "Original_CP_ID": "OR-h41jm06",
+    "dc_description": "QAS 20.1 ingest test",
+    "dcterms_issued": "2021-11-21",
+    "sp_name": "borndigital",
+    "lom_legacy": "false",
+    "lom_onderwijsgraad": {
+      "Onderwijsgraad": [
+        "https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-1e-graad"
+      ]
+    },
+    "Original_CP": "AVS",
+    "dc_identifier_localid": "08_H264",
+    "PID": "qsf7664p39",
+    "CP": "testbeeld",
+    "dc_titles": {
+      "serie": [
+        "Serie veld test"
+      ]
+    },
+    "dc_rights_licenses": {
+      "multiselect": [
+        "VIAA-ONDERWIJS",
+        "VIAA-ONDERZOEK",
+        "VIAA-INTRA_CP-CONTENT",
+        "VIAA-INTRA_CP-METADATA-ALL",
+        "VIAA-PUBLIEK-METADATA-LTD"
+      ]
+    },
+    "CP_id": "OR-h41jm1d",
+    "NeedsPublicationDateMigration": "true"
+  },
+  "Administrative": {
+    "LastModifiedDate": "2023-05-22T07:45:26.594000Z",
+    "IsSynchronized": false,
+    "IsOriginal": true,
+    "OrganisationName": "testbeeld",
+    "Workflow": "borndigital",
+    "IsPreservation": false,
+    "DepartmentName": "testbeeld",
+    "UserLastModifiedDate": "2023-05-22T07:45:26.594000Z",
+    "ArchiveDate": "2020-06-19T10:56:45.000000Z",
+    "OrganisationLongName": "testbeeld",
+    "RecordType": "Record",
+    "RecordStatus": "Published",
+    "IsAccess": false,
+    "PublicationDate": "2021-09-15T09:52:03.104000Z",
+    "ExternalId": "qsf7664p39",
+    "DeleteStatus": "NotDeleted",
+    "Type": "video",
+    "MainRecordType": "Record",
+    "OrganisationExternalId": "OR-h41jm1d",
+    "ExternalUrl": null,
+    "IngestTape": null,
+    "LogicalDeletionDate": null,
+    "ChildOrderFields": {},
+    "RejectionDate": null,
+    "ExternalUse": null
+  },
+  "Internal": {
+    "PathToVideo": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/browse.mp4",
+    "OriginalStatus": "completed",
+    "PathToKeyframe": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/keyframes/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg",
+    "IsFragment": false,
+    "PathToPreview": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/browse.mp4",
+    "UploadedById": "ff111a7a-efd0-44e3-8816-0905572421da",
+    "HasKeyframes": true,
+    "Browses": {
+      "Browse": [
+        {
+          "BaseUrl": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec",
+          "PathToKeyframe": "keyframes/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg",
+          "PathToKeyframeThumb": "keyframes-thumb/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg",
+          "PathToVideo": "browse.mp4",
+          "HasKeyframes": true,
+          "Container": "mp4",
+          "Label": "mp4",
+          "FileSize": 13558871,
+          "AudioTracks": {
+            "Track": [
+              {
+                "Channels": 2
+              }
+            ]
+          },
+          "Height": 468,
+          "VideoCodec": "h264",
+          "Width": 832,
+          "AudioChannels": 2,
+          "AudioCodec": "aac",
+          "BitRate": 1789654,
+          "AudioSampleRate": 44100,
+          "VideoBitRate": 1542619,
+          "AudioBitRate": 705600,
+          "VideoFps": "25"
+        },
+        {
+          "BaseUrl": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec",
+          "PathToKeyframe": "keyframes/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg",
+          "PathToKeyframeThumb": "keyframes-thumb/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg",
+          "PathToVideo": "peak-0.json",
+          "HasKeyframes": false,
+          "Container": "peak",
+          "Label": "peak-0",
+          "FileSize": 4172,
+          "BitRate": 8,
+          "AudioSampleRate": 10,
+          "AudioCodec": "audiowaveform"
+        }
+      ]
+    },
+    "MediaObjectId": "70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec",
+    "ArchiveStatus": "on_disk",
+    "BrowseStatus": "completed",
+    "RecordId": "70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec",
+    "IsInIngestSpace": false,
+    "OrganisationId": "111",
+    "FragmentId": "70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b",
+    "PathToKeyframeThumb": "https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/keyframes-thumb/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg",
+    "ContainsGeoData": false,
+    "DepartmentId": "dd111b7a-efd0-44e3-8816-0905572421da",
+    "IngestSpaceId": null,
+    "Distributions": {
+      "Distribution": []
+    },
+    "Profiles": {}
+  },
+  "RightsManagement": {
+    "Permissions": {
+      "Write": [
+        "dd111b7a-efd0-44e3-8816-0905572421da",
+        "b75571b1-d7a3-4d6f-939e-deb345c1078a"
+      ],
+      "Export": [
+        "dd111b7a-efd0-44e3-8816-0905572421da",
+        "b75571b1-d7a3-4d6f-939e-deb345c1078a"
+      ],
+      "Read": [
+        "dd111b7a-efd0-44e3-8816-0905572421da",
+        "b75571b1-d7a3-4d6f-939e-deb345c1078a"
+      ]
+    },
+    "ExpiryDate": null,
+    "ExpiryStatus": null,
+    "Zone": {}
+  },
+  "Context": {
+    "IsEditable": true,
+    "IsDeletable": true,
+    "IsPublic": false,
+    "IsExportable": true,
+    "Profiles": []
+  }
+}

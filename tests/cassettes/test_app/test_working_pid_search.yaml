@@ -1,32 +1,84 @@
 interactions:
 - request:
-    body: null
+    body: grant_type=password&client_id=client_id&client_secret=client_secret&username=test_userd&password=test_pass
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       Connection:
       - keep-alive
+      Content-Length:
+      - '172'
       Content-Type:
+      - application/x-www-form-urlencoded;charset=UTF-8
+      User-Agent:
+      - python-requests/2.24.0
+    method: POST
+    uri: https://archief-qas.viaa.be/auth/ropc.php
+  response:
+    body:
+      string: '{"refresh_token":"test_refresh_token","token_type":"bearer","access_token":"test_token","expires_in":7200}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - no-store, no-cache, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '142'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 22 May 2023 08:24:50 GMT
+      Expires:
+      - Thu, 19 Nov 1981 08:52:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx/1.18.0
+      Set-Cookie:
+      - AUTHPORTAL=q8l6gah6k6sh5s79ckck1s3v41; path=/;HttpOnly;Secure;SameSite=lax
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Correlation-ID:
+      - 82f6b704235581928c6bef6ab0b764b0
+      X-Frame-Options:
+      - DENY
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
       - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
       User-Agent:
       - python-requests/2.24.0
     method: GET
-    uri: https://archief-qas.viaa.be/mediahaven-rest-api/resources/media?q=%2B(ExternalId:qsxs5jbm5c)&startIndex=0&nrOfResults=25
+    uri: https://archief-qas.viaa.be/mediahaven-rest-api/v2/records?q=%2B%28ExternalId%3Aqsxs5jbm5c%29
   response:
     body:
-      string: '{"totalNrOfResults":1,"startIndex":0,"mediaDataList":[{"offsetFrames":0,"fragmentStartFrames":0,"fragmentEndFrames":174,"fragmentDurationFrames":174,"offsetTimeCode":"00:00:00.000","fragmentStartTimeCode":"00:00:00.000","fragmentEndTimeCode":"00:00:06.960","fragmentDurationTimeCode":"00:00:06.960","mediaObjectId":"77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4","fragmentId":"77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb401edfc6f7a3b466fbd52c7d29a88a1f3","externalId":"qsxs5jbm5c","title":"Meivaart
-        der Antwerpsche Patronaten | De","description":"Optocht van kinderen met trommels
-        en vlaggen naar grot, openluchtvergadering, pick-nick, plechtig lof.","date":"1937:01:01
-        00:00:00","previewImagePath":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4/keyframes/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb401edfc6f7a3b466fbd52c7d29a88a1f3.jpg","thumbnailImagePath":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4/keyframes-thumb/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb401edfc6f7a3b466fbd52c7d29a88a1f3.jpg","videoPath":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4/browse.mp4","originalFileName":"qsxs5jbm5c.mp4","width":0,"height":0,"keywords":[],"type":"Video","authors":[],"lastModifiedDate":"2022-02-04T09:15:25Z","archiveDate":"2019-10-16T13:46:14Z","exportable":true,"editable":true,"deletable":true,"isPublic":false,"ingestSpaceId":"","isInIngestSpace":false,"status":"FINISHED","browseStatus":"completed","originalStatus":"completed","archiveStatus":"on_disk","workflow":"CineNova","mdProperties":[{"value":[{"value":"reportage","attribute":"Trefwoord","dottedKey":null},{"value":"Silent
-        Movie","attribute":"Trefwoord","dottedKey":null},{"value":"Belgium","attribute":"Trefwoord","dottedKey":null}],"attribute":"dc_subjects","dottedKey":null},{"value":"No","attribute":"is_there_a_sync_point","dottedKey":null},{"subKey":"multiselect","value":[{"value":"VIAA-INTRA_CP-METADATA-ALL","attribute":"multiselect","dottedKey":null},{"value":"VIAA-ONDERWIJS","attribute":"multiselect","dottedKey":null},{"value":"VIAA-ONDERZOEK","attribute":"multiselect","dottedKey":null},{"value":"VIAA-PUBLIEK-METADATA-LTD","attribute":"multiselect","dottedKey":null}],"attribute":"dc_rights_licenses","dottedKey":null},{"value":[{"value":"1j9765cj05","attribute":"is_verwant_aan","dottedKey":null}],"attribute":"dc_relations","dottedKey":null},{"value":[{"value":"Meivaart
-        der Antwerpsche Patronaten  De.xml","attribute":"Bestandsnaam","dottedKey":null}],"attribute":"dc_identifier_localids","dottedKey":null},{"value":"OR-154dn75","attribute":"Original_CP_ID","dottedKey":null},{"value":"Unknown","attribute":"projection_speed","dottedKey":null},{"value":"Print","attribute":"material_type","dottedKey":null},{"value":"1:00:00","attribute":"estimate_preparation_time_for_digitisation","dottedKey":null},{"value":"66
-        Meter","attribute":"length","dottedKey":null},{"value":"true","attribute":"lom_legacy","dottedKey":null},{"value":"borndigital","attribute":"sp_name","dottedKey":null},{"value":"\u003cpremis:premis
-        version\u003d\"2.3\" xmlns:premis\u003d\"info:lc/xmlns/premis-v2\"\u003e\u003cpremis:event
-        xmlns:premis\u003d\"info:lc/xmlns/premis-v2\" xmlns:mets\u003d\"http://www.loc.gov/METS/\"
-        xmlns:revtmd\u003d\"http://nwtssite.nwts.nara/schema/\" xmlns:xlink\u003d\"http://www.w3.org/1999/xlink\"
-        xmlns:xsi\u003d\"http://www.w3.org/2001/XMLSchema-instance\"\u003e\n\t\t\t\t\t\t\u003cpremis:eventIdentifier\u003e\n\t\t\t\t\t\t\t\u003cpremis:eventIdentifierType\u003eSP
+      string: '{"NrOfResults":1,"StartIndex":0,"TotalNrOfResults":1,"Results":[{"Technical":{"PronomId":"fmt/199","OriginalExtension":"mp4","DurationFrames":174,"EndFrames":174,"MimeType":"video/mp4","StartFrames":0,"Md5":"f85a9da375c74244e0b30705a6c55e69","VideoTechnical":"(unkown
+        video codec) \u003cunknown\u003ex\u003cunknown\u003e (unkown video fps)fps
+        (unkown video bit rate)bps","FileSize":2070953,"DurationTimeCode":"00:00:06.960","EndTimeCode":"00:00:06.960","StartTimeCode":"00:00:00.000","Width":null,"Height":null,"ImageSize":null,"ImageOrientation":null,"ImageQuality":null,"AudioTechnical":null,"VideoFormat":null,"Exif":{},"VideoCodec":null,"VideoFps":null,"VideoBitRate":null,"AudioCodec":null,"AudioChannels":null,"AudioSampleRate":null,"AudioBitRate":null,"AudioTracks":{},"BitRate":null,"Origin":null,"EssenceOffset":null,"EditUnitByteSize":null,"RunIn":null,"FramesPerEditUnit":null,"EditRate":null,"IndexEditRate":null},"Structural":{"HasChildren":false,"FragmentStartFrames":0,"FragmentStartTimeCode":"00:00:00.000","FragmentEndTimeCode":"00:00:06.960","FragmentDurationFrames":174,"FragmentDurationTimeCode":"00:00:06.960","FragmentEndFrames":174,"Versioning":{"Status":"Untracked","Version":1},"Collections":{"Collection":[]},"Sets":{"Set":[]},"Newspapers":{"Newspaper":[]},"Relations":{},"Fragments":{"Fragment":[]},"MainFragment":null,"ReferenceCodes":{},"ParentRecordId":null,"ReferenceTitles":{},"FieldDefinition":{},"PreviewRecordId":null},"Descriptive":{"CreationDate":"1937-01-01T00:00:00.000000Z","Description":"Optocht
+        van kinderen met trommels en vlaggen naar grot, openluchtvergadering, pick-nick,
+        plechtig lof.","OriginalFilename":"qsxs5jbm5c.mp4","RightsOwner":"DataHandler","UploadedBy":"bulkupload@testbeeld","KeyframeStart":83,"Title":"Meivaart
+        der Antwerpsche Patronaten | De","CreationDateLegacy":null,"Rights":null,"Keywords":{"Keyword":[]},"Categories":{"Category":[]},"LimitedCategories":{},"Publisher":null,"Authors":{},"Location":null,"Address":{},"NonPreferredTerm":null,"Publications":{"Comment":[]},"OriginalPath":null,"Position":{}},"Dynamic":{"digitisation_format":"2K
+        ( 2048x1556)","lom_languages":{"multiselect":["nl"]},"value_cp":"5 essential,
+        HR digitisation","lom_keywords":{"Sleutelwoord":["Belgium","geschiedenis","reportage"]},"dc_source":"Meivaart
+        der Antwerpsche Patronaten  De.mp4","type_viaa":"film","lom_vak":{"Vak":["https://w3id.org/onderwijs-vlaanderen/id/vak/frans","https://w3id.org/onderwijs-vlaanderen/id/vak/latijn","https://w3id.org/onderwijs-vlaanderen/id/vak/mens-en-maatschappij"]},"gauge":"16mm","dc_creators":{"Maker":["test
+        maker"]},"lom_learningresourcetype":{"multiselect":["Video"]},"batch_pickup_date":"2015-11-09","created_on":"2015-08-20T16:08:08","dc_title":"Optocht","dcterms_abstract":"Optocht
+        van kinderen met _trommels_ en **vlaggen**\n\n*   een\n*   twee","updated_by":"Victor
+        De Vocht","image_sound":"image","premis":"\u003cpremis:premis version\u003d\"2.3\"
+        xmlns:premis\u003d\"info:lc/xmlns/premis-v2\"\u003e\u003cpremis:event xmlns:premis\u003d\"info:lc/xmlns/premis-v2\"
+        xmlns:mets\u003d\"http://www.loc.gov/METS/\" xmlns:revtmd\u003d\"http://nwtssite.nwts.nara/schema/\"
+        xmlns:xlink\u003d\"http://www.w3.org/1999/xlink\" xmlns:xsi\u003d\"http://www.w3.org/2001/XMLSchema-instance\"\u003e\n\t\t\t\t\t\t\u003cpremis:eventIdentifier\u003e\n\t\t\t\t\t\t\t\u003cpremis:eventIdentifierType\u003eSP
         Event\u003c/premis:eventIdentifierType\u003e\n\t\t\t\t\t\t\t\u003cpremis:eventIdentifierValue\u003eINSPECTION-EVENT\u003c/premis:eventIdentifierValue\u003e\n\t\t\t\t\t\t\u003c/premis:eventIdentifier\u003e\n\t\t\t\t\t\t\u003cpremis:eventType\u003eINSPECTION\u003c/premis:eventType\u003e\n\t\t\t\t\t\t\u003cpremis:eventDateTime\u003e2018-11-26\u003c/premis:eventDateTime\u003e\n\t\t\t\t\t\t\u003cpremis:eventDetail\u003einspection
         and manual cleaning of carrier and emulsion side\u003c/premis:eventDetail\u003e\n\t\t\t\t\t\t\u003cpremis:eventOutcomeInformation\u003e\n\t\t\t\t\t\t\t\u003cpremis:eventOutcome\u003ey\u003c/premis:eventOutcome\u003e\n\t\t\t\t\t\t\u003c/premis:eventOutcomeInformation\u003e\n\t\t\t\t\t\t\u003cpremis:linkingAgentIdentifier\u003e\n\t\t\t\t\t\t\t\u003cpremis:linkingAgentIdentifierType\u003eSP
         Agent\u003c/premis:linkingAgentIdentifierType\u003e\n\t\t\t\t\t\t\t\u003cpremis:linkingAgentIdentifierValue\u003eBigit
@@ -46,16 +98,18 @@ interactions:
         Event\u003c/premis:eventIdentifierType\u003e\n\t\t\t\t\t\t\t\u003cpremis:eventIdentifierValue\u003eEDITING-EVENT\u003c/premis:eventIdentifierValue\u003e\n\t\t\t\t\t\t\u003c/premis:eventIdentifier\u003e\n\t\t\t\t\t\t\u003cpremis:eventType\u003eEDITING\u003c/premis:eventType\u003e\n\t\t\t\t\t\t\u003cpremis:eventDateTime\u003e2018-12-07\u003c/premis:eventDateTime\u003e\n\t\t\t\t\t\t\u003cpremis:eventDetail\u003e16fps\u003c/premis:eventDetail\u003e\n\t\t\t\t\t\t\u003cpremis:eventOutcomeInformation\u003e\n\t\t\t\t\t\t\t\u003cpremis:eventOutcome\u003ey\u003c/premis:eventOutcome\u003e\n\t\t\t\t\t\t\u003c/premis:eventOutcomeInformation\u003e\n\t\t\t\t\t\t\u003cpremis:linkingAgentIdentifier\u003e\n\t\t\t\t\t\t\t\u003cpremis:linkingAgentIdentifierType\u003eSP
         Agent\u003c/premis:linkingAgentIdentifierType\u003e\n\t\t\t\t\t\t\t\u003cpremis:linkingAgentIdentifierValue\u003ePremiere
         Pro, Adobe\u003c/premis:linkingAgentIdentifierValue\u003e\n\t\t\t\t\t\t\u003c/premis:linkingAgentIdentifier\u003e\n\t\t\t\t\t\t\u003cpremis:linkingObjectIdentifier\u003e\n\t\t\t\t\t\t\t\u003cpremis:linkingObjectIdentifierType\u003eCarrier
-        PID\u003c/premis:linkingObjectIdentifierType\u003e\n\t\t\t\t\t\t\t\u003cpremis:linkingObjectIdentifierValue\u003e1j9765cj05_mezzanine.mov\u003c/premis:linkingObjectIdentifierValue\u003e\n\t\t\t\t\t\t\u003c/premis:linkingObjectIdentifier\u003e\n\t\t\t\t\t\u003c/premis:event\u003e\n\t\t\t\t\u003c/premis:premis\u003e","attribute":"premis","dottedKey":null},{"value":"test","attribute":"dc_rights_comment","dottedKey":null},{"value":"No","attribute":"is_the_sound_sync","dottedKey":null},{"value":"true","attribute":"NeedsPublicationDateMigration","dottedKey":null},{"value":"qsxs5jbm5c","attribute":"PID","dottedKey":null},{"value":"testbeeld","attribute":"CP","dottedKey":null},{"value":"FLMB01","attribute":"batch_name","dottedKey":null},{"value":"No","attribute":"subtitles","dottedKey":null},{"value":"amsab","attribute":"Original_CP","dottedKey":null},{"value":"OR-h41jm1d","attribute":"CP_id","dottedKey":null},{"value":"BE/942855/547/35","attribute":"dc_identifier_localid","dottedKey":null},{"value":"awaiting
-        review CP","attribute":"record_status","dottedKey":null},{"value":"B/W","attribute":"color_or_bw","dottedKey":null},{"value":"DataHandler","attribute":"RightsOwner","dottedKey":null},{"value":"1","attribute":"num_reels","dottedKey":null},{"value":"1:37","attribute":"aspect_ratio","dottedKey":null},{"value":"5
-        essential, HR digitisation","attribute":"value_cp","dottedKey":null},{"value":"Meivaart
-        der Antwerpsche Patronaten  De.mp4","attribute":"dc_source","dottedKey":null},{"value":"1937:01:01
-        00:00:00","attribute":"CreationDate","dottedKey":null},{"value":"acetate","attribute":"film_base","dottedKey":null},{"value":"IM0218L5","attribute":"lto_id","dottedKey":null},{"value":"film
-        in good state","attribute":"physical_state_film","dottedKey":null},{"value":"2K
-        ( 2048x1556)","attribute":"digitisation_format","dottedKey":null},{"value":"film","attribute":"type_viaa","dottedKey":null},{"value":"AFLM_KAD_000151","attribute":"barcode_image_reels","dottedKey":null},{"value":"1937-uu-uu","attribute":"dcterms_created","dottedKey":null},{"value":"Optocht","attribute":"dc_title","dottedKey":null},{"value":"2015-11-09","attribute":"batch_pickup_date","dottedKey":null},{"value":"Noortje","attribute":"created_by","dottedKey":null},{"value":"0:00:00","attribute":"estimate_manual_cleaning_time","dottedKey":null},{"value":"16mm","attribute":"gauge","dottedKey":null},{"value":"2015-08-20T16:08:08","attribute":"created_on","dottedKey":null},{"value":"Victor
-        De Vocht","attribute":"updated_by","dottedKey":null},{"value":"FLMB01","attribute":"batch_id","dottedKey":null},{"value":"image","attribute":"image_sound","dottedKey":null},{"value":"0:00:00","attribute":"duration_viaa","dottedKey":null},{"value":"2016-09-08T11:09:09","attribute":"updated_on","dottedKey":null},{"value":"Optocht
-        van kinderen met trommels en vlaggen","attribute":"dcterms_abstract","dottedKey":null}],"relations":{}}]}'
+        PID\u003c/premis:linkingObjectIdentifierType\u003e\n\t\t\t\t\t\t\t\u003cpremis:linkingObjectIdentifierValue\u003e1j9765cj05_mezzanine.mov\u003c/premis:linkingObjectIdentifierValue\u003e\n\t\t\t\t\t\t\u003c/premis:linkingObjectIdentifier\u003e\n\t\t\t\t\t\u003c/premis:event\u003e\n\t\t\t\t\u003c/premis:premis\u003e","aspect_ratio":"1:37","dc_subjects":{"Trefwoord":["reportage","Silent
+        Movie","Belgium"]},"batch_id":"FLMB01","num_reels":"1","is_there_a_sync_point":"No","dcterms_issued":"1937-05-04","projection_speed":"Unknown","lom_legacy":"false","dc_identifier_localid":"BE/942855/547/35","PID":"qsxs5jbm5c","CP":"testbeeld","batch_name":"FLMB01","estimate_preparation_time_for_digitisation":"1:00:00","dc_rights_licenses":{"multiselect":["VIAA-INTRA_CP-METADATA-ALL","VIAA-ONDERWIJS","VIAA-ONDERZOEK","VIAA-PUBLIEK-METADATA-LTD"]},"updated_on":"2016-09-08T11:09:09","barcode_image_reels":"AFLM_KAD_000151","film_base":"acetate","lto_id":"IM0218L5","dc_relations":{"is_verwant_aan":["1j9765cj05"]},"dc_identifier_localids":{"Bestandsnaam":["Meivaart
+        der Antwerpsche Patronaten  De.xml"]},"physical_state_film":"film in good
+        state","lom_onderwijsniveau":{"Onderwijsniveau":["https://w3id.org/onderwijs-vlaanderen/id/structuur/kleuteronderwijs"]},"dc_contributors":{"Aanwezig":["test
+        aanwezig"]},"lom_thema":{"Thema":["https://data.hetarchief.be/id/onderwijs/thema/moderne-talen","https://data.hetarchief.be/id/onderwijs/thema/literatuur","https://data.hetarchief.be/id/onderwijs/thema/klassieke-talen"]},"created_by":"Noortje","dcterms_created":"1937-uu-uu","duration_viaa":"0:00:00","estimate_manual_cleaning_time":"0:00:00","lom_intendedenduserrole":{"multiselect":["Student"]},"record_status":"awaiting
+        review CP","Original_CP_ID":"OR-154dn75","material_type":"Print","sp_name":"borndigital","subtitles":"No","Original_CP":"amsab","length":"66
+        Meter","is_the_sound_sync":"No","color_or_bw":"B/W","dc_titles":{"serie":["test"]},"CP_id":"OR-h41jm1d","dc_rights_comment":"test","NeedsPublicationDateMigration":"true"},"Administrative":{"LastModifiedDate":"2023-05-22T08:06:02.300000Z","IsSynchronized":false,"OrganisationName":"testbeeld","Workflow":"CineNova","ArchiveDate":"2019-10-16T13:46:14.000000Z","RecordStatus":"Published","IsAccess":false,"Type":"video","IsOriginal":true,"IsPreservation":false,"DepartmentName":"testbeeld","UserLastModifiedDate":"2023-05-22T08:06:02.300000Z","OrganisationLongName":"testbeeld","RecordType":"Record","PublicationDate":"2021-09-15T09:52:38.660000Z","ExternalId":"qsxs5jbm5c","DeleteStatus":"NotDeleted","MainRecordType":"Record","OrganisationExternalId":"OR-h41jm1d","ExternalUrl":null,"IngestTape":null,"LogicalDeletionDate":null,"ChildOrderFields":{},"RejectionDate":null,"ExternalUse":null},"Internal":{"PathToVideo":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4/browse.mp4","PathToKeyframe":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4/keyframes/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb401edfc6f7a3b466fbd52c7d29a88a1f3.jpg","PathToPreview":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4/browse.mp4","Browses":{"Browse":[{"BaseUrl":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4","PathToKeyframe":"keyframes/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb401edfc6f7a3b466fbd52c7d29a88a1f3.jpg","PathToKeyframeThumb":"keyframes-thumb/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb401edfc6f7a3b466fbd52c7d29a88a1f3.jpg","PathToVideo":"browse.mp4","HasKeyframes":true,"Container":"mp4","Label":"mp4","FileSize":1343490,"Height":468,"VideoCodec":"h264","BitRate":1544241,"Width":832,"VideoBitRate":1540858,"VideoFps":"25"}]},"BrowseStatus":"completed","RecordId":"77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4","IsInIngestSpace":false,"OrganisationId":"111","ContainsGeoData":false,"OriginalStatus":"completed","IsFragment":false,"UploadedById":"ff111a7a-efd0-44e3-8816-0905572421da","HasKeyframes":true,"MediaObjectId":"77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4","ArchiveStatus":"on_disk","FragmentId":"77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb401edfc6f7a3b466fbd52c7d29a88a1f3","PathToKeyframeThumb":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb4/keyframes-thumb/77b87e7238084ea195608310060fa834927ffb6c019e4eec8a20866ff9c2dfb401edfc6f7a3b466fbd52c7d29a88a1f3.jpg","DepartmentId":"dd111b7a-efd0-44e3-8816-0905572421da","IngestSpaceId":null,"Distributions":{"Distribution":[]},"Profiles":{}},"RightsManagement":{"Permissions":{"Write":["dd111b7a-efd0-44e3-8816-0905572421da","df100b7a-efd0-44e3-8816-0905572421da","b75571b1-d7a3-4d6f-939e-deb345c1078a"],"Export":["dd111b7a-efd0-44e3-8816-0905572421da","df100b7a-efd0-44e3-8816-0905572421da","b75571b1-d7a3-4d6f-939e-deb345c1078a"],"Read":["dd111b7a-efd0-44e3-8816-0905572421da","df100b7a-efd0-44e3-8816-0905572421da","b75571b1-d7a3-4d6f-939e-deb345c1078a"]},"ExpiryDate":null,"ExpiryStatus":null,"Zone":{}},"Context":{"IsEditable":true,"IsDeletable":true,"IsPublic":false,"IsExportable":true,"Profiles":[]}}]}'
     headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - content-type,authorization,Result-Count
       Cache-Control:
       - no-store, must-revalidate, pre-check=0, post-check=0, max-age=0, s-maxage=0
       Connection:
@@ -63,32 +117,47 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 04 Feb 2022 14:33:08 GMT
+      - Mon, 22 May 2023 08:24:51 GMT
       Expires:
       - '0'
       Pragma:
       - no-cache
       Server:
-      - nginx/1.21.3
+      - nginx/1.18.0
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       Transfer-Encoding:
       - chunked
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
       Via:
       - kong/0.13.1
+      X-Content-Type-Options:
+      - nosniff
       X-Correlation-ID:
-      - ed63833e209a80f7b246d6fd4a1b34cd
+      - 0661107baf6c57096c23d480c9ff306b
+      X-Frame-Options:
+      - DENY
       X-Kong-Proxy-Latency:
-      - '0'
+      - '27'
       X-Kong-Upstream-Latency:
-      - '985'
-      X-MediaHavenVersion:
-      - '21.3'
-      X-RateLimit-Limit-second:
       - '10'
+      X-RateLimit-Limit-day:
+      - '2000'
+      X-RateLimit-Limit-minute:
+      - '150'
+      X-RateLimit-Limit-second:
+      - '25'
+      X-RateLimit-Remaining-day:
+      - '1922'
+      X-RateLimit-Remaining-minute:
+      - '148'
       X-RateLimit-Remaining-second:
-      - '9'
+      - '24'
+      X-XSS-Protection:
+      - 1; mode=block
       x-forwarded-proto:
+      - https
       - https
     status:
       code: 200
@@ -97,58 +166,71 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/vnd.mediahaven.v2+json
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       Connection:
       - keep-alive
-      Content-Type:
-      - application/json
       User-Agent:
       - python-requests/2.24.0
     method: GET
-    uri: https://archief-qas.viaa.be/mediahaven-rest-api/resources/media?q=+(dc_relationsis_verwant_aan:qsxs5jbm5c)&startIndex=0&nrOfResults=25
+    uri: https://archief-qas.viaa.be/mediahaven-rest-api/v2/records?q=%2B%28dc_relationsis_verwant_aan%3Aqsxs5jbm5c%29
   response:
     body:
-      string: "{\"TotalNrOfResults\":1,\"StartIndex\":0,\"MediaDataList\":[{\"RightsManagement\":{\"Permissions\":{\"Export\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Write\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Read\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"]},\"ExpiryDate\":null,\"ExpiryStatus\":null},\"Structural\":{\"HasChildren\":false,\"FragmentStartFrames\":0,\"FragmentEndFrames\":0,\"Versioning\":{\"Status\":\"Untracked\",\"Version\":1},\"Sets\":{\"Set\":[]},\"Collections\":{\"Collection\":[]},\"Newspapers\":{\"Newspaper\":[]},\"Relations\":{},\"Fragments\":{},\"FragmentDurationTimeCode\":null,\"FragmentStartTimeCode\":null,\"FragmentEndTimeCode\":null,\"FragmentDurationFrames\":null},\"Technical\":{\"PronomId\":\"fmt/1218\",\"OriginalExtension\":\"srt\",\"FileSize\":233,\"MimeType\":\"text/plain\",\"Md5\":\"d7177f8b6bbd4da799565a3598332884\",\"Width\":null,\"Height\":null,\"ImageSize\":null,\"ImageOrientation\":null,\"ImageQuality\":null,\"VideoTechnical\":null,\"AudioTechnical\":null,\"VideoFormat\":null,\"DurationTimeCode\":null,\"StartTimeCode\":null,\"EndTimeCode\":null,\"DurationFrames\":null,\"StartFrames\":null,\"EndFrames\":null,\"VideoCodec\":null,\"VideoFps\":null,\"VideoBitRate\":null,\"BitRate\":null},\"Administrative\":{\"LastModifiedDate\":\"2022-02-04T09:15:16Z\",\"IsSynchronized\":false,\"IsOriginal\":true,\"OrganisationName\":\"testbeeld\",\"Workflow\":\"borndigital\",\"IsPreservation\":false,\"DepartmentName\":\"testbeeld\",\"UserLastModifiedDate\":\"2022-02-04T09:15:16.564000Z\",\"ArchiveDate\":\"2021:01:28
-        14:33:14\",\"OrganisationLongName\":\"testbeeld\",\"RecordType\":\"Record\",\"RecordStatus\":\"Published\",\"IsAccess\":false,\"PublicationDate\":\"2021-01-28T13:33:13.451000Z\",\"ExternalId\":\"qsxs5jbm5c_closed\",\"DeleteStatus\":\"NotDeleted\",\"Type\":\"document\",\"OrganisationExternalId\":\"OR-h41jm1d\",\"IngestTape\":null},\"Dynamic\":{\"dc_relations\":{\"is_verwant_aan\":[\"qsxs5jbm5c\"]},\"external_id\":\"qsxs5jbm5c\",\"sp_name\":\"borndigital\",\"lom_legacy\":\"true\",\"PID\":\"qsxs5jbm5c_closed\",\"CP\":\"testbeeld\",\"dc_rights_licenses\":{\"multiselect\":[\"VIAA-ONDERWIJS\",\"VIAA-ONDERZOEK\",\"VIAA-INTRA_CP-CONTENT\",\"VIAA-INTRA_CP-METADATA-ALL\",\"VIAA-PUBLIEK-METADATA-LTD\"]},\"CP_id\":\"OR-h41jm1d\"},\"Descriptive\":{\"CreationDate\":\"2021:01:28
-        14:33:12\",\"UploadedBy\":\"bulkupload@testbeeld\",\"KeyframeStart\":0,\"Description\":\"Subtitles
-        for item qsxs5jbm5c\",\"OriginalFilename\":\"qsxs5jbm5c_closed.srt\",\"Title\":\"qsxs5jbm5c_closed.srt\",\"RightsOwner\":\"\xA9
-        testbeeld\",\"Rights\":null,\"Keywords\":{\"Keyword\":[]},\"Categories\":{\"Category\":[]},\"Publisher\":null,\"Authors\":{},\"Location\":null,\"Address\":{},\"NonPreferredTerm\":null,\"Publications\":null},\"Internal\":{\"OriginalStatus\":\"completed\",\"PathToKeyframe\":\"https://mheuropehot.blob.core.windows.net/mediahaven-saas-browse-main/no-preview.png\",\"IsFragment\":false,\"UploadedById\":\"ff111a7a-efd0-44e3-8816-0905572421da\",\"HasKeyframes\":false,\"MediaObjectId\":\"17cb6a3ddcd94416890c00b717c6eeaa468e7f5ad6c64254a3ba2d413306a279\",\"ArchiveStatus\":\"on_disk\",\"BrowseStatus\":\"no_browse\",\"RecordId\":\"17cb6a3ddcd94416890c00b717c6eeaa468e7f5ad6c64254a3ba2d413306a279\",\"IsInIngestSpace\":false,\"OrganisationId\":\"111\",\"FragmentId\":\"17cb6a3ddcd94416890c00b717c6eeaa468e7f5ad6c64254a3ba2d413306a2798d73894f2db849bf999d97210b6d081a\",\"PathToKeyframeThumb\":\"https://mheuropehot.blob.core.windows.net/mediahaven-saas-browse-main/no-preview.png\",\"ContainsGeoData\":false,\"DepartmentId\":\"dd111b7a-efd0-44e3-8816-0905572421da\",\"IngestSpaceId\":null,\"Browses\":{},\"PathToVideo\":null},\"Context\":{\"IsEditable\":true,\"IsDeletable\":true,\"IsPublic\":false,\"IsExportable\":true}}]}"
+      string: '{"NrOfResults":0,"StartIndex":0,"TotalNrOfResults":0,"Results":[]}'
     headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - content-type,authorization,Result-Count
       Cache-Control:
       - no-store, must-revalidate, pre-check=0, post-check=0, max-age=0, s-maxage=0
       Connection:
       - keep-alive
-      Content-Length:
-      - '3538'
       Content-Type:
-      - application/vnd.mediahaven.v2+json
+      - application/json
       Date:
-      - Fri, 04 Feb 2022 14:33:10 GMT
+      - Mon, 22 May 2023 08:24:51 GMT
       Expires:
       - '0'
       Pragma:
       - no-cache
       Server:
-      - nginx/1.21.3
+      - nginx/1.18.0
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
       Via:
       - kong/0.13.1
+      X-Content-Type-Options:
+      - nosniff
       X-Correlation-ID:
-      - ea7f7d39bc1a014becce7b041aad0df4
+      - 23fe92eedb65e69734f8472ef58848d2
+      X-Frame-Options:
+      - DENY
       X-Kong-Proxy-Latency:
-      - '0'
+      - '25'
       X-Kong-Upstream-Latency:
-      - '1400'
-      X-MediaHavenVersion:
-      - '21.3'
-      X-RateLimit-Limit-second:
       - '10'
+      X-RateLimit-Limit-day:
+      - '2000'
+      X-RateLimit-Limit-minute:
+      - '150'
+      X-RateLimit-Limit-second:
+      - '25'
+      X-RateLimit-Remaining-day:
+      - '1921'
+      X-RateLimit-Remaining-minute:
+      - '147'
       X-RateLimit-Remaining-second:
-      - '9'
+      - '24'
+      X-XSS-Protection:
+      - 1; mode=block
       x-forwarded-proto:
+      - https
       - https
     status:
       code: 200

@@ -1,64 +1,127 @@
 interactions:
 - request:
-    body: null
+    body: grant_type=password&client_id=client_id&client_secret=client_secret&username=test_userd&password=test_pass
     headers:
       Accept:
-      - application/vnd.mediahaven.v2+json
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       Connection:
       - keep-alive
+      Content-Length:
+      - '172'
       Content-Type:
+      - application/x-www-form-urlencoded;charset=UTF-8
+      User-Agent:
+      - python-requests/2.24.0
+    method: POST
+    uri: https://archief-qas.viaa.be/auth/ropc.php
+  response:
+    body:
+      string: '{"refresh_token":"test_refresh_token","token_type":"bearer","access_token":"test_token","expires_in":7200}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - no-store, no-cache, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '142'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 22 May 2023 08:25:05 GMT
+      Expires:
+      - Thu, 19 Nov 1981 08:52:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx/1.18.0
+      Set-Cookie:
+      - AUTHPORTAL=bp4ng6e1h4tk5jm9bef3c8uhah; path=/;HttpOnly;Secure;SameSite=lax
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Correlation-ID:
+      - ad76ab4a3e9c2a30eb0bd72fa6cfd336
+      X-Frame-Options:
+      - DENY
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
       - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
       User-Agent:
       - python-requests/2.24.0
     method: GET
-    uri: https://archief-qas.viaa.be/mediahaven-rest-api/resources/media?q=+(dc_relationsis_verwant_aan:qs5d8ncx8c)&startIndex=0&nrOfResults=25
+    uri: https://archief-qas.viaa.be/mediahaven-rest-api/v2/records?q=%2B%28dc_relationsis_verwant_aan%3Aqs5d8ncx8c%29
   response:
     body:
-      string: "{\"TotalNrOfResults\":2,\"StartIndex\":0,\"MediaDataList\":[{\"Dynamic\":{\"dc_relations\":{\"is_verwant_aan\":[\"qs5d8ncx8c\"]},\"external_id\":\"qs5d8ncx8c\",\"sp_name\":\"borndigital\",\"lom_legacy\":\"true\",\"PID\":\"qs5d8ncx8c_closed\",\"CP\":\"testbeeld\",\"dc_rights_licenses\":{\"multiselect\":[\"VIAA-ONDERWIJS\",\"VIAA-ONDERZOEK\",\"VIAA-INTRA_CP-CONTENT\",\"VIAA-INTRA_CP-METADATA-ALL\",\"VIAA-PUBLIEK-METADATA-LTD\"]},\"CP_id\":\"OR-h41jm1d\"},\"Internal\":{\"OriginalStatus\":\"completed\",\"PathToKeyframe\":\"https://mheuropehot.blob.core.windows.net/mediahaven-saas-browse-main/no-preview.png\",\"IsFragment\":false,\"PathToPreview\":\"https://mheuropehot.blob.core.windows.net/mediahaven-saas-browse-main/no-preview.png\",\"UploadedById\":\"ff111a7a-efd0-44e3-8816-0905572421da\",\"HasKeyframes\":false,\"MediaObjectId\":\"90d350224fa34d9b8a48461c5e389fc7996a4faf24af4f9e94efdd31922683dc\",\"ArchiveStatus\":\"on_disk\",\"BrowseStatus\":\"no_browse\",\"RecordId\":\"90d350224fa34d9b8a48461c5e389fc7996a4faf24af4f9e94efdd31922683dc\",\"IsInIngestSpace\":false,\"OrganisationId\":\"111\",\"FragmentId\":\"90d350224fa34d9b8a48461c5e389fc7996a4faf24af4f9e94efdd31922683dc8e4b6125da4f49448e6946104d114d44\",\"PathToKeyframeThumb\":\"https://mheuropehot.blob.core.windows.net/mediahaven-saas-browse-main/no-preview.png\",\"ContainsGeoData\":false,\"DepartmentId\":\"dd111b7a-efd0-44e3-8816-0905572421da\",\"IngestSpaceId\":null,\"Browses\":{},\"PathToVideo\":null},\"RightsManagement\":{\"Permissions\":{\"Write\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Export\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Read\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"]},\"ExpiryDate\":null,\"ExpiryStatus\":null},\"Structural\":{\"HasChildren\":false,\"FragmentStartFrames\":0,\"FragmentEndFrames\":0,\"Versioning\":{\"Status\":\"Untracked\",\"Version\":1},\"Sets\":{\"Set\":[]},\"Collections\":{\"Collection\":[]},\"Newspapers\":{\"Newspaper\":[]},\"Relations\":{},\"Fragments\":{},\"FragmentDurationTimeCode\":null,\"FragmentStartTimeCode\":null,\"FragmentEndTimeCode\":null,\"FragmentDurationFrames\":null},\"Administrative\":{\"LastModifiedDate\":\"2022-02-04T09:15:29Z\",\"IsSynchronized\":false,\"IsOriginal\":true,\"OrganisationName\":\"testbeeld\",\"Workflow\":\"borndigital\",\"IsPreservation\":false,\"DepartmentName\":\"testbeeld\",\"UserLastModifiedDate\":\"2022-02-04T09:15:29.355000Z\",\"ArchiveDate\":\"2021:01:27
-        11:30:59\",\"OrganisationLongName\":\"testbeeld\",\"RecordType\":\"Record\",\"RecordStatus\":\"Published\",\"IsAccess\":false,\"PublicationDate\":\"2021-01-27T10:30:58.333000Z\",\"ExternalId\":\"qs5d8ncx8c_closed\",\"DeleteStatus\":\"NotDeleted\",\"Type\":\"document\",\"MainRecordType\":\"Record\",\"OrganisationExternalId\":\"OR-h41jm1d\",\"IngestTape\":null},\"Descriptive\":{\"CreationDate\":\"2021:01:27
-        11:30:57\",\"UploadedBy\":\"bulkupload@testbeeld\",\"KeyframeStart\":0,\"Description\":\"Subtitles
-        for item qs5d8ncx8c\",\"OriginalFilename\":\"qs5d8ncx8c_closed.srt\",\"Title\":\"qs5d8ncx8c_closed.srt\",\"RightsOwner\":\"\xA9
-        testbeeld\",\"Rights\":null,\"Keywords\":{\"Keyword\":[]},\"Categories\":{\"Category\":[]},\"Publisher\":null,\"Authors\":{},\"Location\":null,\"Address\":{},\"NonPreferredTerm\":null,\"Publications\":null},\"Technical\":{\"PronomId\":\"fmt/1218\",\"OriginalExtension\":\"srt\",\"FileSize\":192,\"MimeType\":\"text/plain\",\"Md5\":\"761ba5c45a4c53874914cdb555f2dc58\",\"Width\":null,\"Height\":null,\"ImageSize\":null,\"ImageOrientation\":null,\"ImageQuality\":null,\"VideoTechnical\":null,\"AudioTechnical\":null,\"VideoFormat\":null,\"DurationTimeCode\":null,\"StartTimeCode\":null,\"EndTimeCode\":null,\"DurationFrames\":null,\"StartFrames\":null,\"EndFrames\":null,\"VideoCodec\":null,\"VideoFps\":null,\"VideoBitRate\":null,\"BitRate\":null},\"Context\":{\"IsEditable\":true,\"IsDeletable\":true,\"IsPublic\":false,\"IsExportable\":true}},{\"Dynamic\":{\"dc_relations\":{\"is_verwant_aan\":[\"qs5d8ncx8c\"]},\"sp_name\":\"borndigital\",\"lom_legacy\":\"true\",\"PID\":\"qs5d8ncx8c_open\",\"CP\":\"testbeeld\",\"dc_rights_licenses\":{\"multiselect\":[\"VIAA-ONDERWIJS\",\"VIAA-ONDERZOEK\",\"VIAA-INTRA_CP-CONTENT\",\"VIAA-INTRA_CP-METADATA-ALL\",\"VIAA-PUBLIEK-METADATA-LTD\"]},\"CP_id\":\"OR-h41jm1d\",\"NeedsPublicationDateMigration\":\"true\"},\"Internal\":{\"OriginalStatus\":\"completed\",\"PathToKeyframe\":\"https://mheuropehot.blob.core.windows.net/mediahaven-saas-browse-main/no-preview.png\",\"IsFragment\":false,\"PathToPreview\":\"https://mheuropehot.blob.core.windows.net/mediahaven-saas-browse-main/no-preview.png\",\"UploadedById\":\"ff111a7a-efd0-44e3-8816-0905572421da\",\"HasKeyframes\":false,\"MediaObjectId\":\"f6c85673050f4c8986e022805b03a13dd0f5c6f03f164754a29e37c8a112d2c3\",\"ArchiveStatus\":\"on_disk\",\"BrowseStatus\":\"no_browse\",\"RecordId\":\"f6c85673050f4c8986e022805b03a13dd0f5c6f03f164754a29e37c8a112d2c3\",\"IsInIngestSpace\":false,\"OrganisationId\":\"111\",\"FragmentId\":\"f6c85673050f4c8986e022805b03a13dd0f5c6f03f164754a29e37c8a112d2c3fb608c8363ac4a21b461d080df6a4326\",\"PathToKeyframeThumb\":\"https://mheuropehot.blob.core.windows.net/mediahaven-saas-browse-main/no-preview.png\",\"ContainsGeoData\":false,\"DepartmentId\":\"dd111b7a-efd0-44e3-8816-0905572421da\",\"IngestSpaceId\":null,\"Browses\":{},\"PathToVideo\":null},\"RightsManagement\":{\"Permissions\":{\"Write\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Export\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Read\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"26276bde-be5f-4e17-a40a-49dceb722c64\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"]},\"ExpiryDate\":null,\"ExpiryStatus\":null},\"Structural\":{\"HasChildren\":false,\"FragmentStartFrames\":0,\"FragmentEndFrames\":0,\"Versioning\":{\"Status\":\"Untracked\",\"Version\":1},\"Sets\":{\"Set\":[]},\"Collections\":{\"Collection\":[]},\"Newspapers\":{\"Newspaper\":[]},\"Relations\":{},\"Fragments\":{},\"FragmentDurationTimeCode\":null,\"FragmentStartTimeCode\":null,\"FragmentEndTimeCode\":null,\"FragmentDurationFrames\":null},\"Administrative\":{\"LastModifiedDate\":\"2022-02-04T09:15:38Z\",\"IsSynchronized\":false,\"IsOriginal\":true,\"OrganisationName\":\"testbeeld\",\"Workflow\":\"borndigital\",\"IsPreservation\":false,\"DepartmentName\":\"testbeeld\",\"UserLastModifiedDate\":\"2022-02-04T09:15:38.654000Z\",\"ArchiveDate\":\"2021:06:03
-        17:16:43\",\"OrganisationLongName\":\"testbeeld\",\"RecordType\":\"Record\",\"RecordStatus\":\"Published\",\"IsAccess\":false,\"PublicationDate\":\"2021-09-15T10:02:52.016000Z\",\"ExternalId\":\"qs5d8ncx8c_open\",\"DeleteStatus\":\"NotDeleted\",\"Type\":\"document\",\"MainRecordType\":\"Record\",\"OrganisationExternalId\":\"OR-h41jm1d\",\"IngestTape\":null},\"Descriptive\":{\"CreationDate\":\"2021:06:03
-        17:16:41\",\"UploadedBy\":\"bulkupload@testbeeld\",\"KeyframeStart\":0,\"Description\":\"Subtitles
+      string: "{\"NrOfResults\":2,\"StartIndex\":0,\"TotalNrOfResults\":2,\"Results\":[{\"Technical\":{\"PronomId\":\"fmt/1218\",\"OriginalExtension\":\"srt\",\"FileSize\":217,\"MimeType\":\"text/plain\",\"Md5\":\"ea7936571228b945a754f8fdcaf8da0a\",\"Width\":null,\"Height\":null,\"ImageSize\":null,\"ImageOrientation\":null,\"ImageQuality\":null,\"VideoTechnical\":null,\"AudioTechnical\":null,\"VideoFormat\":null,\"Exif\":{},\"DurationTimeCode\":null,\"StartTimeCode\":null,\"EndTimeCode\":null,\"DurationFrames\":null,\"StartFrames\":null,\"EndFrames\":null,\"VideoCodec\":null,\"VideoFps\":null,\"VideoBitRate\":null,\"AudioCodec\":null,\"AudioChannels\":null,\"AudioSampleRate\":null,\"AudioBitRate\":null,\"AudioTracks\":{},\"BitRate\":null,\"Origin\":null,\"EssenceOffset\":null,\"EditUnitByteSize\":null,\"RunIn\":null,\"FramesPerEditUnit\":null,\"EditRate\":null,\"IndexEditRate\":null},\"Structural\":{\"HasChildren\":false,\"FragmentStartFrames\":0,\"FragmentEndFrames\":0,\"Versioning\":{\"Status\":\"Untracked\",\"Version\":1},\"Collections\":{\"Collection\":[]},\"Sets\":{\"Set\":[]},\"Newspapers\":{\"Newspaper\":[]},\"Relations\":{},\"Fragments\":{\"Fragment\":[]},\"MainFragment\":null,\"FragmentDurationTimeCode\":null,\"FragmentStartTimeCode\":null,\"FragmentEndTimeCode\":null,\"FragmentDurationFrames\":null,\"ReferenceCodes\":{},\"ParentRecordId\":null,\"ReferenceTitles\":{},\"FieldDefinition\":{},\"PreviewRecordId\":null},\"Descriptive\":{\"CreationDate\":\"2021-06-03T15:16:41.000000Z\",\"UploadedBy\":\"bulkupload@testbeeld\",\"KeyframeStart\":0,\"Description\":\"Subtitles
         for item qs5d8ncx8c\",\"OriginalFilename\":\"qs5d8ncx8c_open.srt\",\"Title\":\"qs5d8ncx8c_open.srt\",\"RightsOwner\":\"\xA9
-        testbeeld\",\"Rights\":null,\"Keywords\":{\"Keyword\":[]},\"Categories\":{\"Category\":[]},\"Publisher\":null,\"Authors\":{},\"Location\":null,\"Address\":{},\"NonPreferredTerm\":null,\"Publications\":null},\"Technical\":{\"PronomId\":\"fmt/1218\",\"OriginalExtension\":\"srt\",\"FileSize\":217,\"MimeType\":\"text/plain\",\"Md5\":\"ea7936571228b945a754f8fdcaf8da0a\",\"Width\":null,\"Height\":null,\"ImageSize\":null,\"ImageOrientation\":null,\"ImageQuality\":null,\"VideoTechnical\":null,\"AudioTechnical\":null,\"VideoFormat\":null,\"DurationTimeCode\":null,\"StartTimeCode\":null,\"EndTimeCode\":null,\"DurationFrames\":null,\"StartFrames\":null,\"EndFrames\":null,\"VideoCodec\":null,\"VideoFps\":null,\"VideoBitRate\":null,\"BitRate\":null},\"Context\":{\"IsEditable\":true,\"IsDeletable\":true,\"IsPublic\":false,\"IsExportable\":true}}]}"
+        testbeeld\",\"CreationDateLegacy\":null,\"Rights\":null,\"Keywords\":{\"Keyword\":[]},\"Categories\":{\"Category\":[]},\"LimitedCategories\":{},\"Publisher\":null,\"Authors\":{},\"Location\":null,\"Address\":{},\"NonPreferredTerm\":null,\"Publications\":{\"Comment\":[]},\"OriginalPath\":null,\"Position\":{}},\"Dynamic\":{\"dc_relations\":{\"is_verwant_aan\":[\"qs5d8ncx8c\"]},\"sp_name\":\"borndigital\",\"lom_legacy\":\"true\",\"PID\":\"qs5d8ncx8c_open\",\"CP\":\"testbeeld\",\"dc_rights_licenses\":{\"multiselect\":[\"VIAA-ONDERWIJS\",\"VIAA-ONDERZOEK\",\"VIAA-INTRA_CP-CONTENT\",\"VIAA-INTRA_CP-METADATA-ALL\",\"VIAA-PUBLIEK-METADATA-LTD\"]},\"CP_id\":\"OR-h41jm1d\",\"NeedsPublicationDateMigration\":\"true\"},\"Administrative\":{\"LastModifiedDate\":\"2022-02-04T09:15:38.654000Z\",\"IsSynchronized\":false,\"IsOriginal\":true,\"OrganisationName\":\"testbeeld\",\"Workflow\":\"borndigital\",\"IsPreservation\":false,\"DepartmentName\":\"testbeeld\",\"UserLastModifiedDate\":\"2022-02-04T09:15:38.654000Z\",\"ArchiveDate\":\"2021-06-03T15:16:43.102000Z\",\"OrganisationLongName\":\"testbeeld\",\"RecordType\":\"Record\",\"RecordStatus\":\"Published\",\"IsAccess\":false,\"PublicationDate\":\"2021-09-15T10:02:52.016000Z\",\"ExternalId\":\"qs5d8ncx8c_open\",\"DeleteStatus\":\"NotDeleted\",\"Type\":\"document\",\"MainRecordType\":\"Record\",\"OrganisationExternalId\":\"OR-h41jm1d\",\"ExternalUrl\":null,\"IngestTape\":null,\"LogicalDeletionDate\":null,\"ChildOrderFields\":{},\"RejectionDate\":null,\"ExternalUse\":null},\"Internal\":{\"OriginalStatus\":\"completed\",\"PathToKeyframe\":\"https://mheuropehot.blob.core.windows.net/mediahaven-saas-browse-main/no-preview.png\",\"IsFragment\":false,\"PathToPreview\":\"https://mheuropehot.blob.core.windows.net/mediahaven-saas-browse-main/no-preview.png\",\"UploadedById\":\"ff111a7a-efd0-44e3-8816-0905572421da\",\"HasKeyframes\":false,\"MediaObjectId\":\"f6c85673050f4c8986e022805b03a13dd0f5c6f03f164754a29e37c8a112d2c3\",\"ArchiveStatus\":\"on_disk\",\"BrowseStatus\":\"no_browse\",\"RecordId\":\"f6c85673050f4c8986e022805b03a13dd0f5c6f03f164754a29e37c8a112d2c3\",\"IsInIngestSpace\":false,\"OrganisationId\":\"111\",\"FragmentId\":\"f6c85673050f4c8986e022805b03a13dd0f5c6f03f164754a29e37c8a112d2c3fb608c8363ac4a21b461d080df6a4326\",\"PathToKeyframeThumb\":\"https://mheuropehot.blob.core.windows.net/mediahaven-saas-browse-main/no-preview.png\",\"ContainsGeoData\":false,\"DepartmentId\":\"dd111b7a-efd0-44e3-8816-0905572421da\",\"IngestSpaceId\":null,\"PathToVideo\":null,\"Browses\":{},\"Distributions\":{\"Distribution\":[]},\"Profiles\":{}},\"RightsManagement\":{\"Permissions\":{\"Write\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Export\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Read\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"26276bde-be5f-4e17-a40a-49dceb722c64\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"]},\"ExpiryDate\":null,\"ExpiryStatus\":null,\"Zone\":{}},\"Context\":{\"IsEditable\":true,\"IsDeletable\":true,\"IsPublic\":false,\"IsExportable\":true,\"Profiles\":[]}},{\"Technical\":{\"PronomId\":\"fmt/1218\",\"OriginalExtension\":\"srt\",\"FileSize\":192,\"MimeType\":\"text/plain\",\"Md5\":\"761ba5c45a4c53874914cdb555f2dc58\",\"Width\":null,\"Height\":null,\"ImageSize\":null,\"ImageOrientation\":null,\"ImageQuality\":null,\"VideoTechnical\":null,\"AudioTechnical\":null,\"VideoFormat\":null,\"Exif\":{},\"DurationTimeCode\":null,\"StartTimeCode\":null,\"EndTimeCode\":null,\"DurationFrames\":null,\"StartFrames\":null,\"EndFrames\":null,\"VideoCodec\":null,\"VideoFps\":null,\"VideoBitRate\":null,\"AudioCodec\":null,\"AudioChannels\":null,\"AudioSampleRate\":null,\"AudioBitRate\":null,\"AudioTracks\":{},\"BitRate\":null,\"Origin\":null,\"EssenceOffset\":null,\"EditUnitByteSize\":null,\"RunIn\":null,\"FramesPerEditUnit\":null,\"EditRate\":null,\"IndexEditRate\":null},\"Structural\":{\"HasChildren\":false,\"FragmentStartFrames\":0,\"FragmentEndFrames\":0,\"Versioning\":{\"Status\":\"Untracked\",\"Version\":1},\"Collections\":{\"Collection\":[]},\"Sets\":{\"Set\":[]},\"Newspapers\":{\"Newspaper\":[]},\"Relations\":{},\"Fragments\":{\"Fragment\":[]},\"MainFragment\":null,\"FragmentDurationTimeCode\":null,\"FragmentStartTimeCode\":null,\"FragmentEndTimeCode\":null,\"FragmentDurationFrames\":null,\"ReferenceCodes\":{},\"ParentRecordId\":null,\"ReferenceTitles\":{},\"FieldDefinition\":{},\"PreviewRecordId\":null},\"Descriptive\":{\"CreationDate\":\"2021-01-27T10:30:57.000000Z\",\"UploadedBy\":\"bulkupload@testbeeld\",\"KeyframeStart\":0,\"Description\":\"Subtitles
+        for item qs5d8ncx8c\",\"OriginalFilename\":\"qs5d8ncx8c_closed.srt\",\"Title\":\"qs5d8ncx8c_closed.srt\",\"RightsOwner\":\"\xA9
+        testbeeld\",\"CreationDateLegacy\":null,\"Rights\":null,\"Keywords\":{\"Keyword\":[]},\"Categories\":{\"Category\":[]},\"LimitedCategories\":{},\"Publisher\":null,\"Authors\":{},\"Location\":null,\"Address\":{},\"NonPreferredTerm\":null,\"Publications\":{\"Comment\":[]},\"OriginalPath\":null,\"Position\":{}},\"Dynamic\":{\"dc_relations\":{\"is_verwant_aan\":[\"qs5d8ncx8c\"]},\"external_id\":\"qs5d8ncx8c\",\"sp_name\":\"borndigital\",\"lom_legacy\":\"true\",\"PID\":\"qs5d8ncx8c_closed\",\"CP\":\"testbeeld\",\"dc_rights_licenses\":{\"multiselect\":[\"VIAA-ONDERWIJS\",\"VIAA-ONDERZOEK\",\"VIAA-INTRA_CP-CONTENT\",\"VIAA-INTRA_CP-METADATA-ALL\",\"VIAA-PUBLIEK-METADATA-LTD\"]},\"CP_id\":\"OR-h41jm1d\"},\"Administrative\":{\"LastModifiedDate\":\"2022-02-04T09:15:29.355000Z\",\"IsSynchronized\":false,\"IsOriginal\":true,\"OrganisationName\":\"testbeeld\",\"Workflow\":\"borndigital\",\"IsPreservation\":false,\"DepartmentName\":\"testbeeld\",\"UserLastModifiedDate\":\"2022-02-04T09:15:29.355000Z\",\"ArchiveDate\":\"2021-01-27T10:30:59.093000Z\",\"OrganisationLongName\":\"testbeeld\",\"RecordType\":\"Record\",\"RecordStatus\":\"Published\",\"IsAccess\":false,\"PublicationDate\":\"2021-01-27T10:30:58.333000Z\",\"ExternalId\":\"qs5d8ncx8c_closed\",\"DeleteStatus\":\"NotDeleted\",\"Type\":\"document\",\"MainRecordType\":\"Record\",\"OrganisationExternalId\":\"OR-h41jm1d\",\"ExternalUrl\":null,\"IngestTape\":null,\"LogicalDeletionDate\":null,\"ChildOrderFields\":{},\"RejectionDate\":null,\"ExternalUse\":null},\"Internal\":{\"OriginalStatus\":\"completed\",\"PathToKeyframe\":\"https://mheuropehot.blob.core.windows.net/mediahaven-saas-browse-main/no-preview.png\",\"IsFragment\":false,\"PathToPreview\":\"https://mheuropehot.blob.core.windows.net/mediahaven-saas-browse-main/no-preview.png\",\"UploadedById\":\"ff111a7a-efd0-44e3-8816-0905572421da\",\"HasKeyframes\":false,\"MediaObjectId\":\"90d350224fa34d9b8a48461c5e389fc7996a4faf24af4f9e94efdd31922683dc\",\"ArchiveStatus\":\"on_disk\",\"BrowseStatus\":\"no_browse\",\"RecordId\":\"90d350224fa34d9b8a48461c5e389fc7996a4faf24af4f9e94efdd31922683dc\",\"IsInIngestSpace\":false,\"OrganisationId\":\"111\",\"FragmentId\":\"90d350224fa34d9b8a48461c5e389fc7996a4faf24af4f9e94efdd31922683dc8e4b6125da4f49448e6946104d114d44\",\"PathToKeyframeThumb\":\"https://mheuropehot.blob.core.windows.net/mediahaven-saas-browse-main/no-preview.png\",\"ContainsGeoData\":false,\"DepartmentId\":\"dd111b7a-efd0-44e3-8816-0905572421da\",\"IngestSpaceId\":null,\"PathToVideo\":null,\"Browses\":{},\"Distributions\":{\"Distribution\":[]},\"Profiles\":{}},\"RightsManagement\":{\"Permissions\":{\"Write\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Export\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"],\"Read\":[\"dd111b7a-efd0-44e3-8816-0905572421da\",\"b75571b1-d7a3-4d6f-939e-deb345c1078a\"]},\"ExpiryDate\":null,\"ExpiryStatus\":null,\"Zone\":{}},\"Context\":{\"IsEditable\":true,\"IsDeletable\":true,\"IsPublic\":false,\"IsExportable\":true,\"Profiles\":[]}}]}"
     headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - content-type,authorization,Result-Count
       Cache-Control:
       - no-store, must-revalidate, pre-check=0, post-check=0, max-age=0, s-maxage=0
       Connection:
       - keep-alive
-      Content-Length:
-      - '7322'
       Content-Type:
-      - application/vnd.mediahaven.v2+json
+      - application/json
       Date:
-      - Thu, 24 Mar 2022 09:16:27 GMT
+      - Mon, 22 May 2023 08:25:05 GMT
       Expires:
       - '0'
       Pragma:
       - no-cache
       Server:
-      - nginx/1.21.3
+      - nginx/1.18.0
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
       Via:
       - kong/0.13.1
+      X-Content-Type-Options:
+      - nosniff
       X-Correlation-ID:
-      - 00bc71c9eeedf6b5c5ee5f4c9f15ccdb
+      - 33d3ac7855d358388bb71c8f1e095fed
+      X-Frame-Options:
+      - DENY
       X-Kong-Proxy-Latency:
-      - '0'
+      - '26'
       X-Kong-Upstream-Latency:
-      - '1100'
-      X-MediaHavenVersion:
-      - '22.1'
+      - '14'
+      X-RateLimit-Limit-day:
+      - '2000'
+      X-RateLimit-Limit-minute:
+      - '150'
       X-RateLimit-Limit-second:
-      - '10'
+      - '25'
+      X-RateLimit-Remaining-day:
+      - '1910'
+      X-RateLimit-Remaining-minute:
+      - '146'
       X-RateLimit-Remaining-second:
-      - '9'
+      - '24'
+      X-XSS-Protection:
+      - 1; mode=block
       x-forwarded-proto:
+      - https
       - https
     status:
       code: 200
@@ -91,17 +154,17 @@ interactions:
       Content-Type:
       - application/x-binary
       Date:
-      - Thu, 24 Mar 2022 09:16:27 GMT
+      - Mon, 22 May 2023 08:25:05 GMT
       Etag:
       - '"a90fa4375577a6b963dbc766da7f82c0"'
       Last-Modified:
       - Wed, 27 Jan 2021 10:31:13 GMT
       Server:
-      - nginx/1.21.3
+      - nginx/1.23.4
       Volume:
       - db6e50bba2c2ee4692226c8a0292137d
       X-Correlation-ID:
-      - 6cb8cd3d10cad246b0802c0a0e9d2d76
+      - 4baa25b0ce3c26351f1240fcde76ef9c
       x-viaa-meta-cpid:
       - OR-h41jm1d
       x-viaa-meta-duration:

@@ -70,7 +70,7 @@ class MetaMapping:
             'item_vakken_legacy': dynamic_field(mam_data, 'lom_classification', 'multiselect'),
             'item_onderwijsniveaus': dynamic_field(mam_data, 'lom_onderwijsniveau', 'Onderwijsniveau'),
             'item_onderwijsgraden': dynamic_field(mam_data, 'lom_onderwijsgraad', 'Onderwijsgraad'),
-            'tiem_onderwijsgraden_legacy': [],  # TODO: how does this work in v2???
+            'item_onderwijsgraden_legacy': [],  # TODO: how does this work in v2???
             'item_onderwijsniveaus_legacy': [],  # TODO: how does this work in v2???
             # 'item_onderwijsniveaus_legacy': get_md_array(
             #     mam_data, 'lom_context'),
@@ -170,7 +170,6 @@ class MetaMapping:
                 'dottedKey': None
             }
 
-    # TODO: convert this also to v2 format
     def update_legacy_flag(self, request, mam_data):
         # default waarde voor lom_legacy
         lom_legacy = "true"

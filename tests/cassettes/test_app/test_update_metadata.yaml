@@ -1,105 +1,170 @@
 interactions:
 - request:
-    body: null
+    body: grant_type=password&client_id=client_id&client_secret=client_secret&username=test_userd&password=test_pass
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       Connection:
       - keep-alive
+      Content-Length:
+      - '172'
       Content-Type:
+      - application/x-www-form-urlencoded;charset=UTF-8
+      User-Agent:
+      - python-requests/2.24.0
+    method: POST
+    uri: https://archief-qas.viaa.be/auth/ropc.php
+  response:
+    body:
+      string: '{"refresh_token":"test_refresh_token","token_type":"bearer","access_token":"test_token","expires_in":7200}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - no-store, no-cache, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '142'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 22 May 2023 08:25:13 GMT
+      Expires:
+      - Thu, 19 Nov 1981 08:52:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx/1.18.0
+      Set-Cookie:
+      - AUTHPORTAL=p2smc7vngrrqatlbihdulf2m4m; path=/;HttpOnly;Secure;SameSite=lax
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Correlation-ID:
+      - 8c1acd45bbf8a7f4d4998b9c77536759
+      X-Frame-Options:
+      - DENY
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
       - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
       User-Agent:
       - python-requests/2.24.0
     method: GET
-    uri: https://archief-qas.viaa.be/mediahaven-rest-api/resources/media?q=%2B(ExternalId:qsf7664p39)&startIndex=0&nrOfResults=25
+    uri: https://archief-qas.viaa.be/mediahaven-rest-api/v2/records?q=%2B%28ExternalId%3Aqsf7664p39%29
   response:
     body:
-      string: '{"totalNrOfResults":1,"startIndex":0,"mediaDataList":[{"offsetFrames":0,"fragmentStartFrames":0,"fragmentEndFrames":1514,"fragmentDurationFrames":1514,"offsetTimeCode":"00:00:00.000","fragmentStartTimeCode":"00:00:00.000","fragmentEndTimeCode":"00:01:00.560","fragmentDurationTimeCode":"00:01:00.560","mediaObjectId":"70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec","fragmentId":"70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b","externalId":"qsf7664p39","title":"QAS
-        20.1 ingest test - Fietsstraten in centrum Gent","description":"QAS 20.1 ingest
-        test","date":"2019:05:28 09:34:30","previewImagePath":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/keyframes/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg","thumbnailImagePath":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/keyframes-thumb/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg","videoPath":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/browse.mp4","originalFileName":"qsf7664p39.mp4","width":0,"height":0,"keywords":[],"type":"Video","authors":[],"lastModifiedDate":"2022-03-23T19:05:07Z","archiveDate":"2020-06-19T10:56:45Z","exportable":true,"editable":true,"deletable":true,"isPublic":false,"ingestSpaceId":"","isInIngestSpace":false,"status":"FINISHED","browseStatus":"completed","originalStatus":"completed","archiveStatus":"on_disk","workflow":"borndigital","mdProperties":[{"value":[{"value":"Serie
-        veld test","attribute":"serie","dottedKey":null}],"attribute":"dc_titles","dottedKey":null},{"value":[{"value":"QAS_20.mp4","attribute":"Bestandsnaam","dottedKey":null}],"attribute":"dc_identifier_localids","dottedKey":null},{"subKey":"multiselect","value":[{"value":"nl","attribute":"multiselect","dottedKey":null}],"attribute":"lom_languages","dottedKey":null},{"subKey":"multiselect","value":[{"value":"Student","attribute":"multiselect","dottedKey":null}],"attribute":"lom_intendedenduserrole","dottedKey":null},{"value":[{"value":"Belgium","attribute":"Sleutelwoord","dottedKey":null}],"attribute":"lom_keywords","dottedKey":null},{"value":[{"value":"qsvx05z57z","attribute":"is_verwant_aan","dottedKey":null}],"attribute":"dc_relations","dottedKey":null},{"value":[{"value":"distributeur
-        test","attribute":"Distributeur","dottedKey":null}],"attribute":"dc_publishers","dottedKey":null},{"value":[{"value":"https://w3id.org/onderwijs-vlaanderen/id/vak/ict","attribute":"Vak","dottedKey":null}],"attribute":"lom_vak","dottedKey":null},{"subKey":"multiselect","value":[{"value":"Video","attribute":"multiselect","dottedKey":null}],"attribute":"lom_learningresourcetype","dottedKey":null},{"subKey":"multiselect","value":[{"value":"VIAA-ONDERWIJS","attribute":"multiselect","dottedKey":null},{"value":"VIAA-ONDERZOEK","attribute":"multiselect","dottedKey":null},{"value":"VIAA-INTRA_CP-CONTENT","attribute":"multiselect","dottedKey":null},{"value":"VIAA-INTRA_CP-METADATA-ALL","attribute":"multiselect","dottedKey":null},{"value":"VIAA-PUBLIEK-METADATA-LTD","attribute":"multiselect","dottedKey":null}],"attribute":"dc_rights_licenses","dottedKey":null},{"value":[{"value":"https://w3id.org/onderwijs-vlaanderen/id/structuur/hoger-onderwijs","attribute":"Onderwijsniveau","dottedKey":null},{"value":"https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-onderwijs","attribute":"Onderwijsniveau","dottedKey":null}],"attribute":"lom_onderwijsniveau","dottedKey":null},{"value":[{"value":"maker
-        test","attribute":"Maker","dottedKey":null}],"attribute":"dc_creators","dottedKey":null},{"value":[{"value":"https://data.hetarchief.be/id/onderwijs/thema/sport-en-spel","attribute":"Thema","dottedKey":null}],"attribute":"lom_thema","dottedKey":null},{"value":[{"value":"https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-1e-graad","attribute":"Onderwijsgraad","dottedKey":null}],"attribute":"lom_onderwijsgraad","dottedKey":null},{"value":[{"value":"bijdrager
-        test2","attribute":"Bijdrager","dottedKey":null}],"attribute":"dc_contributors","dottedKey":null},{"value":"OR-h41jm06","attribute":"Original_CP_ID","dottedKey":null},{"value":"QAS_20.mp4","attribute":"dc_source","dottedKey":null},{"value":"QAS
-        20.1 ingest test","attribute":"dc_description","dottedKey":null},{"value":"2019:05:28
-        09:34:30","attribute":"CreationDate","dottedKey":null},{"value":"false","attribute":"lom_legacy","dottedKey":null},{"value":"borndigital","attribute":"sp_name","dottedKey":null},{"value":"Fietsstraten
-        in centrum Gent","attribute":"dc_title","dottedKey":null},{"value":"true","attribute":"NeedsPublicationDateMigration","dottedKey":null},{"value":"qsf7664p39","attribute":"PID","dottedKey":null},{"value":"testbeeld","attribute":"CP","dottedKey":null},{"value":"AVS","attribute":"Original_CP","dottedKey":null},{"value":"OR-h41jm1d","attribute":"CP_id","dottedKey":null},{"value":"08_H264","attribute":"dc_identifier_localid","dottedKey":null},{"value":"2021-11-21","attribute":"dcterms_issued","dottedKey":null},{"value":"MP4
-        Sound Media Handler","attribute":"RightsOwner","dottedKey":null},{"value":"[2021-11-20T23:00:00Z
-        TO 2021-11-21T22:59:59.999Z]","attribute":"dcterms_issued_index","dottedKey":null},{"value":"Beschrijving
-        test 1234","attribute":"dcterms_abstract","dottedKey":null}],"relations":{}}]}'
+      string: '{"NrOfResults":1,"StartIndex":0,"TotalNrOfResults":1,"Results":[{"Technical":{"VideoTechnical":"(unkown
+        video codec) \u003cunknown\u003ex\u003cunknown\u003e (unkown video fps)fps
+        (unkown video bit rate)bps","PronomId":"fmt/199","OriginalExtension":"mp4","DurationFrames":1514,"FileSize":32226974,"EndFrames":1514,"MimeType":"video/mp4","DurationTimeCode":"00:01:00.560","StartFrames":0,"EndTimeCode":"00:01:00.560","Md5":"2ac00d6101e4f5cc7bcb04f925405357","StartTimeCode":"00:00:00.000","Width":null,"Height":null,"ImageSize":null,"ImageOrientation":null,"ImageQuality":null,"AudioTechnical":null,"VideoFormat":null,"Exif":{},"VideoCodec":null,"VideoFps":null,"VideoBitRate":null,"AudioCodec":null,"AudioChannels":null,"AudioSampleRate":null,"AudioBitRate":null,"AudioTracks":{},"BitRate":null,"Origin":null,"EssenceOffset":null,"EditUnitByteSize":null,"RunIn":null,"FramesPerEditUnit":null,"EditRate":null,"IndexEditRate":null},"Structural":{"FragmentEndTimeCode":"00:01:00.560","HasChildren":false,"FragmentStartFrames":0,"FragmentDurationFrames":1514,"FragmentDurationTimeCode":"00:01:00.560","FragmentStartTimeCode":"00:00:00.000","FragmentEndFrames":1514,"Versioning":{"Status":"Untracked","Version":1},"Collections":{"Collection":[]},"Sets":{"Set":[]},"Newspapers":{"Newspaper":[]},"Relations":{},"Fragments":{"Fragment":[]},"MainFragment":null,"ReferenceCodes":{},"ParentRecordId":null,"ReferenceTitles":{},"FieldDefinition":{},"PreviewRecordId":null},"Descriptive":{"CreationDate":"2019-05-28T07:34:30.000000Z","UploadedBy":"bulkupload@testbeeld","KeyframeStart":41,"Description":"QAS
+        20.1 ingest test","OriginalFilename":"qsf7664p39.mp4","Title":"QAS 20.1 ingest
+        test - Fietsstraten in centrum Gent","RightsOwner":"MP4 Sound Media Handler","CreationDateLegacy":null,"Rights":null,"Keywords":{"Keyword":[]},"Categories":{"Category":[]},"LimitedCategories":{},"Publisher":null,"Authors":{},"Location":null,"Address":{},"NonPreferredTerm":null,"Publications":{"Comment":[]},"OriginalPath":null,"Position":{}},"Dynamic":{"lom_languages":{"multiselect":["nl"]},"lom_keywords":{"Sleutelwoord":["Belgium"]},"dc_source":"QAS_20.mp4","dc_relations":{"is_verwant_aan":["qsvx05z57z"]},"dc_publishers":{"Distributeur":["distributeur
+        test"]},"dc_identifier_localids":{"Bestandsnaam":["QAS_20.mp4"]},"lom_vak":{"Vak":["https://w3id.org/onderwijs-vlaanderen/id/vak/ict"]},"lom_onderwijsniveau":{"Onderwijsniveau":["https://w3id.org/onderwijs-vlaanderen/id/structuur/hoger-onderwijs","https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-onderwijs"]},"dc_creators":{"Maker":["maker
+        test"]},"dc_contributors":{"Bijdrager":["bijdrager test2"]},"lom_learningresourcetype":{"multiselect":["Video"]},"lom_thema":{"Thema":["https://data.hetarchief.be/id/onderwijs/thema/sport-en-spel"]},"dc_title":"Fietsstraten
+        in centrum Gent","dcterms_abstract":"Beschrijving test 1234","lom_intendedenduserrole":{"multiselect":["Student"]},"Original_CP_ID":"OR-h41jm06","dc_description":"QAS
+        20.1 ingest test","dcterms_issued":"2021-11-21","sp_name":"borndigital","lom_legacy":"false","lom_onderwijsgraad":{"Onderwijsgraad":["https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-1e-graad"]},"Original_CP":"AVS","dc_identifier_localid":"08_H264","PID":"qsf7664p39","CP":"testbeeld","dc_titles":{"serie":["Serie
+        veld test"]},"dc_rights_licenses":{"multiselect":["VIAA-ONDERWIJS","VIAA-ONDERZOEK","VIAA-INTRA_CP-CONTENT","VIAA-INTRA_CP-METADATA-ALL","VIAA-PUBLIEK-METADATA-LTD"]},"CP_id":"OR-h41jm1d","NeedsPublicationDateMigration":"true"},"Administrative":{"LastModifiedDate":"2023-05-22T07:48:00.712000Z","IsSynchronized":false,"IsOriginal":true,"OrganisationName":"testbeeld","Workflow":"borndigital","IsPreservation":false,"DepartmentName":"testbeeld","UserLastModifiedDate":"2023-05-22T07:48:00.712000Z","ArchiveDate":"2020-06-19T10:56:45.000000Z","OrganisationLongName":"testbeeld","RecordType":"Record","RecordStatus":"Published","IsAccess":false,"PublicationDate":"2021-09-15T09:52:03.104000Z","ExternalId":"qsf7664p39","DeleteStatus":"NotDeleted","Type":"video","MainRecordType":"Record","OrganisationExternalId":"OR-h41jm1d","ExternalUrl":null,"IngestTape":null,"LogicalDeletionDate":null,"ChildOrderFields":{},"RejectionDate":null,"ExternalUse":null},"Internal":{"PathToVideo":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/browse.mp4","OriginalStatus":"completed","PathToKeyframe":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/keyframes/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg","IsFragment":false,"PathToPreview":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/browse.mp4","UploadedById":"ff111a7a-efd0-44e3-8816-0905572421da","HasKeyframes":true,"Browses":{"Browse":[{"BaseUrl":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec","PathToKeyframe":"keyframes/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg","PathToKeyframeThumb":"keyframes-thumb/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg","PathToVideo":"browse.mp4","HasKeyframes":true,"Container":"mp4","Label":"mp4","FileSize":13558871,"AudioTracks":{"Track":[{"Channels":2}]},"Height":468,"VideoCodec":"h264","Width":832,"AudioChannels":2,"AudioCodec":"aac","BitRate":1789654,"AudioSampleRate":44100,"VideoBitRate":1542619,"AudioBitRate":705600,"VideoFps":"25"},{"BaseUrl":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec","PathToKeyframe":"keyframes/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg","PathToKeyframeThumb":"keyframes-thumb/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg","PathToVideo":"peak-0.json","HasKeyframes":false,"Container":"peak","Label":"peak-0","FileSize":4172,"BitRate":8,"AudioSampleRate":10,"AudioCodec":"audiowaveform"}]},"MediaObjectId":"70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec","ArchiveStatus":"on_disk","BrowseStatus":"completed","RecordId":"70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec","IsInIngestSpace":false,"OrganisationId":"111","FragmentId":"70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b","PathToKeyframeThumb":"https://archief-media-qas.viaa.be/viaa/TESTBEELD/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec/keyframes-thumb/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b.jpg","ContainsGeoData":false,"DepartmentId":"dd111b7a-efd0-44e3-8816-0905572421da","IngestSpaceId":null,"Distributions":{"Distribution":[]},"Profiles":{}},"RightsManagement":{"Permissions":{"Write":["dd111b7a-efd0-44e3-8816-0905572421da","b75571b1-d7a3-4d6f-939e-deb345c1078a"],"Export":["dd111b7a-efd0-44e3-8816-0905572421da","b75571b1-d7a3-4d6f-939e-deb345c1078a"],"Read":["dd111b7a-efd0-44e3-8816-0905572421da","b75571b1-d7a3-4d6f-939e-deb345c1078a"]},"ExpiryDate":null,"ExpiryStatus":null,"Zone":{}},"Context":{"IsEditable":true,"IsDeletable":true,"IsPublic":false,"IsExportable":true,"Profiles":[]}}]}'
     headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - content-type,authorization,Result-Count
       Cache-Control:
       - no-store, must-revalidate, pre-check=0, post-check=0, max-age=0, s-maxage=0
       Connection:
       - keep-alive
-      Content-Length:
-      - '5549'
       Content-Type:
       - application/json
       Date:
-      - Wed, 23 Mar 2022 19:07:27 GMT
+      - Mon, 22 May 2023 08:25:13 GMT
       Expires:
       - '0'
       Pragma:
       - no-cache
       Server:
-      - nginx/1.21.3
+      - nginx/1.18.0
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
       Via:
       - kong/0.13.1
+      X-Content-Type-Options:
+      - nosniff
       X-Correlation-ID:
-      - fc2bae5c9d98dbe6e924489ce3664ad2
+      - 90d4c472c19d76c6f254d3419b9ab099
+      X-Frame-Options:
+      - DENY
       X-Kong-Proxy-Latency:
-      - '0'
+      - '28'
       X-Kong-Upstream-Latency:
-      - '931'
-      X-MediaHavenVersion:
-      - '22.1'
+      - '8'
+      X-RateLimit-Limit-day:
+      - '2000'
+      X-RateLimit-Limit-minute:
+      - '150'
       X-RateLimit-Limit-second:
-      - '10'
+      - '25'
+      X-RateLimit-Remaining-day:
+      - '1907'
+      X-RateLimit-Remaining-minute:
+      - '143'
       X-RateLimit-Remaining-second:
-      - '9'
+      - '24'
+      X-XSS-Protection:
+      - 1; mode=block
       x-forwarded-proto:
+      - https
       - https
     status:
       code: 200
       message: ''
 - request:
-    body: "--34a7a088b96eb454e2b2f01ea4d2a34f\r\nContent-Disposition: form-data; name=\"metadata\";
-      filename=\"metadata.xml\"\r\n\r\n<?xml version='1.0' encoding='UTF-8'?>\n<mhs:Sidecar
-      xmlns:mh=\"https://zeticon.mediahaven.com/metadata/20.3/mh/\" xmlns:mhs=\"https://zeticon.mediahaven.com/metadata/20.3/mhs/\"
-      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"20.3\" xsi:schemaLocation=\"https://zeticon.mediahaven.com/metadata/20.3/mhs/
+    body: "<?xml version='1.0' encoding='UTF-8'?>\n<UpdateRecord>\n  <Metadata>\n
+      \   <mhs:Sidecar xmlns:mh=\"https://zeticon.mediahaven.com/metadata/20.3/mh/\"
+      xmlns:mhs=\"https://zeticon.mediahaven.com/metadata/20.3/mhs/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+      version=\"20.3\" xsi:schemaLocation=\"https://zeticon.mediahaven.com/metadata/20.3/mhs/
       https://zeticon.mediahaven.com/metadata/20.3/mhs.xsd https://zeticon.mediahaven.com/metadata/20.3/mh/
-      https://zeticon.mediahaven.com/metadata/20.3/mh.xsd\">\n  <mhs:RightsManagement>\n
-      \   <mh:Permissions strategy=\"OVERWRITE\">\n      <mh:Read>dd111b7a-efd0-44e3-8816-0905572421da</mh:Read>\n
-      \     <mh:Read>b75571b1-d7a3-4d6f-939e-deb345c1078a</mh:Read>\n      <mh:Write>dd111b7a-efd0-44e3-8816-0905572421da</mh:Write>\n
-      \     <mh:Write>b75571b1-d7a3-4d6f-939e-deb345c1078a</mh:Write>\n      <mh:Export>dd111b7a-efd0-44e3-8816-0905572421da</mh:Export>\n
-      \     <mh:Export>b75571b1-d7a3-4d6f-939e-deb345c1078a</mh:Export>\n    </mh:Permissions>\n
-      \ </mhs:RightsManagement>\n  <mhs:Dynamic>\n    <dc_title>Fietsstraten in centrum
-      Gent</dc_title>\n    <dcterms_issued>2021-11-21</dcterms_issued>\n    <dc_titles
-      strategy=\"OVERWRITE\">\n      <serie>Serie veld test</serie>\n    </dc_titles>\n
-      \   <dcterms_abstract>Beschrijving test 1234</dcterms_abstract>\n    <dc_creators
-      strategy=\"OVERWRITE\">\n      <Maker>maker test</Maker>\n    </dc_creators>\n
-      \   <dc_contributors strategy=\"OVERWRITE\">\n      <Bijdrager>bijdrager test2</Bijdrager>\n
-      \   </dc_contributors>\n    <dc_publishers strategy=\"OVERWRITE\">\n      <Distributeur>distributeur
-      test</Distributeur>\n    </dc_publishers>\n    <lom_learningresourcetype strategy=\"OVERWRITE\">\n
-      \     <multiselect>Video</multiselect>\n    </lom_learningresourcetype>\n    <lom_intendedenduserrole
-      strategy=\"OVERWRITE\">\n      <multiselect>Student</multiselect>\n    </lom_intendedenduserrole>\n
-      \   <lom_languages strategy=\"OVERWRITE\">\n      <multiselect>nl</multiselect>\n
-      \   </lom_languages>\n    <lom_onderwijsniveau strategy=\"OVERWRITE\">\n      <Onderwijsniveau>https://w3id.org/onderwijs-vlaanderen/id/structuur/hoger-onderwijs</Onderwijsniveau>\n
-      \     <Onderwijsniveau>https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-onderwijs</Onderwijsniveau>\n
-      \   </lom_onderwijsniveau>\n    <lom_onderwijsgraad strategy=\"OVERWRITE\">\n
-      \     <Onderwijsgraad>https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-1e-graad</Onderwijsgraad>\n
-      \   </lom_onderwijsgraad>\n    <lom_thema strategy=\"OVERWRITE\">\n      <Thema>https://data.hetarchief.be/id/onderwijs/thema/sport-en-spel</Thema>\n
-      \   </lom_thema>\n    <lom_vak strategy=\"OVERWRITE\">\n      <Vak>https://w3id.org/onderwijs-vlaanderen/id/vak/ict</Vak>\n
-      \   </lom_vak>\n    <lom_legacy>false</lom_legacy>\n    <lom_keywords strategy=\"OVERWRITE\">\n
-      \     <Sleutelwoord>Belgium</Sleutelwoord>\n    </lom_keywords>\n  </mhs:Dynamic>\n</mhs:Sidecar>\n\r\n--34a7a088b96eb454e2b2f01ea4d2a34f\r\nContent-Disposition:
-      form-data; name=\"externalId\"; filename=\"\"\r\n\r\nqsf7664p39\r\n--34a7a088b96eb454e2b2f01ea4d2a34f\r\nContent-Disposition:
-      form-data; name=\"departmentId\"; filename=\"\"\r\n\r\ndd111b7a-efd0-44e3-8816-0905572421da\r\n--34a7a088b96eb454e2b2f01ea4d2a34f\r\nContent-Disposition:
-      form-data; name=\"autoPublish\"; filename=\"\"\r\n\r\ntrue\r\n--34a7a088b96eb454e2b2f01ea4d2a34f--\r\n"
+      https://zeticon.mediahaven.com/metadata/20.3/mh.xsd\">\n      <mhs:RightsManagement>\n
+      \       <mh:Permissions strategy=\"OVERWRITE\">\n          <mh:Read>config_testbeeld_uuid</mh:Read>\n
+      \         <mh:Read>config_admin_uuid</mh:Read>\n          <mh:Write>config_testbeeld_uuid</mh:Write>\n
+      \         <mh:Write>config_admin_uuid</mh:Write>\n          <mh:Export>config_testbeeld_uuid</mh:Export>\n
+      \         <mh:Export>config_admin_uuid</mh:Export>\n        </mh:Permissions>\n
+      \     </mhs:RightsManagement>\n      <mhs:Dynamic>\n        <dc_title>Fietsstraten
+      in centrum Gent</dc_title>\n        <dcterms_issued>2021-11-21</dcterms_issued>\n
+      \       <dc_titles strategy=\"OVERWRITE\">\n          <serie>Serie veld test</serie>\n
+      \       </dc_titles>\n        <dcterms_abstract>Beschrijving test 1234</dcterms_abstract>\n
+      \       <dc_creators strategy=\"OVERWRITE\">\n          <Maker>maker test</Maker>\n
+      \       </dc_creators>\n        <dc_contributors strategy=\"OVERWRITE\">\n          <Bijdrager>bijdrager
+      test2</Bijdrager>\n        </dc_contributors>\n        <dc_publishers strategy=\"OVERWRITE\">\n
+      \         <Distributeur>distributeur test</Distributeur>\n        </dc_publishers>\n
+      \       <lom_learningresourcetype strategy=\"OVERWRITE\">\n          <multiselect>Video</multiselect>\n
+      \       </lom_learningresourcetype>\n        <lom_intendedenduserrole strategy=\"OVERWRITE\">\n
+      \         <multiselect>Student</multiselect>\n        </lom_intendedenduserrole>\n
+      \       <lom_languages strategy=\"OVERWRITE\">\n          <multiselect>nl</multiselect>\n
+      \       </lom_languages>\n        <lom_onderwijsniveau strategy=\"OVERWRITE\">\n
+      \         <Onderwijsniveau>https://w3id.org/onderwijs-vlaanderen/id/structuur/hoger-onderwijs</Onderwijsniveau>\n
+      \         <Onderwijsniveau>https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-onderwijs</Onderwijsniveau>\n
+      \       </lom_onderwijsniveau>\n        <lom_onderwijsgraad strategy=\"OVERWRITE\">\n
+      \         <Onderwijsgraad>https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-1e-graad</Onderwijsgraad>\n
+      \       </lom_onderwijsgraad>\n        <lom_thema strategy=\"OVERWRITE\">\n
+      \         <Thema>https://data.hetarchief.be/id/onderwijs/thema/sport-en-spel</Thema>\n
+      \       </lom_thema>\n        <lom_vak strategy=\"OVERWRITE\">\n          <Vak>https://w3id.org/onderwijs-vlaanderen/id/vak/ict</Vak>\n
+      \       </lom_vak>\n        <lom_legacy>false</lom_legacy>\n        <lom_keywords
+      strategy=\"OVERWRITE\">\n          <Sleutelwoord>Belgium</Sleutelwoord>\n        </lom_keywords>\n
+      \     </mhs:Dynamic>\n    </mhs:Sidecar>\n  </Metadata>\n</UpdateRecord>\n"
     headers:
       Accept:
       - '*/*'
@@ -108,50 +173,71 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '3306'
-      Content-Type:
-      - multipart/form-data; boundary=34a7a088b96eb454e2b2f01ea4d2a34f
+      - '2965'
       User-Agent:
       - python-requests/2.24.0
+      content-type:
+      - application/xml
     method: POST
-    uri: https://archief-qas.viaa.be/mediahaven-rest-api/resources/media/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b
+    uri: https://archief-qas.viaa.be/mediahaven-rest-api/v2/records/70af6a77d62e42dfa2c87b037458400f5c1943debc864537b24c31a56c38bbec0b6f9cf611ed4ee1b4e346559a624f9b
   response:
     body:
-      string: ''
+      string: '{"Status":400,"Message":"Permissions contains invalid group ids: config_testbeeld_uuid,config_admin_uuid","Code":"EPARAMINV"}'
     headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - content-type,authorization,Result-Count
       Cache-Control:
       - no-store, must-revalidate, pre-check=0, post-check=0, max-age=0, s-maxage=0
       Connection:
       - keep-alive
       Content-Type:
-      - text/plain; charset=UTF-8
+      - application/json
       Date:
-      - Wed, 23 Mar 2022 19:07:28 GMT
+      - Mon, 22 May 2023 08:25:13 GMT
       Expires:
       - '0'
       Pragma:
       - no-cache
       Server:
-      - nginx/1.21.3
+      - nginx/1.18.0
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
       Via:
       - kong/0.13.1
+      X-Content-Type-Options:
+      - nosniff
       X-Correlation-ID:
-      - e2b802dfd5db90ba2a6710aeda0cda41
+      - a3fc35002f85c049ea58709d2902f480
+      X-Frame-Options:
+      - DENY
       X-Kong-Proxy-Latency:
-      - '0'
+      - '26'
       X-Kong-Upstream-Latency:
-      - '1224'
-      X-MediaHavenVersion:
-      - '22.1'
+      - '79'
+      X-RateLimit-Limit-day:
+      - '2000'
+      X-RateLimit-Limit-minute:
+      - '150'
       X-RateLimit-Limit-second:
-      - '5'
+      - '25'
+      X-RateLimit-Remaining-day:
+      - '1906'
+      X-RateLimit-Remaining-minute:
+      - '142'
       X-RateLimit-Remaining-second:
-      - '4'
+      - '23'
+      X-XSS-Protection:
+      - 1; mode=block
       x-forwarded-proto:
       - https
+      - https
     status:
-      code: 204
+      code: 400
       message: ''
 version: 1

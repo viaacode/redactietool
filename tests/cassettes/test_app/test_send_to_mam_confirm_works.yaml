@@ -1,132 +1,125 @@
 interactions:
 - request:
+    body: grant_type=password&client_id=client_id&client_secret=client_secret&username=test_userd&password=test_pass
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '172'
+      Content-Type:
+      - application/x-www-form-urlencoded;charset=UTF-8
+      User-Agent:
+      - python-requests/2.24.0
+    method: POST
+    uri: https://archief-qas.viaa.be/auth/ropc.php
+  response:
+    body:
+      string: '{"refresh_token":"test_refresh_token","token_type":"bearer","access_token":"test_token","expires_in":7200}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - no-store, no-cache, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '142'
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 22 May 2023 08:25:00 GMT
+      Expires:
+      - Thu, 19 Nov 1981 08:52:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx/1.18.0
+      Set-Cookie:
+      - AUTHPORTAL=6h3dujst9b5mdghdadrhhbq41c; path=/;HttpOnly;Secure;SameSite=lax
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Correlation-ID:
+      - fb73365cd1c49543845d5e4c768b253d
+      X-Frame-Options:
+      - DENY
+    status:
+      code: 200
+      message: OK
+- request:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       Connection:
       - keep-alive
-      Content-Type:
-      - application/json
       User-Agent:
-      - python-requests/2.25.1
+      - python-requests/2.24.0
     method: GET
-    uri: https://archief-qas.viaa.be/mediahaven-rest-api/resources/media?q=+(originalFileName:qsxs5jbm5c_closed.srt)&startIndex=0&nrOfResults=25
+    uri: https://archief-qas.viaa.be/mediahaven-rest-api/v2/records?q=%2B%28originalFileName%3Aqsxs5jbm5c_closed.srt%29
   response:
     body:
-      string: '{"totalNrOfResults":0,"startIndex":0,"mediaDataList":[]}'
+      string: '{"NrOfResults":0,"StartIndex":0,"TotalNrOfResults":0,"Results":[]}'
     headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - content-type,authorization,Result-Count
       Cache-Control:
       - no-store, must-revalidate, pre-check=0, post-check=0, max-age=0, s-maxage=0
       Connection:
       - keep-alive
-      Content-Length:
-      - '56'
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Jan 2021 11:54:50 GMT
+      - Mon, 22 May 2023 08:25:00 GMT
       Expires:
       - '0'
       Pragma:
       - no-cache
       Server:
-      - nginx/1.19.0
+      - nginx/1.18.0
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
       Via:
       - kong/0.13.1
+      X-Content-Type-Options:
+      - nosniff
       X-Correlation-ID:
-      - 129e578473cfa318dad6c7b5fbcd7a51
+      - cae7366900879c895fb2146a6cbd0d5b
+      X-Frame-Options:
+      - DENY
       X-Kong-Proxy-Latency:
-      - '0'
+      - '28'
       X-Kong-Upstream-Latency:
-      - '690'
-      X-MediaHavenVersion:
-      - '20.3'
+      - '11'
+      X-RateLimit-Limit-day:
+      - '2000'
+      X-RateLimit-Limit-minute:
+      - '150'
       X-RateLimit-Limit-second:
-      - '10'
+      - '25'
+      X-RateLimit-Remaining-day:
+      - '1913'
+      X-RateLimit-Remaining-minute:
+      - '149'
       X-RateLimit-Remaining-second:
-      - '9'
+      - '24'
+      X-XSS-Protection:
+      - 1; mode=block
       x-forwarded-proto:
+      - https
       - https
     status:
       code: 200
-      message: ''
-- request:
-    body: "--0ee8b6f98708a7d738f0a8b7c4ded126\r\nContent-Disposition: form-data; name=\"file\";
-      filename=\"qsxs5jbm5c_closed.srt\"\r\n\r\n\uFEFF1\r\n00:00:01,000 --> 00:00:03,023\r\nTweede
-      subtitle test\r\n\r\n2\r\n00:00:03,676 --> 00:00:15,930\r\nGewone tekst hier\r\n\r\n3\r\n00:00:16,972
-      --> 00:50:16,350\r\nGewone tekst hier 50 minuten lang ;)\r\n\r\n\r\n\r\n--0ee8b6f98708a7d738f0a8b7c4ded126\r\nContent-Disposition:
-      form-data; name=\"metadata\"; filename=\"qsxs5jbm5c_closed.xml\"\r\n\r\n<?xml
-      version='1.0' encoding='UTF-8'?>\n<MediaHAVEN_external_metadata>\n  <title>qsxs5jbm5c_closed.srt</title>\n
-      \ <description>Subtitles for item qsxs5jbm5c</description>\n  <MDProperties>\n
-      \   <sp_name>borndigital</sp_name>\n    <CP>testbeeld</CP>\n    <CP_id>OR-h41jm1d</CP_id>\n
-      \   <PID>qsxs5jbm5c_closed</PID>\n    <external_id>qsxs5jbm5c</external_id>\n
-      \   <dc_relations>\n      <is_verwant_aan>qsxs5jbm5c</is_verwant_aan>\n    </dc_relations>\n
-      \ </MDProperties>\n</MediaHAVEN_external_metadata>\n\r\n--0ee8b6f98708a7d738f0a8b7c4ded126\r\nContent-Disposition:
-      form-data; name=\"externalId\"; filename=\"\"\r\n\r\nqsxs5jbm5c_closed\r\n--0ee8b6f98708a7d738f0a8b7c4ded126\r\nContent-Disposition:
-      form-data; name=\"departmentId\"; filename=\"\"\r\n\r\ndd111b7a-efd0-44e3-8816-0905572421da\r\n--0ee8b6f98708a7d738f0a8b7c4ded126\r\nContent-Disposition:
-      form-data; name=\"autoPublish\"; filename=\"\"\r\n\r\ntrue\r\n--0ee8b6f98708a7d738f0a8b7c4ded126--\r\n"
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '1331'
-      Content-Type:
-      - multipart/form-data; boundary=0ee8b6f98708a7d738f0a8b7c4ded126
-      User-Agent:
-      - python-requests/2.25.1
-    method: POST
-    uri: https://archief-qas.viaa.be/mediahaven-rest-api/resources/media/
-  response:
-    body:
-      string: "{\n  \"message\" : \"File already available within MediaHaven for your
-        organisation\",\n  \"status\" : 409,\n  \"code\" : \"EDUPLICATE\"\n}"
-    headers:
-      Cache-Control:
-      - no-store, must-revalidate, pre-check=0, post-check=0, max-age=0, s-maxage=0
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '125'
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 28 Jan 2021 11:54:51 GMT
-      Expires:
-      - '0'
-      Location:
-      - https://archief-qas.viaa.be:443/mediahaven-rest-api/resources/media/90d350224fa34d9b8a48461c5e389fc7996a4faf24af4f9e94efdd31922683dc8e4b6125da4f49448e6946104d114d44
-      Pragma:
-      - no-cache
-      Server:
-      - nginx/1.19.0
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
-      Via:
-      - kong/0.13.1
-      X-Correlation-ID:
-      - 66a5cf985f5e713a275fa08e50cf3bd4
-      X-Kong-Proxy-Latency:
-      - '0'
-      X-Kong-Upstream-Latency:
-      - '945'
-      X-MediaHavenVersion:
-      - '20.3'
-      X-RateLimit-Limit-second:
-      - '5'
-      X-RateLimit-Remaining-second:
-      - '4'
-      x-forwarded-proto:
-      - https
-    status:
-      code: 409
       message: ''
 version: 1
