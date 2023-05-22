@@ -29,7 +29,7 @@ class FtpUploader:
     FTP_DIR = os.environ.get('FTP_DIR', '/FTP_DIR/')
 
     def ftp_client(self, server):
-        # We set a timout of max 7 seconds to be safe. 
+        # We set a timout of max 7 seconds to be safe.
         # On localhost it works with timeout 3 also.
         ftp = FTP(server, timeout=7)
         return ftp
@@ -47,7 +47,7 @@ class FtpUploader:
             ftp.login(self.FTP_USER, self.FTP_PASS)
 
             # set pasv flag so we don't get timeouts
-            ftp.set_pasv(False)
+            # ftp.set_pasv(False)
 
             # change to correct ftp dir
             ftp.cwd(self.FTP_DIR)
@@ -70,15 +70,18 @@ class FtpUploader:
             }
 
         except error_temp as msg:
-            print(f"FTP error: {msg}", flush=True)
+            print(f"FTP error_temp: {msg}", flush=True)
             return {'ftp_error': str(msg)}
 
         except error_perm as msg:
-            print(f"FTP error: {msg}", flush=True)
+            print(f"FTP error_perm: {msg}", flush=True)
             return {'ftp_error': str(msg)}
 
-        except (socket.error, socket.gaierror):
-            print('FTP host error "{}"'.format(self.FTP_SERVER), flush=True)
+        except (socket.error, socket.gaierror) as sock_err:
+            print('FTP host="{}" error="{}"'.format(
+                self.FTP_SERVER,
+                sock_err
+            ), flush=True)
             return {
                 'ftp_error': f"FTP connect error, could not connect to {self.FTP_SERVER}"
             }
