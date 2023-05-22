@@ -266,48 +266,6 @@ def test_subtitle_videoplayer_route_unknownfile(client):
 
 
 @pytest.mark.vcr
-def test_send_to_mam_shows_confirmation(client):
-    with open('./tests/test_subs/mam_data.json') as mam_json_file:
-        mam_data = json.load(mam_json_file)
-
-    res = client.post("/send_to_mam", data={
-        'pid': 'qsxs5jbm5c',
-        'department': 'testbeeld',
-        'subtitle_type': 'closed',
-        'subtitle_file': 'qsxs5jbm5c.srt',
-        'vtt_file': 'qsxs5jbm5c.vtt',
-        'transfer_method': 'api',
-        'mam_data': json.dumps(mam_data)
-    }, follow_redirects=True)
-
-    assert res.status_code == 200
-    assert 'Ondertitelbestand bestaat al voor deze video' in res.data.decode()
-    assert 'bestaande ondertitelbestand qsxs5jbm5c_closed.srt. Wil je het vervangen?' in res.data.decode()
-
-
-@pytest.mark.vcr
-def test_send_to_mam_confirm_works(client):
-    with open('./tests/test_subs/mam_data.json') as mam_json_file:
-        mam_data = json.load(mam_json_file)
-
-    # replace existing subtitle now
-    res = client.post("/send_to_mam", data={
-        'pid': 'qsxs5jbm5c',
-        'department': 'testbeeld',
-        'subtitle_type': 'closed',
-        'subtitle_file': 'qsxs5jbm5c_closed.srt',
-        'xml_file': 'qsxs5jbm5c_closed.xml',
-        'mam_data': json.dumps(mam_data),
-        'transfer_method': 'api',
-        'replace_existing': 'confirm'
-    }, follow_redirects=True)
-
-    assert res.status_code == 200
-    print(res.data.decode(), flush=True)
-    assert 'De ondertitels werden succesvol opgeladen' in res.data.decode()
-
-
-@pytest.mark.vcr
 def test_send_to_mam_cancel_works(client):
     with open('./tests/test_subs/mam_data.json') as mam_json_file:
         mam_data = json.load(mam_json_file)

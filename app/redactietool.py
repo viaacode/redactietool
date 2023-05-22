@@ -397,7 +397,6 @@ def send_subtitles_to_mam():
         'mh_response': request.form.get('mh_response'),
         'mam_data': request.form.get('mam_data'),
         'replace_existing': request.form.get('replace_existing'),
-        'transfer_method': request.form.get('transfer_method')
     }
 
     video_data = json.loads(tp['mam_data'])
@@ -420,31 +419,13 @@ def send_subtitles_to_mam():
             tp['xml_file'], tp['xml_sidecar'] = save_sidecar_xml(
                 upload_folder(), metadata, tp)
 
-        # THIS PART IS DISABLED IN OUR FRONTEND, AND WE ALWAYS USE FTP TO UPLOAD INSTEAD!
-        if tp['transfer_method'] == 'api':
-            mh_api = MediahavenApi()
-            if tp['replace_existing'] == 'confirm':
-                mh_api.delete_old_subtitle(tp['department'], tp['srt_file'])
-
-            mh_response = mh_api.send_subtitles(upload_folder(), metadata, tp)
-            logger.info('send_to_mam', data=mh_response)
-            tp['mh_response'] = json.dumps(mh_response)
-
-            if not tp['replace_existing'] and (
-                (mh_response.get('status') == 409)
-                or
-                (mh_response.get('status') == 400)
-            ):  # duplicate error can give 409 or 400, show dialog
-                return render_template('subtitles/confirm_replace.html', **tp)
-        else:
-            print("TRANSFERRING SUBTITLES SRT WITH FTP!")
-            # upload subtitle and xml sidecar with ftp instead
-            ftp_uploader = FtpUploader()
-            ftp_response = ftp_uploader.upload_subtitles(
-                upload_folder(), metadata, tp)
-            tp['mh_response'] = json.dumps(ftp_response)
-            if 'ftp_error' in ftp_response:
-                tp['mh_error'] = True
+        # upload subtitle and xml sidecar with ftp
+        ftp_uploader = FtpUploader()
+        ftp_response = ftp_uploader.upload_subtitles(
+            upload_folder(), metadata, tp)
+        tp['mh_response'] = json.dumps(ftp_response)
+        if 'ftp_error' in ftp_response:
+            tp['mh_error'] = True
 
         # cleanup temp files and show final page with mh request results
         delete_files(upload_folder(), tp)

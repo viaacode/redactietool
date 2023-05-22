@@ -55,12 +55,6 @@ class MediahavenApi:
 
         self.client = MediaHaven(self.API_SERVER, grant)
 
-    def delete_old_subtitle(self, department, subtitle_file):
-        items = self.client.records.search(
-            q=f"+(originalFileName:{subtitle_file})")
-        if items.total_nr_of_results >= 1:
-            frag_id = items[0].Internal.FragmentId
-            self.delete_fragment(frag_id)
 
     def find_item_by_pid(self, department, pid):
         records = self.client.records.search(q=f"+(ExternalId:{pid})")
@@ -123,54 +117,3 @@ class MediahavenApi:
                 'status': False,
                 'errors': [str(me)]
             }
-
-    # This is unused because we use FTP to upload our subs 
-    def send_subtitles(self, upload_folder, metadata, tp):
-        # sends srt_file and xml_file to mediahaven
-        # send_url = f"{self.API_SERVER}/resources/media/"
-        srt_path = os.path.join(upload_folder, tp['srt_file'])
-        xml_path = os.path.join(upload_folder, tp['xml_file'])
-        fragment_id = metadata['Internal']['FragmentId']
-
-        # external_id = metadata['Administrative']['ExternalId']
-        # sub_id = f"{external_id}_{tp['subtitle_type']}"
-        file_fields = {
-            'file': (tp['srt_file'], open(srt_path, 'rb')),
-            'metadata': (tp['xml_file'], open(xml_path, 'rb')),
-            'externalId': ('', sub_id),
-            'departmentId': ('', self.DEPARTMENT_ID),
-            'autoPublish': ('', 'true')
-        }
-
-        mh_status = self.client.records.update(
-            file_fields,
-            record_id=fragment_id,
-        )
-
-        return {
-            'status': mh_status,
-            'errors': []
-        }
-
-    # TODO: this should work but is untested as we always use ftp upload here instead
-    def delete_fragment(self, frag_id):
-        del_resp = self.client.records.delete(record_id=frag_id)
-
-        logger.info(
-            "deleted old subtitle fragment",
-            data={
-                'fragment': frag_id,
-                'del_response': del_resp
-            }
-        )
-
-
-
-    # below two methods are extra helpers only used by maintenance scripts
-    # def get_object(self, object_id, department='testbeeld'):
-    #     return self.get_proxy(department, f"/resources/media/{object_id}")
-
-    # def list_videos(self, department='testbeeld'):
-    #     matched_videos = self.list_objects(
-    #         department, search=f"%2B(DepartmentName:{department})")
-    #     return matched_videos
