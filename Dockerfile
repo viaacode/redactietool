@@ -21,12 +21,12 @@ RUN set -ex; \
 
 USER appuser
 
-# We install all our Python dependencies. Add the extra index url because some
-# packages are in the meemoo repo.
-RUN  pip install viaa-chassis==0.1.3 \
+# We install all our Python dependencies using internal pypi
+RUN pip install -r requirements.txt \
   --extra-index-url http://do-prd-mvn-01.do.viaa.be:8081/repository/pypi-internal/simple \
-  --trusted-host do-prd-mvn-01.do.viaa.be &&\
-  pip install -r requirements.txt --no-warn-script-location
+  --trusted-host do-prd-mvn-01.do.viaa.be
+
+
 ENV PATH=/home/appuser/.local/bin:$PATH   
 # PLEASE use this only in the test keep main image clean
 #    pip3 install -r requirements-test.txt && \
