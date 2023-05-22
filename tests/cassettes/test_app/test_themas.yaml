@@ -1,0 +1,134 @@
+interactions:
+- request:
+    body: query=%0APREFIX+rdf%3A+%3Chttp%3A//www.w3.org/1999/02/22-rdf-syntax-ns%23%3E%0APREFIX+skos%3A+%3Chttp%3A//www.w3.org/2004/02/skos/core%23%3E%0APREFIX+str%3A+%3Chttps%3A//w3id.org/onderwijs-vlaanderen/id/structuur/%3E%0APREFIX+col%3A+%3Chttps%3A//w3id.org/onderwijs-vlaanderen/id/collectie/%3E%0APREFIX+ocol%3A+%3Chttps%3A//data.hetarchief.be/id/onderwijs/collectie/%3E%0APREFIX+stardog%3A+%3Ctag%3Astardog%3Aapi%3A%3E%0A%0A%0ASELECT+DISTINCT+%3Fid+%3Flabel+%3Fdefinition+%280+AS+%3Fchild_count%29+%3Fparent_id%0AWHERE+%7B%0A++++BIND%28URI%28%27https%3A//data.hetarchief.be/id/onderwijs/collectie/thema%27%29+AS+%3Fcollection%29%0A++++%3Fcollection+skos%3AmemberList+%3Flist+.%0A++++%3Flist+stardog%3Alist%3Amember+%28%3Fid+%3Findex%29+.%0A%0A++++%3Fid+a+skos%3AConcept%3B%0A++++skos%3AprefLabel+%3Flabel%3B%0A++++skos%3Adefinition+%3Fdefinition+.%0A%7D%0AORDER+BY+%3Findex%0A&format=json&output=json&results=json
+    headers:
+      Accept:
+      - application/sparql-results+json,application/json,text/javascript,application/javascript
+      Connection:
+      - close
+      Content-Length:
+      - '912'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Host:
+      - sparql_test_endpoint
+      User-Agent:
+      - sparqlwrapper 1.8.5 (rdflib.github.io/sparqlwrapper)
+    method: POST
+    uri: http://sparql_test_endpoint
+  response:
+    body:
+      string: "{\"head\":{\"vars\":[\"id\",\"label\",\"definition\",\"child_count\",\"parent_id\"]},\"results\":{\"bindings\":[{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Taalkunde,
+        exclusief literatuur, voor de Nederlandse taal\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/nederlandse-taal\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Nederlandse
+        taal\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Taalkunde,
+        exclusief literatuur, voor alle moderne talen\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/moderne-talen\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"moderne
+        talen\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Taalkunde,
+        exclusief literatuur, voor de klassieke talen\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/klassieke-talen\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"klassieke
+        talen\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over literatuur, in alle talen\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/literatuur\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"literatuur\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over communicatie (verbaal, non-verbaal), communicatiemiddelen en de media\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/media-en-communicatie\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"media
+        en communicatie\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over lichaamsbeweging, (top)sport, spellen en spelen\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/sport-en-spel\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"sport
+        en spel\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alle
+        aspecten van de gezondheidszorg, lichamelijke gezondheid\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/gezondheid-en-gezondheidszorg\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"gezondheid
+        en gezondheidszorg\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Persoonlijke
+        hygi\xEBne, haartooi, cosmetica, ...\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/lichamelijke-verzorging\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"lichamelijke
+        verzorging\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over voeding en alle aspecten van de horeca\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/voeding-en-horeca\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"voeding
+        en horeca\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Van
+        politieke partijen en besluitvorming tot de werking van de overheid, wetgeving
+        en burgerparticipatie. Zowel binnen- als buitenland\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/politiek-en-overheid\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"politiek
+        en overheid\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over rechtbanken, rechtspraak, criminaliteit, wetgeving, ...\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/recht\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"recht\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Maatschappelijke
+        participatie\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/participatie\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"participatie\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over persoonlijke relaties, inclusief familiebanden en vriendschap, en seksualiteit\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/relaties-en-seksualiteit\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"relaties
+        en seksualiteit\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over psychologie en mentaal welzijn\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/psychologie\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"psychologie\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Opvoeding
+        van kinderen en ontwikkeling van de mens\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/opvoeding-en-ontwikkeling\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"opvoeding
+        en ontwikkeling\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Het
+        zelfbeeld van individuen en groepen. Gaande van persoonlijke, sociale, culturele
+        tot nationale identiteitsvorming. Ook gender.\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/identiteit\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"identiteit\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over armoede, kansarmoede, armoedebestrijding, ...\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/armoede-en-welvaart\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"armoede
+        en welvaart\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over de waarden (idealen en motieven) van een maatschappij en de normen (richtlijnen,
+        gedragsregels) die moeten leiden tot die waarden, plus deviant gedrag\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/normen-en-waarden\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"normen
+        en waarden\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over de rollen die mensen opnemen in de maatschappij en de stereotypen die
+        daar bij komen. Ook racisme, seksisme, discriminatie, ...\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/rolpatronen-en-stereotypen\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"rolpatronen
+        en stereotypen\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Hoe
+        leren mensen en alles over onderzoekscompetenties en het onderwijs\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/leren-en-onderzoeken\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"leren
+        en onderzoeken\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over religies, geloofsovertuigingen en godsdiensten\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/religie-en-geloof\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"religie
+        en geloof\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over filosofie, (rationele) levensbeschouwingen en ethische vraagstukken\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/filosofie\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"filosofie\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Denk
+        aan oorlog, hongersnood, Arabische lente, treinramp Buizingen, Fukushima,
+        ...\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/rampen-en-conflicten\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"rampen
+        en conflicten\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Micro-
+        en macro-economie\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/economie\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"economie\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Bedrijfseconomie,
+        ondernemerschap, alle aspecten van bedrijfskunde\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/bedrijfsbeheer\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"bedrijfsbeheer\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Persoonlijke
+        financi\xEBle geletterdheid\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/omgaan-met-geld\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"omgaan
+        met geld\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over de arbeidsmarkt, arbeidsomstandigheden, beroepen, vakbonden, solliciteren,
+        arbeidswetgeving, ...\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/beroepen\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"beroepen\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over de prehistorie\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/prehistorie\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"prehistorie\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over de oudheid\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/oudheid\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"oudheid\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over de middeleeuwen\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/middeleeuwen\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"middeleeuwen\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over de vroegmoderne tijd\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/vroegmoderne-tijd\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"vroegmoderne
+        tijd\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over de moderne tijd\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/moderne-tijd\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"moderne
+        tijd\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over de hedendaagse tijd (na WO II - 10 jaar geleden)\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/hedendaagse-tijd\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"hedendaagse
+        tijd\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Materieel
+        en immaterieel erfgoed (tradities, rituelen, ...), alles over hoe we vandaag
+        naar het verleden kijken\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/erfgoed\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"erfgoed\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Organisatie
+        van het verkeer, verkeersveiligheid, files, geschiedenis van de fiets\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/verkeer-en-mobiliteit\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"verkeer
+        en mobiliteit\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over toerisme\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/toerisme\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"toerisme\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Alles
+        over het weer en het klimaat\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/weer-en-klimaat\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"weer
+        en klimaat\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Demografie
+        en ruimtelijke planning\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/bevolking-en-ruimtelijke-ordening\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"bevolking
+        en ruimtelijke ordening\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Fysische
+        geografie\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/landschap-en-reli%C3%ABf\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"landschap
+        en reli\xEBf\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"To
+        space ... and beyond\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/het-heelal\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"het
+        heelal\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Ecosystemen,
+        biodiversiteit, habitat, milieuvervuiling, ...\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/milieu-en-ecologie\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"milieu
+        en ecologie\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Wiskunde\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/wiskunde\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"wiskunde\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Chemie
+        (theorie/praktijk)\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/chemie\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"chemie\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Biologie
+        (theorie/praktijk)\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/biologie\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"biologie\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Fysica
+        (theorie/praktijk)\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/fysica\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"fysica\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Constructie
+        is de manier waarop een groter geheel uit onderdelen samengesteld wordt. Bijvoorbeeld
+        de assemblage van een auto, het bouwen van een woning, meubels, .... Productie
+        is de manier waarop objecten vanuit hun grondstoffen vervaardigd worden. Bijvoorbeeld
+        het maken van glas, karton, houten planken, ... Maar denk hierbij ook aan
+        industri\xEBle assemblage.\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/constructie-en-productie\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"constructie
+        en productie\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Van
+        landbouw tot bosbeheer, van veeteelt tot tuinbouw\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/land--en-tuinbouw\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"land-
+        en tuinbouw\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Digitale
+        technologie\xEBn, programmeren, ...\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/digitale-vaardigheden-en-informatica\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"digitale
+        vaardigheden en informatica\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Mediawijsheid,
+        beeldgeletterdheid, kritische zin\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/mediawijsheid\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"mediawijsheid\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Schilderkunst,
+        tekenkunst, film en fotografie, beeldhouwkunst, games, ...\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/beeldende-kunsten\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"beeldende
+        kunsten\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Dans,
+        muziek, theater, ...\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/podiumkunsten\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"podiumkunsten\"}},{\"child_count\":{\"datatype\":\"http://www.w3.org/2001/XMLSchema#integer\",\"type\":\"literal\",\"value\":\"0\"},\"definition\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"Mode,
+        sierkunsten, architectuur, design, grafische beeldvorming, ...\"},\"id\":{\"type\":\"uri\",\"value\":\"https://data.hetarchief.be/id/onderwijs/thema/toegepaste-kunsten\"},\"label\":{\"xml:lang\":\"nl\",\"type\":\"literal\",\"value\":\"toegepaste
+        kunsten\"}}]}}"
+    headers:
+      Access-Control-Expose-Headers:
+      - SD-Query-Id
+      Connection:
+      - close
+      Content-Encoding:
+      - identity
+      Content-Type:
+      - application/sparql-results+json
+      Date:
+      - Mon, 04 Apr 2022 14:58:28 GMT
+      SD-Query-Id:
+      - '6353'
+      Transfer-Encoding:
+      - chunked
+    status:
+      code: 200
+      message: OK
+version: 1

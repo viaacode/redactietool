@@ -1,0 +1,60 @@
+interactions:
+- request:
+    body: query=%0APREFIX+rdf%3A+%3Chttp%3A//www.w3.org/1999/02/22-rdf-syntax-ns%23%3E%0APREFIX+skos%3A+%3Chttp%3A//www.w3.org/2004/02/skos/core%23%3E%0APREFIX+str%3A+%3Chttps%3A//w3id.org/onderwijs-vlaanderen/id/structuur/%3E%0APREFIX+col%3A+%3Chttps%3A//w3id.org/onderwijs-vlaanderen/id/collectie/%3E%0APREFIX+ocol%3A+%3Chttps%3A//data.hetarchief.be/id/onderwijs/collectie/%3E%0APREFIX+stardog%3A+%3Ctag%3Astardog%3Aapi%3A%3E%0A%0A%0ASELECT+%3Fid+%3Flabel+%3Fdefinition+%28SAMPLE%28%3Fparent%29+as+%3Fparent_id%29%0AWHERE+%7B%0A++++col%3Avak+skos%3Amember+%3Fid.%0A%0A++++%3Fid+a+skos%3AConcept%3B%0A++++skos%3AprefLabel+%3Flabel%3B%0A++++skos%3Adefinition+%3Fdefinition%3B%0A++++skos%3Arelated+%3Fconcept.%0A%0A++++OPTIONAL+%7B+%3Fid+skos%3Abroader+%3Fparent+%7D%0A%0A++++VALUES+%3Fconcept+%7B+%3Chttps%3A//w3id.org/onderwijs-vlaanderen/id/structuur/lager-1e-graad%3E+%3Chttps%3A//w3id.org/onderwijs-vlaanderen/id/structuur/lager-onderwijs%3E+%7D%0A%7D%0AGROUP+BY+%3Fid+%3Flabel+%3Fdefinition%0A&format=json&output=json&results=json
+    headers:
+      Accept:
+      - application/sparql-results+json,application/json,text/javascript,application/javascript
+      Connection:
+      - close
+      Content-Length:
+      - '1025'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Host:
+      - sparql_test_endpoint 
+      User-Agent:
+      - sparqlwrapper 1.8.5 (rdflib.github.io/sparqlwrapper)
+    method: POST
+    uri: http://sparql_test_endpoint
+  response:
+    body:
+      string: '{"head":{"vars":["id","label","definition","parent_id"]},"results":{"bindings":[{"definition":{"xml:lang":"nl","type":"literal","value":"Leren
+        een leertaak zelfstandig tot een goed einde brengen"},"id":{"type":"uri","value":"https://w3id.org/onderwijs-vlaanderen/id/vak/leren-leren"},"label":{"xml:lang":"nl","type":"literal","value":"leren
+        leren"}},{"definition":{"xml:lang":"nl","type":"literal","value":"Beweging,
+        atletiek, gymnastiek, balsporten, veiligheid, teamspirit, identiteit"},"id":{"type":"uri","value":"https://w3id.org/onderwijs-vlaanderen/id/vak/lichamelijke-opvoeding"},"label":{"xml:lang":"nl","type":"literal","value":"lichamelijke
+        opvoeding"}},{"definition":{"xml:lang":"nl","type":"literal","value":"Getallenleer,
+        meetkunde, algebra, analyse, kansrekenen, modelleren"},"id":{"type":"uri","value":"https://w3id.org/onderwijs-vlaanderen/id/vak/wiskunde"},"label":{"xml:lang":"nl","type":"literal","value":"wiskunde"}},{"definition":{"xml:lang":"nl","type":"literal","value":"ICT,
+        computationeel denken"},"id":{"type":"uri","value":"https://w3id.org/onderwijs-vlaanderen/id/vak/ict"},"label":{"xml:lang":"nl","type":"literal","value":"ICT"}},{"definition":{"xml:lang":"nl","type":"literal","value":"Woordenschat,
+        grammatica, Nederlandse cultuur, vaardigheden voor beginners"},"id":{"type":"uri","value":"https://w3id.org/onderwijs-vlaanderen/id/vak/nederlands-voor-nieuwkomers"},"label":{"xml:lang":"nl","type":"literal","value":"Nederlands
+        voor nieuwkomers (vak voorbehouden aan OKAN)"}},{"definition":{"xml:lang":"nl","type":"literal","value":"Beeld,
+        muziek, drama, beweging, media. Zelf-expressie en beleving."},"id":{"type":"uri","value":"https://w3id.org/onderwijs-vlaanderen/id/vak/muzische-vorming"},"label":{"xml:lang":"nl","type":"literal","value":"muzische
+        vorming"}},{"definition":{"xml:lang":"nl","type":"literal","value":"Woordenschat,
+        grammatica, Vlaamse en Nederlandse cultuur, vaardigheden, literatuur"},"id":{"type":"uri","value":"https://w3id.org/onderwijs-vlaanderen/id/vak/nederlands"},"label":{"xml:lang":"nl","type":"literal","value":"Nederlands"}},{"definition":{"xml:lang":"nl","type":"literal","value":"Sociale
+        interactie, sociale relaties, dialoog, participatie"},"id":{"type":"uri","value":"https://w3id.org/onderwijs-vlaanderen/id/vak/sociale-vaardigheden"},"label":{"xml:lang":"nl","type":"literal","value":"sociale
+        vaardigheden"}},{"definition":{"xml:lang":"nl","type":"literal","value":"religie,
+        geloof, de Kerk, filosofie, ethische kwesties, identiteit, diversiteit"},"id":{"type":"uri","value":"https://w3id.org/onderwijs-vlaanderen/id/vak/godsdienst-"},"label":{"xml:lang":"nl","type":"literal","value":"godsdienst"}},{"definition":{"xml:lang":"nl","type":"literal","value":"Vrijzinnig
+        humanisme, identiteit, samenleven, democratie, diversiteit, andere levensbeschouwingen"},"id":{"type":"uri","value":"https://w3id.org/onderwijs-vlaanderen/id/vak/niet-confessionele-zedenleer-"},"label":{"xml:lang":"nl","type":"literal","value":"niet-confessionele
+        zedenleer"}},{"definition":{"xml:lang":"nl","type":"literal","value":"Mens,
+        maatschappij, tijd, ruimte, verkeer"},"id":{"type":"uri","value":"https://w3id.org/onderwijs-vlaanderen/id/vak/mens-en-maatschappij"},"label":{"xml:lang":"nl","type":"literal","value":"mens
+        en maatschappij"}},{"definition":{"xml:lang":"nl","type":"literal","value":"Wetenschappen,
+        techniek, natuur"},"id":{"type":"uri","value":"https://w3id.org/onderwijs-vlaanderen/id/vak/wetenschappen-en-techniek"},"label":{"xml:lang":"nl","type":"literal","value":"wetenschappen
+        en techniek"}}]}}'
+    headers:
+      Access-Control-Expose-Headers:
+      - SD-Query-Id
+      Connection:
+      - close
+      Content-Encoding:
+      - identity
+      Content-Type:
+      - application/sparql-results+json
+      Date:
+      - Mon, 04 Apr 2022 14:57:54 GMT
+      SD-Query-Id:
+      - '6352'
+      Transfer-Encoding:
+      - chunked
+    status:
+      code: 200
+      message: OK
+version: 1
