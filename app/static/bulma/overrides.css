@@ -10,3 +10,19 @@
 .main {
   margin-top: 100px;
 }
+
+.help.is-danger {
+  color: #c2324f;
+}
+
+.button.is-small:not(.is-rounded) {
+    border-radius: 4px;
+}
+
+.button.is-danger {
+  background-color: #c2324f;
+}
+
+.is-danger.input, .is-danger.textarea {
+  border-color: #c2324f;
+}
