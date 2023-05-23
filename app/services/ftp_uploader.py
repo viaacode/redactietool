@@ -47,7 +47,7 @@ class FtpUploader:
             ftp.login(self.FTP_USER, self.FTP_PASS)
 
             # set pasv flag so we don't get timeouts
-            # ftp.set_pasv(False)
+            ftp.set_pasv(False)
 
             # change to correct ftp dir
             ftp.cwd(self.FTP_DIR)
