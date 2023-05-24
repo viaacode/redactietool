@@ -73,15 +73,12 @@ class MetaMapping:
             'item_onderwijsgraden_legacy': dynamic_field(mam_data, 'lom_typicalagerange', 'multiselect'),
             'item_onderwijsniveaus_legacy': dynamic_field(mam_data, 'lom_context', 'multiselect'),
             'item_keywords': dynamic_field(mam_data, 'lom_keywords', 'Sleutelwoord'),
-            # this is just an educated guess TODO: check if this is now correct
-            'item_keywords_cp': mam_data.get('Descriptive').get('Keywords').get('Keyword'),
+            'item_keywords_cp': dynamic_field(mam_data, 'dc_subjects', 'Trefwoord'),
+            # TODO: see if its possible to fetch this directly now with v2
             'publish_item': 'ajax'  # signal ajax request to frontend
         }
 
     def form_params(self, pid, department, mam_data, errors=[]):
-
-        print("frontend data=", json.dumps(mam_data, indent=2))
-
         keyframe_edit_url = '{}{}'.format(
             os.environ.get('KEYFRAME_EDITING_LINK',
                            'https://set_in_secrets?id='),
@@ -222,7 +219,7 @@ class MetaMapping:
 
         # Sleutelwoord(en) trefwoorden -> lom_keywords
         mam_data['Dynamic']['lom_keywords'] = save_json_value(
-            'Sleutelwoord', request.form.get('trefwoorden'), 'code'
+            'Sleutelwoord', request.form.get('trefwoorden'), 'name'
         )
 
         mam_data = self.update_legacy_flag(request, mam_data)
