@@ -59,10 +59,6 @@ class MetaMapping:
         if item_type_lom and len(item_type_lom) > 0:
             item_type = item_type_lom[0]['value']
 
-        print("item keywords_cp =", mam_data.get(
-            'Descriptive').get('Keywords').get('Keyword'))
-        print("old keywords_cp  =", mam_data.get('Descriptive').get('dc_subjects'))
-
         return {
             'pid': pid,
             'department': department,
@@ -77,9 +73,7 @@ class MetaMapping:
             'item_onderwijsgraden_legacy': dynamic_field(mam_data, 'lom_typicalagerange', 'multiselect'),
             'item_onderwijsniveaus_legacy': dynamic_field(mam_data, 'lom_context', 'multiselect'),
             'item_keywords': dynamic_field(mam_data, 'lom_keywords', 'Sleutelwoord'),
-            # TODO: check if this is correct, Descriptive/dc_subjects however does not exist
-            'item_keywords_cp': mam_data.get('Descriptive').get('Keywords').get('Keyword'),
-            # 'item_keywords_cp': get_md_array(mam_data, 'dc_subjects'),
+            'item_keywords_cp': dynamic_field(mam_data, 'dc_subjects', 'Trefwoord'),
             # TODO: see if its possible to fetch this directly now with v2
             'publish_item': 'ajax'  # signal ajax request to frontend
         }
