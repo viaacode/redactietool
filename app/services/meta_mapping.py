@@ -70,18 +70,8 @@ class MetaMapping:
             'item_vakken_legacy': dynamic_field(mam_data, 'lom_classification', 'multiselect'),
             'item_onderwijsniveaus': dynamic_field(mam_data, 'lom_onderwijsniveau', 'Onderwijsniveau'),
             'item_onderwijsgraden': dynamic_field(mam_data, 'lom_onderwijsgraad', 'Onderwijsgraad'),
-            'item_onderwijsgraden_legacy': [],  # TODO: how does this work in v2???
-            'item_onderwijsniveaus_legacy': [],  # TODO: how does this work in v2???
-            # 'item_onderwijsniveaus_legacy': get_md_array(
-            #     mam_data, 'lom_context'),
-            #     mam_data,
-            #     'lom_onderwijsgraad',
-            #     legacy_fallback=True
-            # ),
-            # 'item_onderwijsgraden_legacy': get_md_array(
-            #    mam_data,
-            #    'lom_typicalagerange'
-            # ),
+            'item_onderwijsgraden_legacy': dynamic_field(mam_data, 'lom_typicalagerange', 'multiselect'),
+            'item_onderwijsniveaus_legacy': dynamic_field(mam_data, 'lom_context', 'multiselect'),
             'item_keywords': dynamic_field(mam_data, 'lom_keywords', 'Sleutelwoord'),
             # this is just an educated guess TODO: check if this is now correct
             'item_keywords_cp': mam_data.get('Descriptive').get('Keywords').get('Keyword'),
@@ -89,6 +79,9 @@ class MetaMapping:
         }
 
     def form_params(self, pid, department, mam_data, errors=[]):
+
+        print("frontend data=", json.dumps(mam_data, indent=2))
+
         keyframe_edit_url = '{}{}'.format(
             os.environ.get('KEYFRAME_EDITING_LINK',
                            'https://set_in_secrets?id='),
