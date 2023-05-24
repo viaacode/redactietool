@@ -79,9 +79,7 @@ class MetaMapping:
         }
 
     def form_params(self, pid, department, mam_data, errors=[]):
-
-        print("frontend data=", json.dumps(mam_data, indent=2))
-
+        # print("frontend data=", json.dumps(mam_data, indent=2))
         keyframe_edit_url = '{}{}'.format(
             os.environ.get('KEYFRAME_EDITING_LINK',
                            'https://set_in_secrets?id='),
