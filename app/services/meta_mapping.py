@@ -62,6 +62,8 @@ class MetaMapping:
         print("item keywords=",  dynamic_field(mam_data, 'lom_keywords', 'Sleutelwoord'))
         print("item keywords_cp=", mam_data.get('Descriptive').get('Keywords').get('Keyword'))
 
+        # print("metadata=", mam_data.get('Descriptive').get('dc_subjects').get('multiselect'))
+        print("metadata=", json.dumps(mam_data, indent=2))
         return {
             'pid': pid,
             'department': department,
@@ -77,6 +79,9 @@ class MetaMapping:
             'item_onderwijsniveaus_legacy': dynamic_field(mam_data, 'lom_context', 'multiselect'),
             'item_keywords': dynamic_field(mam_data, 'lom_keywords', 'Sleutelwoord'),
             'item_keywords_cp': mam_data.get('Descriptive').get('Keywords').get('Keyword'),
+            #'item_keywords': get_md_array(mam_data, 'lom_keywords'),
+            #'item_keywords_cp': get_md_array(mam_data, 'dc_subjects'),
+            # TODO: see if its possible to fetch this directly now with v2 
             'publish_item': 'ajax'  # signal ajax request to frontend
         }
 
