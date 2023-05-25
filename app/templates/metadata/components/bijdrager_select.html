@@ -1,7 +1,7 @@
 <div class="mt-5 mb-2">
   <h3 class="prd-subtitle subtitle">Bijdrager(s)</h3>
   <button onclick="addPrdItem('prd_bijdragers', 'prd_bijdrager'); return false;" 
-      class="button is-info is-small">+
+      class="button is-info is-small add-btn">+
   </button>
 </div>
 
@@ -28,7 +28,7 @@
            value="">
   </div>
   <div class="control mr-1">
-    <a class="is-small button is-danger" onclick="deletePrdItem(this); return false;">
+    <a class="is-small button is-danger del-btn" onclick="deletePrdItem(this); return false;">
       x 
     </a>
   </div>
@@ -62,7 +62,7 @@
              value="{{contributor['value']}}">
     </div>
     <div class="control mr-1">
-      <a class="is-small button is-danger" onclick="deletePrdItem(this); return false;">
+      <a class="is-small button is-danger del-btn" onclick="deletePrdItem(this); return false;">
         x 
       </a>
     </div>
