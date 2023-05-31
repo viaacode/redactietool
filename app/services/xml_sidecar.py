@@ -194,66 +194,67 @@ class XMLSidecar:
         self.save_array_field(metadata, "lom_keywords",
                               mdprops, "Sleutelwoord")
 
+        # we don't decode anymore to support special characters as utf-8
         xml_data = etree.tostring(
             root, pretty_print=True, encoding="UTF-8", xml_declaration=True
-        ).decode()
+        )
 
         return xml_data
 
     # this wraps an extra UpdateRecord in the xml file. however since
     # we use ftp upload, not sure it's needed here.
-    def subtitle_sidecar_v2(self, metadata, tp):
-        cp_id = metadata['Dynamic']['CP_id']
-        cp = metadata['Dynamic']['CP']
-        xml_pid = f"{tp['pid']}_{tp['subtitle_type']}"
+    # def subtitle_sidecar_v2(self, metadata, tp):
+    #     cp_id = metadata['Dynamic']['CP_id']
+    #     cp = metadata['Dynamic']['CP']
+    #     xml_pid = f"{tp['pid']}_{tp['subtitle_type']}"
 
-        root, sidecar_root, MH_NS, MHS_NS, XSI_NS = self.create_sidecar_root()
+    #     root, sidecar_root, MH_NS, MHS_NS, XSI_NS = self.create_sidecar_root()
 
-        descriptive = etree.SubElement(
-            sidecar_root, '{%s}Descriptive' % MHS_NS)
-        etree.SubElement(descriptive, '{%s}Title' %
-                         MH_NS).text = tp['srt_file']
-        description = f"Subtitles for item {tp['pid']}"
-        etree.SubElement(
-            descriptive, '{%s}Description' % MH_NS).text = description
+    #     descriptive = etree.SubElement(
+    #         sidecar_root, '{%s}Descriptive' % MHS_NS)
+    #     etree.SubElement(descriptive, '{%s}Title' %
+    #                      MH_NS).text = tp['srt_file']
+    #     description = f"Subtitles for item {tp['pid']}"
+    #     etree.SubElement(
+    #         descriptive, '{%s}Description' % MH_NS).text = description
 
-        rights = etree.SubElement(
-            sidecar_root, '{%s}RightsManagement' % MHS_NS)  # of Structural?
-        permissions = etree.SubElement(rights, '{%s}Permissions' % MH_NS)
-        etree.SubElement(permissions, '{%s}Read' %
-                         MH_NS).text = self.TESTBEELD_PERM_ID
-        etree.SubElement(permissions, '{%s}Read' %
-                         MH_NS).text = self.ONDERWIJS_PERM_ID
-        etree.SubElement(permissions, '{%s}Read' %
-                         MH_NS).text = self.ADMIN_PERM_ID
-        etree.SubElement(permissions, '{%s}Write' %
-                         MH_NS).text = self.TESTBEELD_PERM_ID
-        etree.SubElement(permissions, '{%s}Write' %
-                         MH_NS).text = self.ADMIN_PERM_ID
-        etree.SubElement(permissions, '{%s}Export' %
-                         MH_NS).text = self.TESTBEELD_PERM_ID
-        etree.SubElement(permissions, '{%s}Export' %
-                         MH_NS).text = self.ADMIN_PERM_ID
+    #     rights = etree.SubElement(
+    #         sidecar_root, '{%s}RightsManagement' % MHS_NS)  # of Structural?
+    #     permissions = etree.SubElement(rights, '{%s}Permissions' % MH_NS)
+    #     etree.SubElement(permissions, '{%s}Read' %
+    #                      MH_NS).text = self.TESTBEELD_PERM_ID
+    #     etree.SubElement(permissions, '{%s}Read' %
+    #                      MH_NS).text = self.ONDERWIJS_PERM_ID
+    #     etree.SubElement(permissions, '{%s}Read' %
+    #                      MH_NS).text = self.ADMIN_PERM_ID
+    #     etree.SubElement(permissions, '{%s}Write' %
+    #                      MH_NS).text = self.TESTBEELD_PERM_ID
+    #     etree.SubElement(permissions, '{%s}Write' %
+    #                      MH_NS).text = self.ADMIN_PERM_ID
+    #     etree.SubElement(permissions, '{%s}Export' %
+    #                      MH_NS).text = self.TESTBEELD_PERM_ID
+    #     etree.SubElement(permissions, '{%s}Export' %
+    #                      MH_NS).text = self.ADMIN_PERM_ID
 
-        mdprops = etree.SubElement(sidecar_root, "{%s}Dynamic" % MHS_NS)
+    #     mdprops = etree.SubElement(sidecar_root, "{%s}Dynamic" % MHS_NS)
 
-        # set is_verwant_aan needs overwrite strategy and is needed for new items
-        relations = etree.SubElement(mdprops, "dc_relations")
-        relations.set('strategy', 'OVERWRITE')
-        etree.SubElement(relations, "is_verwant_aan").text = tp['pid']
+    #     # set is_verwant_aan needs overwrite strategy and is needed for new items
+    #     relations = etree.SubElement(mdprops, "dc_relations")
+    #     relations.set('strategy', 'OVERWRITE')
+    #     etree.SubElement(relations, "is_verwant_aan").text = tp['pid']
 
-        etree.SubElement(mdprops, "CP_id").text = cp_id
-        # mediahaven computes external_id for us.
-        # etree.SubElement(mdprops, "external_id").text = xml_pid
-        etree.SubElement(mdprops, "PID").text = xml_pid
-        etree.SubElement(mdprops, "CP").text = cp
-        etree.SubElement(mdprops, "sp_name").text = 'borndigital'
+    #     etree.SubElement(mdprops, "CP_id").text = cp_id
+    #     # mediahaven computes external_id for us.
+    #     # etree.SubElement(mdprops, "external_id").text = xml_pid
+    #     etree.SubElement(mdprops, "PID").text = xml_pid
+    #     etree.SubElement(mdprops, "CP").text = cp
+    #     etree.SubElement(mdprops, "sp_name").text = 'borndigital'
 
-        xml_data = etree.tostring(
-            root, pretty_print=True, encoding="UTF-8", xml_declaration=True
-        ).decode()
+    #     xml_data = etree.tostring(
+    #         root, pretty_print=True, encoding="UTF-8", xml_declaration=True
+    #     ).decode()
 
-        return xml_data
+    #     return xml_data
 
     def sidecar_root_v1(self):
         MH_NS = 'https://zeticon.mediahaven.com/metadata/20.3/mh/'
