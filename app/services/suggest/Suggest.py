@@ -67,7 +67,7 @@ WHERE {{
     skos:definition ?definition .
 
     OPTIONAL {{
-      ?id skos:related ?rel.
+      ?id skos:relatedMatch ?rel.
     }}
 }}
 GROUP BY ?id ?label ?definition ?index
@@ -85,10 +85,10 @@ WHERE {{
     ?id a skos:Concept;
     skos:prefLabel ?label;
     skos:definition ?definition;
-    skos:related ?concept.
+    skos:relatedMatch ?concept.
 
     OPTIONAL {{
-      ?id skos:related ?rel.
+      ?id skos:relatedMatch ?rel.
     }}
 
     VALUES ?concept {{ {concept} }}
@@ -159,7 +159,7 @@ WHERE {{
     ?id a skos:Concept;
         skos:prefLabel ?label;
         skos:definition ?definition;
-        skos:related ?thema, ?graad.
+        skos:relatedMatch ?thema, ?graad.
 
     VALUES ?thema {{ {themas} }}
     VALUES ?graad {{ {graden} }}
