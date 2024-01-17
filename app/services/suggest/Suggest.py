@@ -62,8 +62,11 @@ WHERE {{
 
     ?id a skos:Concept;
     skos:prefLabel ?label;
-    schema:position ?index;
     skos:definition ?definition .
+    
+    OPTIONAL {
+      ?id schema:position ?index
+    }
 
     OPTIONAL {{
       ?id skos:relatedMatch ?rel.
@@ -123,8 +126,11 @@ WHERE {{
 
     ?id a skos:Concept;
     skos:prefLabel ?label;
-    schema:position ?index;
     skos:definition ?definition .
+
+    OPTIONAL {
+      ?id schema:position ?index
+    }
 }}
 ORDER BY ?index
 """
