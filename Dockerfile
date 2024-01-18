@@ -24,7 +24,8 @@ USER appuser
 # We install all our Python dependencies using internal pypi
 RUN pip install -r requirements.txt \
   --extra-index-url http://do-prd-mvn-01.do.viaa.be:8081/repository/pypi-internal/simple \
-  --trusted-host do-prd-mvn-01.do.viaa.be
+  --trusted-host do-prd-mvn-01.do.viaa.be \
+  --user
 
 
 ENV PATH=/home/appuser/.local/bin:$PATH   
