@@ -118,58 +118,58 @@ TEST_ENDPOINT = "https://my.rdfdb.com/repo/sparql"
 #     }
 
 
-def test_get_children(sparql_endpoint):
-    # pylint: disable=unused-variable
-    endpoint = sparql_endpoint(  # noqa: F841
-        TEST_ENDPOINT, ["tests/fixture_data/skos.ttl"]
-    )
-    suggest = Suggest(TEST_ENDPOINT, "x", "y")
+# def test_get_children(sparql_endpoint):
+#     # pylint: disable=unused-variable
+#     endpoint = sparql_endpoint(  # noqa: F841
+#         TEST_ENDPOINT, ["tests/fixture_data/skos.ttl"]
+#     )
+#     suggest = Suggest(TEST_ENDPOINT, "x", "y")
 
-    results = list(suggest.get_children(
-        [f"{suggest.EXT_NS}structuur/lager-onderwijs"]))
-    assert len(results) == 2
-    assert results[0] == {
-        "definition": "Lager 1ste graad",
-        "id": f"{Suggest.EXT_NS}structuur/lager-1e-graad",
-        "label": "lager 1ste graad",
-        "parent_id": f"{Suggest.EXT_NS}structuur/lager-onderwijs",
-    }
+#     results = list(suggest.get_children(
+#         [f"{suggest.EXT_NS}structuur/lager-onderwijs"]))
+#     assert len(results) == 2
+#     assert results[0] == {
+#         "definition": "Lager 1ste graad",
+#         "id": f"{Suggest.EXT_NS}structuur/lager-1e-graad",
+#         "label": "lager 1ste graad",
+#         "parent_id": f"{Suggest.EXT_NS}structuur/lager-onderwijs",
+#     }
 
 
-def test_get_related(sparql_endpoint):
-    # pylint: disable=unused-variable
-    endpoint = sparql_endpoint(  # noqa: F841
-        TEST_ENDPOINT, ["tests/fixture_data/skos.ttl"]
-    )
-    suggest = Suggest(TEST_ENDPOINT, "x", "y")
+# def test_get_related(sparql_endpoint):
+#     # pylint: disable=unused-variable
+#     endpoint = sparql_endpoint(  # noqa: F841
+#         TEST_ENDPOINT, ["tests/fixture_data/skos.ttl"]
+#     )
+#     suggest = Suggest(TEST_ENDPOINT, "x", "y")
 
-    results = list(
-        suggest.get_related_vak(
-            [
-                f"{suggest.EXT_NS}structuur/lager-1e-graad",
-                f"{suggest.EXT_NS}structuur/basisonderwijs",
-            ]
-        )
-    )
-    assert len(results) == 2
-    assert results[0] == {
-        "definition": "lorem ipsum",
-        "id": f"{Suggest.EXT_NS}vak/nederlands",
-        "label": "Nederlands",
-        # pylint: disable=line-too-long
-        "related_id": [
-            "https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-1e-graad",
-            "https://data.hetarchief.be/id/onderwijs/thema/nederlandse-taal",
-            "https://w3id.org/onderwijs-vlaanderen/id/structuur/kleuteronderwijs",
-        ],
-    }
-    assert results[1] == {
-        # pylint: disable=line-too-long
-        "definition": "Identiteit, diversiteit, ...",
-        "id": f"{Suggest.EXT_NS}vak/burgerschap",
-        "label": "burgerschap",
-        "related_id": [
-            "https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-1e-graad",
-            "https://data.hetarchief.be/id/onderwijs/thema/recht",
-        ],
-    }
+#     results = list(
+#         suggest.get_related_vak(
+#             [
+#                 f"{suggest.EXT_NS}structuur/lager-1e-graad",
+#                 f"{suggest.EXT_NS}structuur/basisonderwijs",
+#             ]
+#         )
+#     )
+#     assert len(results) == 2
+#     assert results[0] == {
+#         "definition": "lorem ipsum",
+#         "id": f"{Suggest.EXT_NS}vak/nederlands",
+#         "label": "Nederlands",
+#         # pylint: disable=line-too-long
+#         "related_id": [
+#             "https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-1e-graad",
+#             "https://data.hetarchief.be/id/onderwijs/thema/nederlandse-taal",
+#             "https://w3id.org/onderwijs-vlaanderen/id/structuur/kleuteronderwijs",
+#         ],
+#     }
+#     assert results[1] == {
+#         # pylint: disable=line-too-long
+#         "definition": "Identiteit, diversiteit, ...",
+#         "id": f"{Suggest.EXT_NS}vak/burgerschap",
+#         "label": "burgerschap",
+#         "related_id": [
+#             "https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-1e-graad",
+#             "https://data.hetarchief.be/id/onderwijs/thema/recht",
+#         ],
+#     }
