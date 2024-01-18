@@ -20,6 +20,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX str: <{EXT_NS}structuur/>
 PREFIX col: <{EXT_NS}collectie/>
+PREFIX vak: <{EXT_NS}vak/>
 PREFIX ocol: <{OND_NS}collectie/>
 PREFIX schema: <https://schema.org/>
 
@@ -56,23 +57,28 @@ GROUP BY ?id ?label ?definition ?collection
 GET_VAKKEN_QUERY = (
     PREFIX
     + """
-SELECT ?id ?label ?definition (0 AS ?child_count) (GROUP_CONCAT(?rel; separator=",") as ?related_id)
+SELECT ?id ?label ?definition ?child_count ?related_id
 WHERE {{
-    col:vak skos:member ?id .
+    SELECT ?id ?label ?definition (0 AS ?child_count) (GROUP_CONCAT(?rel; separator=",") as ?related_id)
+    WHERE {{
+        col:vak skos:member ?id .
 
-    ?id a skos:Concept;
-    skos:prefLabel ?label;
-    skos:definition ?definition .
-    
-    OPTIONAL {{
-      ?id schema:position ?index
-    }}
+        ?id a skos:Concept;
+        skos:prefLabel ?label;
+        skos:definition ?definition .
 
-    OPTIONAL {{
-      ?id skos:relatedMatch ?rel.
+        FILTER(?id NOT IN (vak:project-algemene-vakken, vak:sociale-activiteit))
+        
+        OPTIONAL {{
+        ?id schema:position ?index
+        }}
+
+        OPTIONAL {{
+        ?id skos:relatedMatch ?rel.
+        }}
     }}
+    GROUP BY ?id ?label ?definition ?index
 }}
-GROUP BY ?id ?label ?definition ?index
 ORDER BY ?index
 """
 )
@@ -109,11 +115,16 @@ WHERE {{
     ?id a skos:Concept;
         skos:prefLabel ?label;
         skos:definition ?definition .
+    
+    OPTIONAL {{
+      ?id schema:position ?index
+    }}
 
     OPTIONAL {{ ?id skos:narrower ?child. }}
     OPTIONAL {{ ?id skos:broader ?parent }}
 }}
-GROUP BY ?id ?label ?definition
+GROUP BY ?id ?label ?definition ?index
+ORDER BY ?index
 """
 )
 
