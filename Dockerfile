@@ -4,7 +4,7 @@ FROM python:3.9-slim
 EXPOSE 8080
 
 # Make a new group and user so we don't run as root.
-RUN addgroup --system appgroup && adduser -u 1001 --system appuser --ingroup appgroup
+RUN addgroup --system appgroup && adduser -u 1001 --system appuser --ingroup appgroup --home /app
 
 WORKDIR /app
 
