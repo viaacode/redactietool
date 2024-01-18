@@ -21,7 +21,7 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX str: <{EXT_NS}structuur/>
 PREFIX col: <{EXT_NS}collectie/>
 PREFIX ocol: <{OND_NS}collectie/>
-PREFIX stardog: <tag:stardog:api:>
+PREFIX schema: <https://schema.org/>
 
 """
 
@@ -58,16 +58,18 @@ GET_VAKKEN_QUERY = (
     + """
 SELECT ?id ?label ?definition (0 AS ?child_count) (GROUP_CONCAT(?rel; separator=",") as ?related_id)
 WHERE {{
-    # col:vak skos:memberList ?list .
-    # ?list stardog:list:member (?id ?index) .
     col:vak skos:member ?id .
 
     ?id a skos:Concept;
     skos:prefLabel ?label;
     skos:definition ?definition .
+    
+    OPTIONAL {
+      ?id schema:position ?index
+    }
 
     OPTIONAL {{
-      ?id skos:related ?rel.
+      ?id skos:relatedMatch ?rel.
     }}
 }}
 GROUP BY ?id ?label ?definition ?index
@@ -85,10 +87,10 @@ WHERE {{
     ?id a skos:Concept;
     skos:prefLabel ?label;
     skos:definition ?definition;
-    skos:related ?concept.
+    skos:relatedMatch ?concept.
 
     OPTIONAL {{
-      ?id skos:related ?rel.
+      ?id skos:relatedMatch ?rel.
     }}
 
     VALUES ?concept {{ {concept} }}
@@ -120,13 +122,15 @@ GET_THEMAS_QUERY = (
     + """
 SELECT DISTINCT ?id ?label ?definition (0 AS ?child_count)
 WHERE {{
-    # ocol:thema skos:memberList ?list .
-    # ?list stardog:list:member (?id ?index) .
     ocol:thema skos:member ?id .
 
     ?id a skos:Concept;
     skos:prefLabel ?label;
     skos:definition ?definition .
+
+    OPTIONAL {
+      ?id schema:position ?index
+    }
 }}
 ORDER BY ?index
 """
@@ -159,7 +163,7 @@ WHERE {{
     ?id a skos:Concept;
         skos:prefLabel ?label;
         skos:definition ?definition;
-        skos:related ?thema, ?graad.
+        skos:relatedMatch ?thema, ?graad.
 
     VALUES ?thema {{ {themas} }}
     VALUES ?graad {{ {graden} }}
