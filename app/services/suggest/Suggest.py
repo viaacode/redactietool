@@ -59,7 +59,7 @@ GET_VAKKEN_QUERY = (
     + """
 SELECT ?id ?label ?definition ?child_count ?related_id
 WHERE {{
-    SELECT ?id ?label ?definition (0 AS ?child_count) (GROUP_CONCAT(?rel; separator=",") as ?related_id)
+    SELECT ?id ?label ?definition (0 AS ?child_count) (GROUP_CONCAT(?rel; separator=",") as ?related_id) ?index
     WHERE {{
         col:vak skos:member ?id .
 
