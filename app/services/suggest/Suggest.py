@@ -29,28 +29,36 @@ PREFIX schema: <https://schema.org/>
 GET_NIVEAUS_QUERY = (
     PREFIX
     + """
-SELECT ?id ?label ?definition ?collection (count(?child) as ?child_count) (SAMPLE(?parent) as ?parent_id)
+SELECT ?id ?label ?definition ?collection ?child_count ?parent_id 
 WHERE {{
-    {{ col:niveau skos:member ?id.
-       FILTER (?id NOT IN ( str:basisonderwijs ) )
-    }} UNION {{
-        col:subniveau skos:member ?id.
-        FILTER (?id NOT IN ( str:secundair-volwassenenonderwijs, str:basiseducatie ) )
+    SELECT ?id ?label ?definition ?collection (count(?child) as ?child_count) (SAMPLE(?parent) as ?parent_id)
+    WHERE {{
+        {{ col:niveau skos:member ?id.
+            FILTER (?id IN ( ostr:deeltijds-kunstonderwijs, ostr:hoger-onderwijs, ostr:volwassenenonderwijs ) )
+        }} UNION {{
+            col:subniveau skos:member ?id.
+            FILTER (?id IN ( ostr:kleuteronderwijs ) )
+        }}
+
+        ?id a skos:Concept;
+            skos:prefLabel ?label;
+            skos:definition ?definition .
+
+        ?c skos:member ?id; skos:prefLabel ?collection.
+
+        OPTIONAL {{
+            ?id schema:position ?index
+        }}
+
+        OPTIONAL {{
+            ?id skos:narrower ?child.
+            col:graad skos:member ?child
+        }}
+        OPTIONAL {{ ?id skos:broader ?parent }}
     }}
-
-    ?id a skos:Concept;
-        skos:prefLabel ?label;
-        skos:definition ?definition .
-
-    ?c skos:member ?id; skos:prefLabel ?collection.
-
-    OPTIONAL {{
-        ?id skos:narrower ?child.
-        col:graad skos:member ?child
-    }}
-    OPTIONAL {{ ?id skos:broader ?parent }}
+    GROUP BY ?id ?label ?definition ?collection ?index
 }}
-GROUP BY ?id ?label ?definition ?collection
+ORDER BY ?index
 """
 )
 
@@ -111,6 +119,15 @@ GET_GRADEN_QUERY = (
 SELECT ?id ?label ?definition (count(?child) as ?child_count) (SAMPLE(?parent) as ?parent_id)
 WHERE {{
     col:graad a skos:Collection; skos:member ?id.
+
+    FILTER(?id IN ( 
+        ostr:lager-1e-graad, 
+        ostr:lager-2e-graad, 
+        ostr:lager-3e-graad,
+        ostr:secundair-1e-graad,
+        ostr:secundair-2e-graad,
+        ostr:secundair-3e-graad  
+        ))
 
     ?id a skos:Concept;
         skos:prefLabel ?label;
