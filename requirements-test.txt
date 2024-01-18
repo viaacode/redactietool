@@ -6,3 +6,4 @@ pytest-recording>=0.7.0
 flake8>=3.8.4
 flask-cors==3.0.10
 sparql-endpoint-fixture>=0.5.0
+requests~=2.27.0
