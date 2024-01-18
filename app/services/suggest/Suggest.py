@@ -34,10 +34,10 @@ WHERE {{
     SELECT ?id ?label ?definition ?collection (count(?child) as ?child_count) (SAMPLE(?parent) as ?parent_id)
     WHERE {{
         {{ col:niveau skos:member ?id.
-            FILTER (?id IN ( ostr:deeltijds-kunstonderwijs, ostr:hoger-onderwijs, ostr:volwassenenonderwijs ) )
+            FILTER (?id IN ( str:deeltijds-kunstonderwijs, str:hoger-onderwijs, str:volwassenenonderwijs ) )
         }} UNION {{
             col:subniveau skos:member ?id.
-            FILTER (?id IN ( ostr:kleuteronderwijs ) )
+            FILTER (?id IN ( str:kleuteronderwijs ) )
         }}
 
         ?id a skos:Concept;
@@ -121,12 +121,12 @@ WHERE {{
     col:graad a skos:Collection; skos:member ?id.
 
     FILTER(?id IN ( 
-        ostr:lager-1e-graad, 
-        ostr:lager-2e-graad, 
-        ostr:lager-3e-graad,
-        ostr:secundair-1e-graad,
-        ostr:secundair-2e-graad,
-        ostr:secundair-3e-graad  
+        str:lager-1e-graad, 
+        str:lager-2e-graad, 
+        str:lager-3e-graad,
+        str:secundair-1e-graad,
+        str:secundair-2e-graad,
+        str:secundair-3e-graad  
         ))
 
     ?id a skos:Concept;
