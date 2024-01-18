@@ -64,9 +64,9 @@ WHERE {{
     skos:prefLabel ?label;
     skos:definition ?definition .
     
-    OPTIONAL {
+    OPTIONAL {{
       ?id schema:position ?index
-    }
+    }}
 
     OPTIONAL {{
       ?id skos:relatedMatch ?rel.
@@ -128,9 +128,9 @@ WHERE {{
     skos:prefLabel ?label;
     skos:definition ?definition .
 
-    OPTIONAL {
+    OPTIONAL {{
       ?id schema:position ?index
-    }
+    }}
 }}
 ORDER BY ?index
 """
