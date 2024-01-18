@@ -14,7 +14,7 @@ from app.redactietool import app
 # it does work locally:
 # sparql-endpoint-fixture>=0.5.0
 pytest_plugins = [
-    "sparql_endpoint_fixture.endpoint"
+    #"sparql_endpoint_fixture.endpoint"
 ]
 
 
