@@ -42,6 +42,8 @@ WHERE {{
             str:hoger-onderwijs 
             str:volwassenenonderwijs 
             str:kleuteronderwijs 
+            str:lageronderwijs
+            str:secundair-onderwijs
         }} 
 
         ?c skos:member ?id; skos:prefLabel ?collection.
