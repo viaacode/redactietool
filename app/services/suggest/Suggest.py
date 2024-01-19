@@ -33,18 +33,15 @@ SELECT ?id ?label ?definition ?collection ?child_count ?parent_id
 WHERE {{
     SELECT ?id ?label ?definition ?collection (count(?child) as ?child_count) (SAMPLE(?parent) as ?parent_id)
     WHERE {{
-        {{ col:niveau skos:member ?id.
-            FILTER (?id IN ( str:deeltijds-kunstonderwijs, str:hoger-onderwijs, str:volwassenenonderwijs ) )
-        }} UNION {{
-            col:subniveau skos:member ?id.
-            FILTER (?id IN ( str:kleuteronderwijs ) )
-        }}
-
         ?id a skos:Concept;
             skos:prefLabel ?label;
             skos:definition ?definition .
+        
+        VALUES ?id {{ str:deeltijds-kunstonderwijs str:hoger-onderwijs str:volwassenenonderwijs str:kleuteronderwijs }} 
 
         ?c skos:member ?id; skos:prefLabel ?collection.
+        
+        VALUES ?c {{ col:subniveau col:niveau }}
 
         OPTIONAL {{
             ?id schema:position ?index
@@ -118,20 +115,19 @@ GET_GRADEN_QUERY = (
     + """
 SELECT ?id ?label ?definition (count(?child) as ?child_count) (SAMPLE(?parent) as ?parent_id)
 WHERE {{
-    col:graad a skos:Collection; skos:member ?id.
-
-    FILTER(?id IN ( 
-        str:lager-1e-graad, 
-        str:lager-2e-graad, 
-        str:lager-3e-graad,
-        str:secundair-1e-graad,
-        str:secundair-2e-graad,
-        str:secundair-3e-graad  
-        ))
 
     ?id a skos:Concept;
         skos:prefLabel ?label;
         skos:definition ?definition .
+
+    VALUES ?id {{
+        str:lager-1e-graad
+        str:lager-2e-graad
+        str:lager-3e-graad
+        str:secundair-1e-graad
+        str:secundair-2e-graad
+        str:secundair-3e-graad  
+    }}
     
     OPTIONAL {{
       ?id schema:position ?index
