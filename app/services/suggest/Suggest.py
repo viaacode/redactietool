@@ -37,7 +37,12 @@ WHERE {{
             skos:prefLabel ?label;
             skos:definition ?definition .
         
-        VALUES ?id {{ str:deeltijds-kunstonderwijs str:hoger-onderwijs str:volwassenenonderwijs str:kleuteronderwijs }} 
+        VALUES ?id {{ 
+            str:deeltijds-kunstonderwijs 
+            str:hoger-onderwijs 
+            str:volwassenenonderwijs 
+            str:kleuteronderwijs 
+        }} 
 
         ?c skos:member ?id; skos:prefLabel ?collection.
         
@@ -178,19 +183,23 @@ WHERE {{
 SUGGEST_VAKKEN_BY_IDS_QUERY = (
     PREFIX
     + """
-SELECT ?id ?label ?definition (GROUP_CONCAT(?graad; separator=",") as ?related_id)
+SELECT ?id ?label ?definition (GROUP_CONCAT(?graad; separator=",") as ?related_id) 
 WHERE {{
-    ocol:thema skos:member ?thema.
-    col:graad skos:member ?graad.
-    col:vak skos:member ?id.
+    SELECT ?id ?label ?definition ?graad
+    WHERE {{
+        ocol:thema skos:member ?thema.
+        col:graad skos:member ?graad.
+        col:vak skos:member ?id.
 
-    ?id a skos:Concept;
-        skos:prefLabel ?label;
-        skos:definition ?definition;
-        skos:relatedMatch ?thema, ?graad.
+        ?id a skos:Concept;
+            skos:prefLabel ?label;
+            skos:definition ?definition;
+            skos:relatedMatch ?thema, ?graad.
 
-    VALUES ?thema {{ {themas} }}
-    VALUES ?graad {{ {graden} }}
+        VALUES ?thema {{ {themas} }}
+        VALUES ?graad {{ {graden} }}
+    }}
+    GROUP BY ?id ?label ?definition ?graad
 }}
 GROUP BY ?id ?label ?definition
 """
