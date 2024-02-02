@@ -511,6 +511,11 @@
           if(niv.id.includes('lager')) return false;
           if(niv.id.includes('secundair')) return false;
         }
+        for(var i in this.graden){
+          var grd = this.graden[i];
+          if(grd.id.includes('lager')) return false;
+          if(grd.id.includes('secundair')) return false;
+        }
 
         // enkel hoger, volwassen of geen niveaus geselecteerd
         return true;
