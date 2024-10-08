@@ -1,28 +1,11 @@
 from flask import current_app as app
 from flask import redirect, render_template, request, session
-from flask_login import LoginManager
 from onelogin.saml2.auth import OneLogin_Saml2_Auth
 from onelogin.saml2.utils import OneLogin_Saml2_Utils
 
 from app.services.user import OAS_APPNAME, User, check_saml_session
 
-# mixin/model for current_user method of flask login
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'index'
 
-
-@login_manager.request_loader
-def load_user_from_request(request):
-    user = User()
-    if check_saml_session():
-        user.save_saml_username(session.get('samlUserdata'))
-        return user
-    else:
-        session.clear()  # clear bad or timed out session
-
-
-# ========================== SAML Authentication ==============================
 def init_saml_auth(req):
     auth = OneLogin_Saml2_Auth(req, custom_base_path=app.config['SAML_PATH'])
 
@@ -44,8 +27,9 @@ def prepare_flask_request(request):
     }
 
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
+def saml_login():
+    print(">>>> INDEX ROUTE IN saml.py")
+
     req = prepare_flask_request(request)
     auth = init_saml_auth(req)
     errors = []
