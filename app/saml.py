@@ -28,8 +28,6 @@ def prepare_flask_request(request):
 
 
 def saml_login():
-    print(">>>> INDEX ROUTE IN saml.py")
-
     req = prepare_flask_request(request)
     auth = init_saml_auth(req)
     errors = []

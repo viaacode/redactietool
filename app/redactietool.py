@@ -29,6 +29,7 @@ from viaa.configuration import ConfigParser
 from viaa.observability import logging
 
 from app.config import flask_environment
+from app.debug_login import legacy_login, legacy_login_submit
 from app.saml import saml_login
 from app.services.elastic_api import ElasticApi
 from app.services.ftp_uploader import FtpUploader
@@ -38,7 +39,7 @@ from app.services.subtitle_files import (delete_files, get_vtt_subtitles,
                                          move_subtitle, not_deleted,
                                          save_sidecar_xml, save_subtitles)
 from app.services.suggest_api import SuggestApi
-from app.services.user import OAS_APPNAME, User, check_saml_session
+from app.services.user import User, check_saml_session
 from app.services.validation import (pid_error, upload_error,
                                      validate_conversion, validate_input,
                                      validate_upload)
@@ -65,8 +66,14 @@ app.config['SAML_PATH'] = os.path.join(
 )
 
 
-# @app.route('/', methods=['GET', 'POST'])
+# add routes to saml.py module for login/logout with saml
 app.add_url_rule('/', view_func=saml_login, methods=['GET', 'POST'])
+
+# add routes for legacy login (without saml) when testing or debugging
+print("DEBUG legacy_login routes added")
+app.add_url_rule('/legacy_login', view_func=legacy_login, methods=['GET'])
+app.add_url_rule('/legacy_login', view_func=legacy_login_submit, methods=['POST'])
+
 
 # optionally session expiry can be set like so if wanted:
 # app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(hours=9)
@@ -88,39 +95,6 @@ def load_user_from_request(request):
         session.clear()  # clear bad or timed out session
 
 
-# ====================== Development LOGIN RELATED ROUTES ==========================
-@app.route('/legacy_login', methods=['GET'])
-def legacy_login():
-    return render_template('legacy_login.html')
-
-
-@app.route('/legacy_login', methods=['POST'])
-def login():
-    if app.config['DEBUG'] is True or app.config['TESTING']:
-        username = request.form.get('username')
-        password = request.form.get('password')
-
-        logger.info("POST login =", dictionary={
-            'username': username,
-            'password': '[FILTERED]'
-        })
-
-        if username == 'admin' and password == 'admin':
-            session['samlUserdata'] = {}
-            session['samlUserdata']['cn'] = [username]
-            session['samlUserdata']['apps'] = [OAS_APPNAME]
-            return redirect(
-                url_for('.search_media')
-            )
-        else:
-            session.clear()  # clear bad or timed out session
-            return render_template('legacy_login.html', validation_errors='Fout email of wachtwoord')
-
-    else:
-        return render_template('legacy_login.html', validation_errors='Development login disabled')
-
-
-# ======================== SUBLOADER RELATED ROUTES ===========================
 @app.route('/search_media', methods=['GET'])
 @login_required
 def search_media():
