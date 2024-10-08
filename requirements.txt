@@ -1,7 +1,6 @@
 Flask==1.1.4
 markupsafe==2.0.1
 Flask-API==2.0
-lxml==4.6.4
 uWSGI==2.0.18
 requests~=2.27.0
 pyjwt>=1.7.0
@@ -10,7 +9,6 @@ Werkzeug==1.0.0
 certifi==2021.10.8
 onelogin==3.1.4
 rdflib>=6.0.2
-python3-saml==1.14.0
 flask-login>=0.5.0
 MarkupSafe>=2.0.0
 argparse==1.4.0
@@ -21,3 +19,6 @@ mediahaven==0.6.0
 viaa-chassis==0.1.3
 pydantic==1.10.7
 urllib3==1.25.11
+python3-saml==1.16.0
+lxml==5.2.1
+xmlsec==1.3.14
