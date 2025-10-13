@@ -42,7 +42,7 @@ WHERE {{
             str:hoger-onderwijs 
             str:volwassenenonderwijs 
             str:kleuteronderwijs 
-            str:lageronderwijs
+            str:lager-onderwijs
             str:secundair-onderwijs
         }} 
 
