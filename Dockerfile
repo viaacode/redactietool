@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.9-slim-bookworm
 
 # Applications should run on port 8080 so NGINX can auto discover them.
 EXPOSE 8080
@@ -17,18 +17,18 @@ RUN set -ex; \
     apt-get install --no-install-recommends -y   $build_deps &&\
     /usr/local/bin/python -m pip install --upgrade pip setuptools wheel ; \
     pip install uWSGI==2.0.18 xmlsec==1.3.13 ;\
-    apt-get purge -y --auto-remove $build_deps && apt-get clean && rm -rf /var/lib/apt/lists/*   
+    apt-get purge -y --auto-remove $build_deps && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER appuser
 
 # We install all our Python dependencies using internal pypi
 RUN pip install -r requirements.txt \
-  --extra-index-url http://do-prd-mvn-01.do.viaa.be:8081/repository/pypi-internal/simple \
-  --trusted-host do-prd-mvn-01.do.viaa.be \
-  --user
+    --extra-index-url http://do-prd-mvn-01.do.viaa.be:8081/repository/pypi-internal/simple \
+    --trusted-host do-prd-mvn-01.do.viaa.be \
+    --user
 
 
-ENV PATH=/home/appuser/.local/bin:$PATH   
+ENV PATH=/home/appuser/.local/bin:$PATH
 # PLEASE use this only in the test keep main image clean
 #    pip3 install -r requirements-test.txt && \
 #    pip3 install flake8
