@@ -8,26 +8,35 @@
 #   subtitles in srt format into webvtt format
 #
 
-from webvtt.parsers import SRTParser
-from webvtt.writers import WebVTTWriter
-from webvtt.errors import MalformedFileError
+#from webvtt.parsers import SRTParser
+#from webvtt.writers import WebVTTWriter
+#from webvtt.errors import MalformedFileError
 
 
-class SRTStringParser(SRTParser):
-    """
-    SRT parser that works on strings
-    """
-
-    def readstr(self, srt_string):
-        """Reads the captions as string."""
-        lines = srt_string.splitlines()
-        self._validate(lines)
-        self._parse(lines)
-
-        return self
+import io
+import webvtt
 
 
 def convert_srt(srt_content):
+    try:
+        # webvtt can read from a file-like object
+        srt_file = io.StringIO(srt_content)
+
+        vtt = webvtt.from_srt(srt_file)
+
+        # return the VTT content as string
+        return vtt.content
+
+    except Exception as e:
+        print("convert_srt: error", e)
+        return ""
+
+
+
+
+
+
+def _convert_srt(srt_content):
     try:
         parser = SRTStringParser().readstr(srt_content)
         captions = parser.captions

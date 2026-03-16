@@ -470,7 +470,7 @@ def page_not_found(e):
     # return "<h1>404</h1><p>Page not found</p>", 404
     return redirect(url_for('.not_found_errorpage'))
 
-
+# removed uwsgi
 # =============== Main application startup without debug mode ================
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8000, debug=False)
+#if __name__ == "__main__":
+#    app.run(host='0.0.0.0', port=8000, debug=False)
