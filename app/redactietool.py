@@ -24,7 +24,7 @@ import os
 
 from flask import (Flask, Response, redirect, render_template, request,
                    send_from_directory, session, url_for)
-from flask_api import status
+from http import HTTPStatus
 from flask_login import LoginManager, login_required  # current_user
 from viaa.configuration import ConfigParser
 from viaa.observability import logging
@@ -451,12 +451,12 @@ def keyword_search():
 # =================== HEALTH CHECK ROUTES AND ERROR HANDLING ==================
 @app.route("/health/live")
 def liveness_check():
-    return "OK", status.HTTP_200_OK
+    return "OK", HTTPStatus.OK
 
 
 @app.route('/404')
 def not_found_errorpage():
-    return render_template('404.html'), 404
+    return render_template('404.html'), HTTPStatus.NOT_FOUND
 
 
 @app.errorhandler(401)
@@ -473,4 +473,4 @@ def page_not_found(e):
 
 # =============== Main application startup without debug mode ================
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8000, debug=False)
+    app.run(host='0.0.0.0', port=int(os.getenv('PORT', '8080')), debug=False)
