@@ -11,7 +11,7 @@ import os
 import json
 
 from unittest.mock import MagicMock
-from flask_api import status
+from http import HTTPStatus
 from app.redactietool import app
 
 
@@ -34,7 +34,7 @@ def vcr_config():
 
 def test_home(client):
     res = client.get('/')
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == HTTPStatus.OK
     assert b'Inloggen' in res.data
 
 
@@ -42,7 +42,7 @@ def test_liveness_check(client):
     res = client.get('/health/live')
 
     assert res.data == b'OK'
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == HTTPStatus.OK
 
 
 def test_search_media_security(client):
@@ -50,7 +50,7 @@ def test_search_media_security(client):
     # assert res.status_code == 401  # unauthorized
 
     # with flask-login this auto redirects to login now with a 302
-    assert res.status_code == 302  # redirects to login
+    assert res.status_code == HTTPStatus.FOUND  # redirects to login
 
 
 def test_search_media(client):

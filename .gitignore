@@ -2,6 +2,10 @@ python_env
 *secret*
 __pycache__
 .coverage
+.claude
+.env.local
+local.Dockerfile
+docker-compose.yml
 htmlcov
 *.pem
 *.key
