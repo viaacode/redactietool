@@ -4,5 +4,5 @@ pytest-cov>=6.0.0
 autopep8>=2.3.0
 pytest-recording>=0.13.2
 flake8>=7.0.0
-flask-cors>=5.0.0
+flask-cors==5.0.0
 #sparql-endpoint-fixture>=0.5.0

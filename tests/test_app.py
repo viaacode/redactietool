@@ -262,7 +262,6 @@ def test_subtitle_videoplayer_route(auth_client):
 @pytest.mark.vcr
 def test_subtitle_videoplayer_route_unknownfile(client):
     res = client.get('/subtitles/someinvalidpath.vtt')
-    # WEIRD possible todo
     assert res.status_code == HTTPStatus.FOUND  # redirects to 404 page
 
 
