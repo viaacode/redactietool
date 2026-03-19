@@ -7,3 +7,4 @@ htmlcov
 *.pem
 *.key
 *generate_saml_certificate*
+frontend/redactietool_widgets/node_modules
