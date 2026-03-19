@@ -53,94 +53,94 @@ def test_search_media_security(client):
     assert res.status_code == HTTPStatus.FOUND  # redirects to login
 
 
-def test_search_media(client):
-    with client.session_transaction() as session:
+def test_search_media(auth_client):
+    with auth_client.session_transaction() as session:
         session['samlUserdata'] = {}
         session['samlUserdata']['cn'] = ['Test user']
         session['samlUserdata']['apps'] = ['mediahaven']
 
-    res = client.get("/search_media")
-    assert res.status_code == 200
+    res = auth_client.get("/search_media")
+    assert res.status_code == HTTPStatus.OK
 
 
-def test_invalid_pid_entry(client):
-    res = client.post("/search_media", data={
+def test_invalid_pid_entry(auth_client):
+    res = auth_client.post("/search_media", data={
         'department': 'testbeeld',
         'pid': 'abc123#'
     }, follow_redirects=True)
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'PID formaat foutief' in res.data.decode()
 
 
-def test_empty_pid(client):
-    res = client.post("/search_media", data={
+def test_empty_pid(auth_client):
+    res = auth_client.post("/search_media", data={
         'department': 'testbeeld',
         'pid': ''
     }, follow_redirects=True)
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'Geef een PID' in res.data.decode()
 
 
 @pytest.mark.vcr
-def test_wrong_pid_entry(client):
-    res = client.post("/search_media", data={
+def test_wrong_pid_entry(auth_client):
+    res = auth_client.post("/search_media", data={
         'department': 'testbeeld',
         'pid': 'abc123'
     }, follow_redirects=True)
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'PID niet gevonden in testbeeld' in res.data.decode()
 
 
 @pytest.mark.vcr
-def test_working_pid_search(client):
-    res = client.post("/search_media", data={
+def test_working_pid_search(auth_client):
+    res = auth_client.post("/search_media", data={
         'department': 'testbeeld',
         'pid': 'qsxs5jbm5c',
         'redirect_subtitles': 'yes'
     }, follow_redirects=True)
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'Kies ondertitelbestand' in res.data.decode()
 
 
-def test_invalid_long_pid_entry(client):
-    res = client.post("/search_media", data={
+def test_invalid_long_pid_entry(auth_client):
+    res = auth_client.post("/search_media", data={
         'department': 'testbeeld',
         'pid': 'abc123'*40
     }, follow_redirects=True)
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'PID te lang' in res.data.decode()
 
 
-def test_invalid_department_entry(client):
-    res = client.post("/search_media", data={
+def test_invalid_department_entry(auth_client):
+    res = auth_client.post("/search_media", data={
         'department': 'testbeeld%^',
         'pid': 'abc123'
     }, follow_redirects=True)
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'Department formaat foutief' in res.data.decode()
 
 
-def test_invalid_long_department(client):
-    res = client.post("/search_media", data={
+def test_invalid_long_department(auth_client):
+    res = auth_client.post("/search_media", data={
         'department': 'testbeeld_te_lang'*40,
         'pid': 'abc123'
     }, follow_redirects=True)
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'department te lang' in res.data.decode()
 
 
 @pytest.mark.vcr
-def test_bad_srt_upload(client):
+def test_bad_srt_upload(auth_client):
     filename = 'subtitles.srt'
 
-    res = client.post("/upload", data={
+    res = auth_client.post("/upload", data={
         'pid': 'qsxs5jbm5c',
         'department': 'testbeeld',
         'mam_data': '',
@@ -149,15 +149,15 @@ def test_bad_srt_upload(client):
         'subtitle_file': (io.BytesIO(b"some initial data"), filename)
     }, follow_redirects=True)
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'Ondertitels moeten in SRT formaat' in res.data.decode()
 
 
 @pytest.mark.vcr
-def test_invalid_upload(client):
+def test_invalid_upload(auth_client):
     filename = 'somefile.png'
 
-    res = client.post("/upload", data={
+    res = auth_client.post("/upload", data={
         'pid': 'qsxs5jbm5c',
         'department': 'testbeeld',
         'mam_data': '',
@@ -166,13 +166,13 @@ def test_invalid_upload(client):
         'subtitle_file': (io.BytesIO(b"some initial data"), filename)
     }, follow_redirects=True)
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'Ondertitels moeten in SRT formaat' in res.data.decode()
 
 
 @pytest.mark.vcr
-def test_empty_upload(client):
-    res = client.post("/upload", data={
+def test_empty_upload(auth_client):
+    res = auth_client.post("/upload", data={
         'pid': 'qsxs5jbm5c',
         'department': 'testbeeld',
         'mam_data': '',
@@ -181,19 +181,19 @@ def test_empty_upload(client):
         'subtitle_file': None
     }, follow_redirects=True)
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'Geen ondertitels bestand' in res.data.decode()
 
 
 @pytest.mark.vcr
-def test_valid_subtitle(client):
+def test_valid_subtitle(auth_client):
     filename = 'testing_good.srt'
     filepath = os.path.join('./tests/test_subs', filename)
 
     with open('./tests/test_subs/mam_data.json') as mam_json_file:
         mam_data = json.load(mam_json_file)
 
-    res = client.post("/upload", data={
+    res = auth_client.post("/upload", data={
         'pid': 'qsxs5jbm5c',
         'department': 'testbeeld',
         'mam_data': json.dumps(mam_data),
@@ -202,7 +202,7 @@ def test_valid_subtitle(client):
         'subtitle_file': (open(filepath, 'rb'), filename)
     }, follow_redirects=True)
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'Ondertitelbestand' in res.data.decode()
     assert 'PID' in res.data.decode()
     assert 'qsxs5jbm5c' in res.data.decode()
@@ -212,14 +212,14 @@ def test_valid_subtitle(client):
 
 
 @pytest.mark.vcr
-def test_valid_subtitle_capitals(client):
+def test_valid_subtitle_capitals(auth_client):
     filename = 'test_good2.SRT'
     filepath = os.path.join('./tests/test_subs', filename)
 
     with open('./tests/test_subs/mam_data.json') as mam_json_file:
         mam_data = json.load(mam_json_file)
 
-    res = client.post("/upload", data={
+    res = auth_client.post("/upload", data={
         'pid': 'qsxs5jbm5c',
         'department': 'testbeeld',
         'mam_data': json.dumps(mam_data),
@@ -228,7 +228,7 @@ def test_valid_subtitle_capitals(client):
         'subtitle_file': (open(filepath, 'rb'), filename)
     }, follow_redirects=True)
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'Ondertitelbestand' in res.data.decode()
     assert 'PID' in res.data.decode()
     assert 'qsxs5jbm5c' in res.data.decode()
@@ -238,40 +238,41 @@ def test_valid_subtitle_capitals(client):
 
 
 @pytest.mark.vcr
-def test_cancel_upload(client):
+def test_cancel_upload(auth_client):
     data = {
         'pid': 'abc',
         'department': 'testbeeld',
         'srt_file': 'somefile.srt',
         'vtt_file': 'somefile.vtt',
     }
-    res = client.get(
+    res = auth_client.get(
         "/cancel_upload",
         query_string=data,
         follow_redirects=True)
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'PID niet gevonden in testbeeld' in res.data.decode()
 
 
 @pytest.mark.vcr
-def test_subtitle_videoplayer_route(client):
-    res = client.get('/subtitles/qsxs5jbm5c.vtt')
-    assert res.status_code == 200
+def test_subtitle_videoplayer_route(auth_client):
+    res = auth_client.get('/subtitles/qsxs5jbm5c.vtt')
+    assert res.status_code == HTTPStatus.OK
 
 
 @pytest.mark.vcr
 def test_subtitle_videoplayer_route_unknownfile(client):
     res = client.get('/subtitles/someinvalidpath.vtt')
-    assert res.status_code == 302  # redirects to 404 page
+    # WEIRD possible todo
+    assert res.status_code == HTTPStatus.FOUND  # redirects to 404 page
 
 
 @pytest.mark.vcr
-def test_send_to_mam_cancel_works(client):
+def test_send_to_mam_cancel_works(auth_client):
     with open('./tests/test_subs/mam_data.json') as mam_json_file:
         mam_data = json.load(mam_json_file)
 
     # replace existing subtitle now
-    res = client.post("/send_to_mam", data={
+    res = auth_client.post("/send_to_mam", data={
         'pid': 'qsxs5jbm5c',
         'department': 'testbeeld',
         'subtitle_type': 'closed',
@@ -282,99 +283,99 @@ def test_send_to_mam_cancel_works(client):
         'replace_existing': 'cancel'
     }, follow_redirects=True)
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'Bestaande ondertitels werden behouden' in res.data.decode()
 
 
 @pytest.mark.vcr
-def test_edit_metadata_wrong_pid(client):
-    res = client.get(
+def test_edit_metadata_wrong_pid(auth_client):
+    res = auth_client.get(
         "/edit_metadata?pid=somewrongpid&department=testbeeld",
         follow_redirects=True
     )
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'Zoek een item op' in res.data.decode()
     assert 'niet gevonden' in res.data.decode()
 
 
 @pytest.mark.vcr
-def test_edit_metadata_working_pid(client):
-    res = client.get(
+def test_edit_metadata_working_pid(auth_client):
+    res = auth_client.get(
         "/edit_metadata?pid=qs5d8ncx8c&department=testbeeld",
         follow_redirects=True
     )
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'Algemene metadata' in res.data.decode()
 
 
 @pytest.mark.vcr
-def test_subtitles_on_metadata_edit(client):
-    res = client.get(
+def test_subtitles_on_metadata_edit(auth_client):
+    res = auth_client.get(
         "/item_subtitles/testbeeld/qs5d8ncx8c/closed",
         follow_redirects=True
     )
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
 
 
 @pytest.mark.vcr
-def test_onderwijsniveaus(client):
-    res = client.get(
+def test_onderwijsniveaus(auth_client):
+    res = auth_client.get(
         "/onderwijsniveaus",
         follow_redirects=True
     )
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
 
 
 @pytest.mark.vcr
-def test_onderwijsgraden(client):
-    res = client.get(
+def test_onderwijsgraden(auth_client):
+    res = auth_client.get(
         "/onderwijsgraden",
         follow_redirects=True
     )
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
 
 
 @pytest.mark.vcr
-def test_themas(client):
-    res = client.get(
+def test_themas(auth_client):
+    res = auth_client.get(
         "/themas",
         follow_redirects=True
     )
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
 
 
 @pytest.mark.vcr
-def test_vakken(client):
-    res = client.get(
+def test_vakken(auth_client):
+    res = auth_client.get(
         "/vakken",
         follow_redirects=True
     )
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
 
 
 @pytest.mark.vcr
-def test_keyword_search(client):
-    res = client.post(
+def test_keyword_search(auth_client):
+    res = auth_client.post(
         "/keyword_search",
         json={'qry': 'zoek'},
         follow_redirects=True
     )
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     search_results = json.loads(res.data)
     assert len(search_results) >= 4
     assert search_results[0]['text'] == 'zoekactie'
 
 
 @pytest.mark.vcr
-def test_vakken_suggesties(client):
+def test_vakken_suggesties(auth_client):
     graden_en_themas = {
         "graden": [
             {
@@ -399,19 +400,19 @@ def test_vakken_suggesties(client):
         ]
     }
 
-    res = client.post(
+    res = auth_client.post(
         "/vakken_suggest",
         json=graden_en_themas,
         follow_redirects=True
     )
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     suggesties = json.loads(res.data)
     assert len(suggesties) == 3
 
 
 @pytest.mark.vcr
-def test_vakken_related(client):
+def test_vakken_related(auth_client):
     graden_en_niveaus = {
         "graden": [
             {
@@ -433,46 +434,46 @@ def test_vakken_related(client):
             }
         ]
     }
-    res = client.post(
+    res = auth_client.post(
         "/vakken_related",
         json=graden_en_niveaus,
         follow_redirects=True
     )
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     overige_vakken = json.loads(res.data)
     assert len(overige_vakken) == 12
 
 
 @pytest.mark.vcr
-def test_publicatie_status(client):
-    res = client.get(
+def test_publicatie_status(auth_client):
+    res = auth_client.get(
         "/publicatie_status?pid=qs5d8ncx8c&department=testbeeld",
         follow_redirects=True
     )
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'publish_item' in res.json.keys()
 
 
 @pytest.mark.vcr
-def test_publicatie_status_404(client):
-    res = client.get(
+def test_publicatie_status_404(auth_client):
+    res = auth_client.get(
         "/publicatie_status?pid=randompid&department=testbeeld",
         follow_redirects=True
     )
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'publish_item' in res.json.keys()
     assert res.json['publish_item'] is False
 
 
 @pytest.mark.vcr
-def test_update_metadata(client):
+def test_update_metadata(auth_client):
     with open('./tests/fixture_data/edit_mam_data.json', "r") as f:
         mam_data = json.loads(f.read())
 
-    res = client.post("/edit_metadata?pid=qsf7664p39&department=testbeeld", data={
+    res = auth_client.post("/edit_metadata?pid=qsf7664p39&department=testbeeld", data={
         'pid': 'qsf7664p39',
         'department': 'testbeeld',
         'mam_data': json.dumps(mam_data),
@@ -539,38 +540,38 @@ def test_update_metadata(client):
         'trefwoorden': '[{"name":"Belgium","code":"Belgium"}]'
     }, follow_redirects=True)
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     print(">>>>>>>>    RESULT=", res.data.decode())
     assert 'werden opgeslagen' in res.data.decode()
 
 
 def test_random_404(client, setup):
     resp = client.delete('/somepage')
-    assert resp.status_code == 302
-    assert resp.location == 'http://localhost/404'
+    assert resp.status_code == HTTPStatus.FOUND
+    assert resp.location.endswith("/404")
 
     resp = client.get('/somepage')
-    assert resp.status_code == 302
-    assert resp.location == 'http://localhost/404'
+    assert resp.status_code == HTTPStatus.FOUND
+    assert resp.location.endswith("/404")
 
     resp = client.post('/somepage')
-    assert resp.status_code == 302
-    assert resp.location == 'http://localhost/404'
+    assert resp.status_code == HTTPStatus.FOUND
+    assert resp.location.endswith("/404")
 
     resp = client.put('/somepage')
-    assert resp.status_code == 302
-    assert resp.location == 'http://localhost/404'
+    assert resp.status_code == HTTPStatus.FOUND
+    assert resp.location.endswith("/404")
 
 
 @pytest.mark.vcr
-def test_valid_subtitle_for_ftp(client):
+def test_valid_subtitle_for_ftp(auth_client):
     filename = 'testing_good.srt'
     filepath = os.path.join('./tests/test_subs', filename)
 
     with open('./tests/test_subs/mam_data.json') as mam_json_file:
         mam_data = json.load(mam_json_file)
 
-    res = client.post("/upload", data={
+    res = auth_client.post("/upload", data={
         'pid': 'qsxs5jbm5c',
         'department': 'testbeeld',
         'mam_data': json.dumps(mam_data),
@@ -579,7 +580,7 @@ def test_valid_subtitle_for_ftp(client):
         'subtitle_file': (open(filepath, 'rb'), filename)
     }, follow_redirects=True)
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'PID' in res.data.decode()
     assert 'Ondertitelbestand' in res.data.decode()
     assert 'qsxs5jbm5c' in res.data.decode()
@@ -589,7 +590,7 @@ def test_valid_subtitle_for_ftp(client):
 
 
 @pytest.mark.vcr
-def test_subtitle_ftp_upload(client, mocker):
+def test_subtitle_ftp_upload(auth_client, mocker):
     with open('./tests/test_subs/mam_data.json') as mam_json_file:
         mam_data = json.load(mam_json_file)
 
@@ -610,7 +611,7 @@ def test_subtitle_ftp_upload(client, mocker):
     )
 
     # replace existing subtitle now
-    res = client.post("/send_to_mam", data={
+    res = auth_client.post("/send_to_mam", data={
         'pid': 'qsxs5jbm5c',
         'department': 'testbeeld',
         'subtitle_type': 'closed',
@@ -626,7 +627,7 @@ def test_subtitle_ftp_upload(client, mocker):
     ftp_mock.cwd.assert_called_with('/FTP_DIR/')
     assert ftp_mock.storbinary.called_twice
 
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     print(res.data.decode(), flush=True)
     assert 'De ondertitels werden succesvol opgeladen' in res.data.decode()
     assert '226 Transfer complete' in res.data.decode()
@@ -641,7 +642,7 @@ def test_subtitle_videoplayer_route_without_session(client):
         '/subtitles/qsxs5jbm5c.vtt',
         follow_redirects=True
     )
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'Log in om gebruik te maken' in res.data.decode()
 
 
@@ -654,5 +655,5 @@ def test_publicatie_status_protected(client):
         "/publicatie_status?pid=qs5d8ncx8c&department=testbeeld",
         follow_redirects=True
     )
-    assert res.status_code == 200
+    assert res.status_code == HTTPStatus.OK
     assert 'Log in om gebruik te maken' in res.data.decode()
