@@ -22,12 +22,27 @@ def setup():
     yield setup
 
 
+def decompress_response(response):
+    import gzip
+    import io
+
+    body = response["body"]["string"]
+    # Detect gzip magic header
+    if body.startswith(b"\x1f\x8b\x08"):
+        try:
+            response["body"]["string"] = gzip.decompress(body)
+        except Exception:
+            pass
+    return response
+
 @pytest.fixture(scope="module")
 def vcr_config():
     # important to add the filter_headers here to avoid exposing credentials
     # in tests/cassettes!
     return {
+        "before_record_response": decompress_response,
         "record_mode": "once",
+        "preserve_exact_body_bytes": True,
         "filter_headers": ["authorization"]
     }
 
