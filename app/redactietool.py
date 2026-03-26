@@ -21,6 +21,7 @@
 import datetime
 import json
 import os
+from urllib.parse import urlparse
 
 from flask import (Flask, Response, redirect, render_template, request,
                    send_from_directory, session, url_for)
@@ -39,6 +40,9 @@ from app.services.meta_mapping import MetaMapping
 from app.services.subtitle_files import (delete_files, get_vtt_subtitles,
                                          move_subtitle, not_deleted,
                                          save_sidecar_xml, save_subtitles)
+from app.services.speechmatic_api import SpeechmaticsApi
+from app.services.jobs import JobsService
+from app.services.jobs_cron import start_scheduler
 from app.services.suggest_api import SuggestApi
 from app.services.user import User, check_saml_session
 from app.services.validation import (pid_error, upload_error,
@@ -69,6 +73,9 @@ app.config['SAML_PATH'] = os.path.join(
 
 # add routes to saml.py module for login/logout with saml
 app.add_url_rule('/', view_func=saml_login, methods=['GET', 'POST'])
+
+# Start background scheduler that polls Speechmatics for pending job results
+start_scheduler()
 
 # add routes for legacy login (without saml) when testing or debugging
 print("DEBUG legacy_login routes added")
@@ -447,6 +454,132 @@ def keyword_search():
     es_api = ElasticApi()
     return es_api.search_keyword(json_data['qry'])
 
+@app.route('/speechmatic/generate', methods=['POST'])
+def generate_transcript():
+    json_data = request.json
+    department = json_data.get('department')
+    pid = json_data.get('pid')
+    language = json_data.get('language') or 'nl'
+
+    if not pid or not department:
+        return {
+            'error': 'pid and department are required in request body'
+        }, HTTPStatus.BAD_REQUEST
+
+    jobs_service = JobsService()
+    mh_api = MediahavenApi()
+    speechmatics_api = SpeechmaticsApi()
+
+    try:
+        mam_data = mh_api.find_item_by_pid(department, pid)
+        if not mam_data:
+            return {
+                'error': f'PID not found: {pid}'
+            }, HTTPStatus.NOT_FOUND
+        
+        job = jobs_service.get_job(department, pid)
+        if job and job["processed_at"] is None:
+            return {
+                'error': f'Job already exists for pid: {pid} with status: {job["status"]}, but not processed yet'
+            }, HTTPStatus.CONFLICT
+        elif job and job["processed_at"] is not None and job["status"] == "done":
+            return {
+                'error': f'Job already exists for pid: {pid} and is completed'
+            }, HTTPStatus.CONFLICT
+        
+        # If job does not exist or exists but is deleted, rejected or expired, we can launch a new job
+
+        video_url = mam_data.get('Internal', {}).get('PathToVideo')
+        if not video_url:
+            return {
+                'error': f'No media url found for pid: {pid}'
+            }, HTTPStatus.NOT_FOUND
+
+        logger.info(f"Launching transcription job for video url: {video_url} with language: {language}")
+        job_id = speechmatics_api.launch_job(video_url, language=language)
+        if(job is None):
+            logger.info("Job is None, creating new job in database")
+            jobs_service.create_job(department, pid, job_id)
+        else:
+            logger.info(f"Job already exists for pid: {pid}, updating with new job_id: {job_id} and resetting status")
+            jobs_service.update_job(department, pid, speechmatic_job_id=job_id)
+        return {
+            'department': department,
+            'pid': pid,
+            'job_id': job_id
+        }, HTTPStatus.OK
+    except Exception as ex:
+        logger.exception('generate transcript failed', data={'pid': pid, 'error': str(ex)})
+        return {
+            'error': str(ex)
+        }, HTTPStatus.INTERNAL_SERVER_ERROR
+# Fetch status of a transcription job
+@app.route('/<string:department>/<string:pid>/speechmatic/status', methods=['GET'])
+def transcription_status(department, pid):
+    speechmatics_api = SpeechmaticsApi()
+    jobs_service = JobsService()
+    try:
+        job = jobs_service.get_job(department, pid)
+        if(not job):
+            return {
+                'job_id': None,
+                'status': 'not found'
+            }, HTTPStatus.NOT_FOUND
+        if (job["processed_at"] is not None):
+            status = job["status"] 
+        else:
+            status = speechmatics_api.get_job_status(job["speechmatic_job_id"])
+            jobs_service.update_job_status(job["id"], status)
+
+        return {
+            'job_id': job["id"],
+            'status': status
+        }, HTTPStatus.OK
+    except Exception as ex:
+        logger.exception('fetching transcription status failed', data={'job_id': job["id"], 'error': str(ex)})
+        return {
+            'error': str(ex)
+        }, HTTPStatus.INTERNAL_SERVER_ERROR
+
+@app.route('/<string:department>/<string:pid>/speechmatic/result', methods=['GET'])
+def transcription_result(department, pid):
+    jobs_service = JobsService()
+    try:
+        job = jobs_service.get_job(department, pid)
+        if not job:
+            return {'error': 'Job not found'}, HTTPStatus.NOT_FOUND
+
+        if job['processed_at'] is not None:
+            return {
+                'job_id': job['id'],
+                'status': job['status'],
+                'transcript': job['transcription'],
+                'summary': job['summary'],
+                'chapters': job['chapters'],
+            }, HTTPStatus.OK
+
+        return {
+            'job_id': job['id'],
+            'status': job['status'],
+            'message': 'Transcription not completed yet'
+        }, HTTPStatus.OK
+    except Exception as ex:
+        logger.exception('fetching transcription result failed', data={'error': str(ex)})
+        return {'error': str(ex)}, HTTPStatus.INTERNAL_SERVER_ERROR
+
+@app.route('/speechmatic/jobs', methods=['GET'])
+def list_jobs():
+    jobs_service = JobsService()
+    try:
+        jobs = jobs_service.list_jobs()
+        return {
+            'jobs': jobs
+        }, HTTPStatus.OK
+    except Exception as ex:
+        logger.exception('listing transcription jobs failed', data={'error': str(ex)})
+        return {
+            'error': str(ex)
+        }, HTTPStatus.INTERNAL_SERVER_ERROR
 
 # =================== HEALTH CHECK ROUTES AND ERROR HANDLING ==================
 @app.route("/health/live")
