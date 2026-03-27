@@ -78,7 +78,7 @@ class MetaMapping:
             'publish_item': 'ajax'  # signal ajax request to frontend
         }
 
-    def form_params(self, pid, department, mam_data, errors=[]):
+    def form_params(self, pid, department, mam_data, sm_data, errors=[]):
         keyframe_edit_url = '{}{}'.format(
             os.environ.get('KEYFRAME_EDITING_LINK',
                            'https://set_in_secrets?id='),
@@ -143,7 +143,12 @@ class MetaMapping:
             'flowplayer_token': os.environ.get(
                 'FLOWPLAYER_TOKEN', 'set_in_secrets'
             ),
-            'validation_errors': errors
+            'validation_errors': errors,
+            # speechmatics data
+            'sm_job_status': sm_data.get('status') if sm_data else None,
+            'sm_job_transcription': sm_data.get('transcription') if sm_data else None,
+            'sm_job_summary': sm_data.get('summary') if sm_data else None,
+            'sm_job_chapters': json.loads(sm_data['chapters']) if sm_data and isinstance(sm_data.get('chapters'), str) else (sm_data.get('chapters') if sm_data else None),
         }
 
         return result
@@ -259,13 +264,13 @@ class MetaMapping:
 
         return tp
 
-    def mh_to_form(self, pid, department, mam_data, validation_errors):
+    def mh_to_form(self, pid, department, mam_data, sm_data, validation_errors):
         """
         convert json metadata from MediahavenApi back into a
         python hash for populating the view and do the mapping from mh names to
         wanted names in metadata/edit.html
         """
-        return self.form_params(pid, department, mam_data, validation_errors)
+        return self.form_params(pid, department, mam_data, sm_data, validation_errors)
 
     def xml_sidecar(self, metadata, tp):
         xml_data = XMLSidecar().metadata_sidecar(metadata, tp)

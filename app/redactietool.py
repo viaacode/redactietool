@@ -342,12 +342,14 @@ def edit_metadata():
         return pid_error(pid, validation_error)
 
     mh_api = MediahavenApi()
+    jobs_service = JobsService()
     mam_data = mh_api.find_item_by_pid(department, pid)
     if not mam_data:
         return pid_error(pid, f"PID niet gevonden in {department}")
 
+    speechmatics_data = jobs_service.get_job(department, pid)
     mm = MetaMapping()
-    template_vars = mm.mh_to_form(pid, department, mam_data, errors)
+    template_vars = mm.mh_to_form(pid, department, mam_data, speechmatics_data, errors)
 
     return render_template(
         'metadata/edit.html',
