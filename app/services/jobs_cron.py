@@ -77,6 +77,56 @@ def fetch_pending_results():
             logger.error('cron: failed to fetch/store result', data={'job_id': job_id, 'error': str(ex)})
 
 
+def cleanup_speechmatics_jobs():
+    """Delete from Speechmatics any jobs that are fully processed, terminal, or orphaned."""
+    jobs_service = JobsService()
+    speechmatics_api = SpeechmaticsApi()
+
+    try:
+        sm_jobs = speechmatics_api.list_jobs()
+    except Exception as ex:
+        logger.error('cron: cleanup — failed to list Speechmatics jobs', data={'error': str(ex)})
+        return
+
+    try:
+        local_jobs = jobs_service.list_jobs()
+    except Exception as ex:
+        logger.error('cron: cleanup — failed to list local jobs', data={'error': str(ex)})
+        return
+
+    # Build a lookup of speechmatic_job_id → local job record
+    local_by_sm_id = {job['speechmatic_job_id']: job for job in local_jobs}
+
+    TERMINAL_STATUSES = {'rejected', 'deleted', 'expired'}
+
+    for sm_job in sm_jobs:
+        sm_job_id = sm_job.get('id')
+        if not sm_job_id:
+            continue
+
+        local_job = local_by_sm_id.get(sm_job_id)
+
+        if local_job is None:
+            # Orphaned: exists on Speechmatics but not in our DB
+            reason = 'orphaned'
+        elif local_job['status'] == 'done' and local_job['processed_at'] is not None:
+            # Fully processed and stored locally
+            reason = 'processed'
+        elif local_job['status'] in TERMINAL_STATUSES:
+            # Terminal state — no result will ever arrive
+            reason = local_job['status']
+        else:
+            continue
+
+        try:
+            speechmatics_api.delete_job(sm_job_id)
+            logger.info('cron: cleanup — deleted job from Speechmatics',
+                        data={'sm_job_id': sm_job_id, 'reason': reason})
+        except Exception as ex:
+            logger.error('cron: cleanup — failed to delete job from Speechmatics',
+                         data={'sm_job_id': sm_job_id, 'error': str(ex)})
+
+
 def start_scheduler():
     """Start the background scheduler. Safe to call multiple times (no-op if already running)."""
     if _scheduler.running:
@@ -88,5 +138,12 @@ def start_scheduler():
         id='fetch_pending_results',
         replace_existing=True,
     )
+    _scheduler.add_job(
+        cleanup_speechmatics_jobs,
+        trigger='interval',
+        minutes=1,
+        id='cleanup_speechmatics_jobs',
+        replace_existing=True,
+    )
     _scheduler.start()
-    logger.info('cron: scheduler started — polling every 1 minute')
+    logger.info('cron: scheduler started — polling every 1 minute, cleanup every 5 minutes')

@@ -93,6 +93,32 @@ class SpeechmaticsApi:
 			logger.exception(f"Error fetching job result for job {job_id}: {e.response.text}")
 			raise
 
+	def list_jobs(self) -> list:
+		"""Return all jobs currently known to the Speechmatics API."""
+		try:
+			response = requests.get(
+				f"{self.base_url}/v2/jobs",
+				headers=self._headers(),
+			)
+			response.raise_for_status()
+			return response.json().get("jobs", [])
+		except requests.HTTPError as e:
+			logger.exception(f"Error listing jobs from Speechmatics: {e.response.text}")
+			raise
+
+	def delete_job(self, job_id: str) -> None:
+		"""Delete a job from Speechmatics by its job id."""
+		try:
+			response = requests.delete(
+				f"{self.base_url}/v2/jobs/{job_id}",
+				headers=self._headers(),
+			)
+			response.raise_for_status()
+			logger.info(f"Deleted job {job_id} from Speechmatics")
+		except requests.HTTPError as e:
+			logger.exception(f"Error deleting job {job_id} from Speechmatics: {e.response.text}")
+			raise
+
 	@staticmethod
 	def parse_result(raw: dict) -> dict:
 		"""Parse a raw Speechmatics transcript response into structured fields.
