@@ -69,9 +69,17 @@ class JobsService:
                 cur.execute(sql)
                 return [dict(row) for row in cur.fetchall()]
 
-    def get_pending_jobs(self) -> list[dict]:
+    def get_processable_jobs(self) -> list[dict]:
         """Return jobs that are marked done by Speechmatics but not yet processed."""
         sql = "SELECT * FROM jobs WHERE status = 'done' AND processed_at IS NULL"
+        with self._connect() as conn:
+            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+                cur.execute(sql)
+                return [dict(row) for row in cur.fetchall()]
+
+    def get_running_jobs(self) -> list[dict]:
+        """Return jobs whose status is still 'created' or 'running'."""
+        sql = "SELECT * FROM jobs WHERE status IN ('created', 'running')"
         with self._connect() as conn:
             with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
                 cur.execute(sql)

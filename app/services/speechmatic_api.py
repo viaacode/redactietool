@@ -40,7 +40,8 @@ class SpeechmaticsApi:
 			},
 			"transcription_config": {
 				"language": language,
-				# "operating_point": "enhanced",
+    			"diarization": "speaker",
+				"operating_point": "enhanced",
 				# "enable_entities": True
 			},
 			"summarization_config": {
@@ -91,3 +92,85 @@ class SpeechmaticsApi:
 		except requests.HTTPError as e:
 			logger.exception(f"Error fetching job result for job {job_id}: {e.response.text}")
 			raise
+
+	@staticmethod
+	def parse_result(raw: dict) -> dict:
+		"""Parse a raw Speechmatics transcript response into structured fields.
+
+		Returns a dict with:
+		  - transcription: plain-text transcript
+		  - summary:       bullet-point summary string
+		  - chapters:      list of {title, summary, start_time, end_time}
+		"""
+		transcription = SpeechmaticsApi.build_transcript(raw.get("results", []))
+
+		summary = raw.get("summary", {}).get("content", "")
+
+		chapters = [
+			{
+				"title": ch["title"],
+				"summary": ch["summary"],
+				"start_time": ch["start_time"],
+				"end_time": ch["end_time"],
+			}
+			for ch in raw.get("chapters", [])
+		]
+
+		return {
+			"transcription": transcription,
+			"summary": summary,
+			"chapters": chapters,
+		}
+
+	@staticmethod
+	def build_transcript(events: list) -> str:
+		print(f"Building transcript from {len(events)} events")
+		result_lines = []
+		
+		current_speaker = None
+		current_sentence = []
+
+		def flush():
+			"""Flush current sentence into result_lines."""
+			nonlocal current_sentence, current_speaker
+			if current_speaker and current_sentence:
+				sentence = "".join(current_sentence).strip()
+				result_lines.append(f"{current_speaker}: {sentence}")
+			current_sentence = []
+
+		for event in events:
+			if not event.get("alternatives"):
+				continue
+
+			alt = event["alternatives"][0]
+			content = alt.get("content", "")
+			speaker = alt.get("speaker", "UNKNOWN")
+			event_type = event.get("type")
+
+			# Speaker change → flush current sentence
+			if current_speaker is None:
+				current_speaker = speaker
+			elif speaker != current_speaker:
+				flush()
+				current_speaker = speaker
+
+			if event_type == "word":
+				# Add space before word if needed
+				if current_sentence:
+					current_sentence.append(" ")
+				current_sentence.append(content)
+
+			elif event_type == "punctuation":
+				# Attach punctuation directly (no preceding space)
+				current_sentence.append(content)
+
+				# If end of sentence but speaker continues, want to merge the sentences.
+				# End-of-sentence → flush
+				# if event.get("is_eos"):
+				# 	flush()
+				# 	current_speaker = None  # force new line even if same speaker continues
+
+		# Flush any remaining text
+		flush()
+
+		return "\n".join(result_lines)

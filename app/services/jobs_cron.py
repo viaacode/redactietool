@@ -24,11 +24,31 @@ _scheduler = BackgroundScheduler()
 
 
 def fetch_pending_results():
-    """Fetch and store results for all jobs that are done but not yet processed."""
+    """Sync status for in-progress jobs, then fetch results for any that are done."""
     jobs_service = JobsService()
     speechmatics_api = SpeechmaticsApi()
+
+    # Step 1: update status for all jobs that are still in-flight.
     try:
-        pending = jobs_service.get_pending_jobs()
+        in_flight = jobs_service.get_running_jobs()
+    except Exception as ex:
+        logger.error('cron: failed to query in-flight jobs', data={'error': str(ex)})
+        return
+
+    for job in in_flight:
+        job_id = job['id']
+        speechmatic_job_id = job['speechmatic_job_id']
+        try:
+            remote_status = speechmatics_api.get_job_status(speechmatic_job_id)
+            if remote_status != job['status']:
+                jobs_service.update_job_status(job_id, remote_status)
+                logger.info('cron: updated job status', data={'job_id': job_id, 'status': remote_status})
+        except Exception as ex:
+            logger.error('cron: failed to fetch status', data={'job_id': job_id, 'error': str(ex)})
+
+    # Step 2: fetch and store results for all jobs that are now done.
+    try:
+        pending = jobs_service.get_processable_jobs()
     except Exception as ex:
         logger.error('cron: failed to query pending jobs', data={'error': str(ex)})
         return
@@ -44,11 +64,12 @@ def fetch_pending_results():
         logger.info('cron: fetching result', data={'job_id': job_id, 'speechmatic_job_id': speechmatic_job_id})
         try:
             result = speechmatics_api.get_job_result(speechmatic_job_id)
+            processed_result = speechmatics_api.parse_result(result)
             jobs_service.mark_processed(
                 job_id=job_id,
-                transcription=json.dumps(result.get('results')),
-                summary=result.get('summary', {}).get('content'),
-                chapters=json.dumps(result.get('chapters')),
+                transcription=processed_result.get('transcription'),
+                summary=processed_result.get('summary'),
+                chapters=json.dumps(processed_result.get('chapters')),
                 status='done',
             )
             logger.info('cron: job processed successfully', data={'job_id': job_id})
