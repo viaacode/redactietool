@@ -11,21 +11,29 @@ WORKDIR /app
 # Let the appuser own the files so he can rwx during runtime.
 COPY --chown=1001:0 . .
 RUN  apt-get update &&  apt-get install -y --no-install-recommends  libxml2-dev libxmlsec1-dev libxmlsec1-openssl
-# Install gcc and libc6-dev to be able to compile uWSGI
+# Install gcc and pkg-config to compile uWSGI, xmlsec, and lxml (from source)
 RUN set -ex; \
-    build_deps='build-essential pkg-config' ;\
-    apt-get install --no-install-recommends -y   $build_deps &&\
+    apt-get install --no-install-recommends -y build-essential pkg-config &&\
     /usr/local/bin/python -m pip install --upgrade pip setuptools wheel ; \
-    pip install uWSGI==2.0.31 xmlsec==1.3.17 ;\
-    apt-get purge -y --auto-remove $build_deps && apt-get clean && rm -rf /var/lib/apt/lists/*
+    pip install uWSGI==2.0.31 xmlsec==1.3.17
 
 USER appuser
 
 # We install all our Python dependencies using internal pypi
+# --no-binary=lxml forces lxml to build from source against the system libxml2,
+# preventing the 'lxml & xmlsec libxml2 library version mismatch' at runtime.
 RUN pip install -r requirements.txt \
+    --no-binary=lxml \
     --extra-index-url http://do-prd-mvn-01.do.viaa.be:8081/repository/pypi-internal/simple \
     --trusted-host do-prd-mvn-01.do.viaa.be \
     --user
+
+# Remove build tools now that all compilation is done
+USER root
+RUN apt-get purge -y --auto-remove build-essential pkg-config && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+USER appuser
 
 
 ENV PATH=/home/appuser/.local/bin:$PATH
