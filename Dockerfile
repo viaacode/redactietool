@@ -4,37 +4,38 @@ FROM python:3.13-slim-bookworm
 EXPOSE 8080
 
 # Make a new group and user so we don't run as root.
-RUN addgroup --system appgroup && adduser -u 1001 --system appuser --ingroup appgroup --home /app
+# RUN addgroup --system appgroup && adduser -u 1001 --system appuser --ingroup appgroup --home /app
 
 WORKDIR /app
 
 # Let the appuser own the files so he can rwx during runtime.
 COPY --chown=1001:0 . .
-RUN  apt-get update &&  apt-get install -y --no-install-recommends  libxml2-dev libxmlsec1-dev libxmlsec1-openssl
+RUN  apt-get update && apt-get install -y --no-install-recommends \
+    libxml2-dev libxmlsec1-dev libxmlsec1-openssl libxslt1-dev zlib1g-dev
 # Install gcc and pkg-config to compile uWSGI, xmlsec, and lxml (from source)
 RUN set -ex; \
     apt-get install --no-install-recommends -y build-essential pkg-config &&\
     /usr/local/bin/python -m pip install --upgrade pip setuptools wheel ; \
-    pip install uWSGI==2.0.31 xmlsec==1.3.17
+    pip install uWSGI==2.0.31
 
-USER appuser
+# Install lxml from source and force it to link against the system libxml2
+# (lxml >= 5.x bundles its own libxml2 by default; STATIC_DEPS=false overrides that)
+# Then install xmlsec from source so it links against the same system libxml2.
+# Both using the same libxml2 is what prevents the runtime 'version mismatch' error.
+RUN STATIC_DEPS=false pip install lxml==6.0.2 --no-binary=lxml --no-cache-dir
+RUN pip install xmlsec==1.3.17 --no-binary=xmlsec --no-cache-dir
+
+# Verify the two libraries agree on libxml2 at build time
+RUN python -c "from lxml import etree; import xmlsec; print('lxml libxml2:', etree.LIBXML_VERSION)"
 
 # We install all our Python dependencies using internal pypi
-# --no-binary=lxml forces lxml to build from source against the system libxml2,
-# preventing the 'lxml & xmlsec libxml2 library version mismatch' at runtime.
 RUN pip install -r requirements.txt \
-    --no-binary=lxml \
     --extra-index-url http://do-prd-mvn-01.do.viaa.be:8081/repository/pypi-internal/simple \
     --trusted-host do-prd-mvn-01.do.viaa.be \
-    --user
+    --no-cache-dir
 
-# Remove build tools now that all compilation is done
-USER root
 RUN apt-get purge -y --auto-remove build-essential pkg-config && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
-
-USER appuser
-
 
 ENV PATH=/home/appuser/.local/bin:$PATH
 # PLEASE use this only in the test keep main image clean
