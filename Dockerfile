@@ -32,6 +32,7 @@ RUN python -c "from lxml import etree; import xmlsec; print('lxml libxml2:', etr
 RUN pip install -r requirements.txt \
     --extra-index-url http://do-prd-mvn-01.do.viaa.be:8081/repository/pypi-internal/simple \
     --trusted-host do-prd-mvn-01.do.viaa.be \
+    --no-binary=lxml,xmlsec \
     --no-cache-dir
 
 RUN apt-get purge -y --auto-remove build-essential pkg-config && \
