@@ -28,6 +28,10 @@ def decompress_response(response):
 
     body = response["body"]["string"]
     # Detect gzip magic header
+    # Since we upgraded urllib3 from v1 to v2 responses are automatically decompressed,
+    # but we use the python VCR library to record and store network calls, so the tests execute faster.
+    # But those recordings were made with urllib3 v1 in compressed format.
+    # So now we need to decompress them to match the urllib3 v2 format.
     if body.startswith(b"\x1f\x8b\x08"):
         try:
             response["body"]["string"] = gzip.decompress(body)
