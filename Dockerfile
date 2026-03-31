@@ -1,4 +1,4 @@
-FROM python:3.9-slim-bookworm
+FROM python:3.13-slim-bookworm
 
 # Applications should run on port 8080 so NGINX can auto discover them.
 EXPOSE 8080
@@ -16,7 +16,7 @@ RUN set -ex; \
     build_deps='build-essential pkg-config' ;\
     apt-get install --no-install-recommends -y   $build_deps &&\
     /usr/local/bin/python -m pip install --upgrade pip setuptools wheel ; \
-    pip install uWSGI==2.0.18 xmlsec==1.3.13 ;\
+    pip install uWSGI==2.0.31 xmlsec==1.3.17 ;\
     apt-get purge -y --auto-remove $build_deps && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER appuser
