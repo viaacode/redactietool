@@ -141,9 +141,9 @@ def start_scheduler():
     _scheduler.add_job(
         cleanup_speechmatics_jobs,
         trigger='interval',
-        minutes=1,
+        minutes=60,
         id='cleanup_speechmatics_jobs',
         replace_existing=True,
     )
     _scheduler.start()
-    logger.info('cron: scheduler started — polling every 1 minute, cleanup every 5 minutes')
+    logger.info('cron: scheduler started — polling every 1 minute, cleanup every 60 minutes')

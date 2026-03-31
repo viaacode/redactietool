@@ -41,6 +41,7 @@ from app.services.subtitle_files import (delete_files, get_vtt_subtitles,
                                          move_subtitle, not_deleted,
                                          save_sidecar_xml, save_subtitles)
 from app.services.speechmatic_api import SpeechmaticsApi
+from app.services.converter import ConverterService
 from app.services.jobs import JobsService
 from app.services.jobs_cron import start_scheduler
 from app.services.suggest_api import SuggestApi
@@ -496,9 +497,14 @@ def generate_transcript():
             return {
                 'error': f'No media url found for pid: {pid}'
             }, HTTPStatus.NOT_FOUND
-
-        logger.info(f"Launching transcription job for video url: {video_url} with language: {language}")
-        job_id = speechmatics_api.launch_job(video_url, language=language)
+        converter = ConverterService();
+        temp_video_url = converter.get_media_url(video_url, '', '')
+        if(not temp_video_url):
+            return {
+                'error': f'Failed to get temporary media url for pid: {pid}'
+            }, HTTPStatus.INTERNAL_SERVER_ERROR
+        logger.info(f"Launching transcription job for video url: {temp_video_url} with language: {language}")
+        job_id = speechmatics_api.launch_job(temp_video_url, language=language)
         if(job is None):
             logger.info("Job is None, creating new job in database")
             jobs_service.create_job(department, pid, job_id)

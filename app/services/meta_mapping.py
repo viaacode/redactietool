@@ -13,6 +13,7 @@
 
 import json
 import os
+from app.services.converter import ConverterService
 from viaa.configuration import ConfigParser
 from viaa.observability import logging
 
@@ -93,6 +94,14 @@ class MetaMapping:
         # get_property(mam_data, 'dcterms_abstract')
         dcterms_abstract = mam_data.get('Dynamic').get('dcterms_abstract')
         avo_beschrijving = markdown_to_html(dcterms_abstract)
+        
+        converter = ConverterService();
+        video_url = mam_data.get('Internal').get('PathToVideo')
+        if(not video_url):
+            logger.warning(f"No video url found in metadata for pid: {pid}")
+        temp_video_url = converter.get_media_url(video_url, '', '')
+        if(not temp_video_url):
+            logger.warning(f"Failed to get temporary media url for pid: {pid}")
 
         result = {
             'department': department,
@@ -138,7 +147,7 @@ class MetaMapping:
             # archived is now isodate!
             'archived': mam_data.get('Administrative').get('ArchiveDate'),
             'keyframe_edit_url': keyframe_edit_url,
-            'video_url': mam_data.get('Internal').get('PathToVideo'),
+            'video_url': temp_video_url,
             'keyframe': mam_data.get('Internal').get('PathToKeyframe'),
             'flowplayer_token': os.environ.get(
                 'FLOWPLAYER_TOKEN', 'set_in_secrets'
