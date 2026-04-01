@@ -28,6 +28,10 @@ def decompress_response(response):
 
     body = response["body"]["string"]
     # Detect gzip magic header
+    # Since we upgraded urllib3 from v1 to v2 responses are automatically decompressed,
+    # but we use the python VCR library to record and store network calls, so the tests execute faster.
+    # But those recordings were made with urllib3 v1 in compressed format.
+    # So now we need to decompress them to match the urllib3 v2 format.
     if body.startswith(b"\x1f\x8b\x08"):
         try:
             response["body"]["string"] = gzip.decompress(body)
@@ -70,7 +74,6 @@ def test_search_media_security(client):
 
 def test_search_media(auth_client):
     with auth_client.session_transaction() as session:
-        session['samlUserdata'] = {}
         session['samlUserdata']['cn'] = ['Test user']
         session['samlUserdata']['apps'] = ['mediahaven']
 
@@ -555,7 +558,6 @@ def test_update_metadata(auth_client):
     }, follow_redirects=True)
 
     assert res.status_code == HTTPStatus.OK
-    print(">>>>>>>>    RESULT=", res.data.decode())
     assert 'werden opgeslagen' in res.data.decode()
 
 
@@ -642,9 +644,9 @@ def test_subtitle_ftp_upload(auth_client, mocker):
     assert ftp_mock.storbinary.called_twice
 
     assert res.status_code == HTTPStatus.OK
-    print(res.data.decode(), flush=True)
-    assert 'De ondertitels werden succesvol opgeladen' in res.data.decode()
-    assert '226 Transfer complete' in res.data.decode()
+    body = res.data.decode()
+    assert 'De ondertitels werden succesvol opgeladen' in body
+    assert '226 Transfer complete' in body
 
 
 # security check without session routes redirect to login:
