@@ -458,6 +458,7 @@ def keyword_search():
     return es_api.search_keyword(json_data['qry'])
 
 @app.route('/speechmatic/generate', methods=['POST'])
+@login_required
 def generate_transcript():
     json_data = request.json
     department = json_data.get('department')
@@ -523,6 +524,7 @@ def generate_transcript():
         }, HTTPStatus.INTERNAL_SERVER_ERROR
 # Fetch status of a transcription job
 @app.route('/<string:department>/<string:pid>/speechmatic/status', methods=['GET'])
+@login_required
 def transcription_status(department, pid):
     speechmatics_api = SpeechmaticsApi()
     jobs_service = JobsService()
@@ -550,6 +552,7 @@ def transcription_status(department, pid):
         }, HTTPStatus.INTERNAL_SERVER_ERROR
 
 @app.route('/<string:department>/<string:pid>/speechmatic/result', methods=['GET'])
+@login_required
 def transcription_result(department, pid):
     jobs_service = JobsService()
     try:
@@ -575,19 +578,20 @@ def transcription_result(department, pid):
         logger.exception('fetching transcription result failed', data={'error': str(ex)})
         return {'error': str(ex)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-@app.route('/speechmatic/jobs', methods=['GET'])
-def list_jobs():
-    jobs_service = JobsService()
-    try:
-        jobs = jobs_service.list_jobs()
-        return {
-            'jobs': jobs
-        }, HTTPStatus.OK
-    except Exception as ex:
-        logger.exception('listing transcription jobs failed', data={'error': str(ex)})
-        return {
-            'error': str(ex)
-        }, HTTPStatus.INTERNAL_SERVER_ERROR
+# Ticket was moved to the backlog
+# @app.route('/speechmatic/jobs', methods=['GET'])
+# def list_jobs():
+#     jobs_service = JobsService()
+#     try:
+#         jobs = jobs_service.list_jobs()
+#         return {
+#             'jobs': jobs
+#         }, HTTPStatus.OK
+#     except Exception as ex:
+#         logger.exception('listing transcription jobs failed', data={'error': str(ex)})
+#         return {
+#             'error': str(ex)
+#         }, HTTPStatus.INTERNAL_SERVER_ERROR
 
 # =================== HEALTH CHECK ROUTES AND ERROR HANDLING ==================
 @app.route("/health/live")

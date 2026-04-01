@@ -55,14 +55,12 @@
             </div>
         {% elif sm_job_status in ['rejected', 'deleted', 'expired'] %}
           <div class="notification is-danger">
-            De aanvraag voor AI gegenereerde inhoud is mislukt of verlopen. Er kan een nieuwe aanvraag worden ingediend door de originele taal van het audio/beeldfragment te selecteren en op de knop hieronder te klikken.
+            De aanvraag voor AI gegenereerde inhoud is mislukt of verlopen. Er kan een nieuwe aanvraag worden ingediend door de originele taal van het audio/beeldfragment te selecteren en op de knop te klikken bovenaan de pagina.
           </div>    
-          {% include 'metadata/components/ai_generate_controls.html' %}
         {% elif sm_job_status is none %}
           <div class="notification is-light">
-            Er is nog geen AI gegenereerde inhoud beschikbaar voor dit item. Selecteer de originele taal van het audio/beeldfragment en klik op de knop hieronder om een aanvraag in te dienen bij de spraakherkenningsservice.
+            Er is nog geen AI gegenereerde inhoud beschikbaar voor dit item. Selecteer de originele taal van het audio/beeldfragment en op de knop te klikken bovenaan de pagina.
           </div>
-          {% include 'metadata/components/ai_generate_controls.html' %}
         {% endif %}
       </div> <!-- ai_inhoud_section -->
 
