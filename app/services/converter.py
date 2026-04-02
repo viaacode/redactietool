@@ -10,10 +10,8 @@
 # Required environment variables:
 #   TICKET_SERVICE_URL          - Base URL of the ticket service
 #                                 e.g. https://ticket-service.hetarchief.be
-#   TICKET_SERVICE_CERT         - Path to the client certificate PEM file
-#                                 e.g. /app/certs/client.crt.pem
-#   TICKET_SERVICE_KEY_PATH     - Path to the (encrypted) private key PEM file
-#                                 e.g. /app/certs/client.key.pem
+#   TICKET_SERVICE_CERT         - Client certificate PEM content
+#   TICKET_SERVICE_KEY          - Client private key PEM content
 #   TICKET_SERVICE_PASSPHRASE   - Passphrase protecting the private key
 #   TICKET_SERVICE_MAX_AGE      - Token validity in seconds (default: 3600)
 #   TICKET_SERVICE_HOST         - Default referer/host when none is provided
@@ -22,6 +20,7 @@
 
 import os
 import ssl
+import tempfile
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -58,27 +57,37 @@ class ConverterService:
 
     def __init__(self):
         self.base_url = os.environ.get('TICKET_SERVICE_URL', '').rstrip('/')
-        self.cert_path = os.environ.get('TICKET_SERVICE_CERT_PATH', '')
-        self.key_path = os.environ.get('TICKET_SERVICE_KEY_PATH', '')
         self.passphrase = os.environ.get('TICKET_SERVICE_PASSPHRASE') or None
         self.max_age = int(os.environ.get('TICKET_SERVICE_MAX_AGE', '3600'))
-        self.host = os.environ.get('TICKET_SERVICE_HOST', '').rstrip('/')
 
     def _build_session(self) -> requests.Session:
         """Create a requests.Session configured with mutual TLS."""
+        cert_pem_str = os.environ.get('TICKET_SERVICE_CERT', '')
+        key_pem_str = os.environ.get('TICKET_SERVICE_KEY', '')
+
+        if not cert_pem_str:
+            raise ValueError("TICKET_SERVICE_CERT environment variable is not set")
+        if not key_pem_str:
+            raise ValueError("TICKET_SERVICE_KEY environment variable is not set")
+        cert_pem = cert_pem_str.encode()
+        key_pem = key_pem_str.encode()
         ssl_context = ssl.create_default_context()
-        ssl_context.load_cert_chain(
-            certfile=self.cert_path,
-            keyfile=self.key_path,
-            password=self.passphrase,
-        )
-        # check if files exists
-        if not os.path.isfile(self.cert_path):
-            logger.error(f"Certificate file not found at {self.cert_path}")
-            raise FileNotFoundError(f"Certificate file not found at {self.cert_path}")
-        if not os.path.isfile(self.key_path):
-            logger.error(f"Key file not found at {self.key_path}")
-            raise FileNotFoundError(f"Key file not found at {self.key_path}")
+        cert_file = tempfile.NamedTemporaryFile(delete=False, suffix='.pem')
+        key_file = tempfile.NamedTemporaryFile(delete=False, suffix='.pem')
+        try:
+            cert_file.write(cert_pem)
+            cert_file.close()
+            key_file.write(key_pem)
+            key_file.close()
+            ssl_context.load_cert_chain(
+                certfile=cert_file.name,
+                keyfile=key_file.name,
+                password=self.passphrase,
+            )
+        finally:
+            os.unlink(cert_file.name)
+            os.unlink(key_file.name)
+
         session = requests.Session()
         session.mount('https://', _MtlsAdapter(ssl_context))
         return session
@@ -96,7 +105,6 @@ class ConverterService:
         :returns:       The ticket payload (dict) returned by the service.
         :raises requests.HTTPError: When the ticket service returns a non-2xx response.
         """
-        resolved_referer = (referer or self.host).rstrip('/')
 
 # archief-media-qas.viaa.be 
 # viaa.be
@@ -104,11 +112,9 @@ class ConverterService:
         params = {
             'app': 'hetarchief.be',
             'client': '',
-            'referer': '',#resolved_referer,
+            'referer': '',
             'maxage': self.max_age,
         }
-
-        logger.info('converter: requesting ticket', data={'path': path, 'referer': resolved_referer})
         print(f"self: {self.base_url}")
         session = self._build_session()
         response = session.get(
