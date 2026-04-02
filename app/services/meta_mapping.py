@@ -79,7 +79,7 @@ class MetaMapping:
             'publish_item': 'ajax'  # signal ajax request to frontend
         }
 
-    def form_params(self, pid, department, mam_data, sm_data, errors=[]):
+    def form_params(self, pid, department, mam_data, sm_data = None, errors=[]):
         keyframe_edit_url = '{}{}'.format(
             os.environ.get('KEYFRAME_EDITING_LINK',
                            'https://set_in_secrets?id='),
