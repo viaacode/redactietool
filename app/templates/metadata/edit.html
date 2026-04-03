@@ -74,13 +74,23 @@ Metadata bewerken
           })
         </script>
         
-  
-        {% if item_type != 'Audio' %}
-          <a class="button is-info mt-3" href="{{keyframe_edit_url}}" target="_blank">
-            <ion-icon name="key-outline" class="pr-3"></ion-icon>
-            Keyframe aanpassen
-          </a>
-        {% endif %}
+        <div class="is-flex is-justify-content-space-between">
+            {% if item_type != 'Audio' %}
+              <a class="button is-info mt-3" href="{{keyframe_edit_url}}" target="_blank">
+                <ion-icon name="key-outline" class="pr-3"></ion-icon>
+                Keyframe aanpassen
+              </a>
+            {% else %}
+              <div></div>
+            {% endif %}
+            
+          {% if sm_job_status not in ['created', 'running', 'done'] %}
+              {% include 'metadata/components/ai_generate_controls.html' %}
+          {% endif %}
+        </div>
+        
+        <div id="ai_toast_container" class="mt-3"></div>
+
       </div>
     </div>
   
@@ -88,7 +98,8 @@ Metadata bewerken
     {% include 'metadata/components/algemene_section.html' %}
     {% include 'metadata/components/productie_section.html' %}
     {% include 'metadata/components/inhoud_section.html' %}
-  
+    {% include 'metadata/components/ai_generated_section.html' %}
+
     <!-- ======================== Leerobject section ========================== -->
     <div class="hidden" id="redactie_api_url">deployed_server_url</div>
     <textarea 

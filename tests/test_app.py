@@ -494,6 +494,7 @@ def test_update_metadata(auth_client):
         'pid': 'qsf7664p39',
         'department': 'testbeeld',
         'mam_data': json.dumps(mam_data),
+        'sm_data': json.dumps({}),
         'serie': 'Serie veld test',
         'uitzenddatum': '2021-11-21',
         'ontsluitingstitel': 'Fietsstraten in centrum Gent',

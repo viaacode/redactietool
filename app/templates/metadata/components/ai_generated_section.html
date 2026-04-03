@@ -1,0 +1,81 @@
+{% from 'metadata/components/textarea_readonly.html' import textarea_readonly%}
+
+  <div class="columns">
+    <div class="column">
+      <h2 class="title is-clickable" onclick="sectionToggle('ai_inhoud_section')">
+        AI gegenereerde inhoud
+        {% set status_map = {
+          'created':  ('aangevraagd', 'is-info'),
+          'running':  ('verwerken',   'is-warning'),
+          'done':     ('gegenereerd', 'is-success'),
+          'rejected': ('mislukt',     'is-danger'),
+          'deleted':  ('verwijderd',  'is-dark'),
+          'expired':  ('verlopen',    'is-light')
+        } %}
+        {% set status_label, status_class = status_map.get(sm_job_status, ('nog niet aangevraagd', 'is-light')) %}
+        <span class="tag {{ status_class }} sm-status-badge">{{ status_label }}</span>
+        <div class="minimize-icon-wrapper" id="ai_inhoud_section_icon">
+          <span class="icon-unfolded">
+            <ion-icon name="chevron-down-circle-outline"></ion-icon>
+          </span>
+          <span class="icon-folded">
+            <ion-icon name="chevron-forward-circle-outline"></ion-icon>
+          </span>
+        </div>
+      </h2>
+      <hr/>
+      <div id="ai_inhoud_section">
+        {% if sm_job_status == "done" %}
+          {{- textarea_readonly('Samenvatting', 'ai_gegenereerde_beschrijving', sm_job_summary) }}
+          {{- textarea_readonly('Transcriptie', 'ai_gegenereerde_transcriptie', sm_job_transcription) }}
+
+          {% if sm_job_chapters %}
+            <article class="panel">
+              <p class="panel-heading">Hoofdstukken</p>
+              {% for chapter in sm_job_chapters %}
+                {% set st = chapter.start_time | int %}
+                {% set et = chapter.end_time | int %}
+                <details class="panel-block pl-5 pr-5 chapter-details">
+                  <summary class="chapter-summary">
+                    <span class="chapter-chevron">
+                      <ion-icon name="chevron-forward-outline" class="chevron-closed"></ion-icon>
+                      <ion-icon name="chevron-down-outline" class="chevron-open"></ion-icon>
+                    </span>
+                    <strong>{{ '%02d:%02d:%02d' | format(st / 3600, (st % 3600) / 60, st % 60) }} &ndash; {{ '%02d:%02d:%02d' | format(et / 3600, (et % 3600) / 60, et % 60) }}</strong>
+                    &nbsp;{{ chapter.title }}
+                  </summary>
+                  <textarea class="textarea is-small mt-2" name="chapter_{{ loop.index }}" readonly rows="4">{{ chapter.summary }}</textarea>
+                </details>
+              {% endfor %}
+            </article>
+          {% endif %}
+        {% elif sm_job_status in ['created', 'running'] %}
+            <div class="notification is-info">
+              De AI gegenereerde inhoud is aangevraagd en wordt momenteel verwerkt. Kom later terug om de resultaten te bekijken.
+            </div>
+        {% elif sm_job_status in ['rejected', 'deleted', 'expired'] %}
+          <div class="notification is-danger">
+            De aanvraag voor AI gegenereerde inhoud is mislukt of verlopen. Er kan een nieuwe aanvraag worden ingediend door de originele taal van het audio/beeldfragment te selecteren en op de knop te klikken bovenaan de pagina.
+          </div>    
+        {% elif sm_job_status is none %}
+          <div class="notification is-light">
+            Er is nog geen AI gegenereerde inhoud beschikbaar voor dit item. Selecteer de originele taal van het audio/beeldfragment en op de knop te klikken bovenaan de pagina.
+          </div>
+        {% endif %}
+      </div> <!-- ai_inhoud_section -->
+
+    </div>
+
+  </div>
+
+
+<style>
+  .sm-status-badge { vertical-align: middle; margin-left: 0.5rem; font-size: 0.75rem; }
+  .chapter-details { display: block; }
+  .chapter-summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 0.4rem; }
+  .chapter-details .chevron-open { display: none; }
+  .chapter-details .chevron-closed { display: inline-flex; }
+  .chapter-details[open] .chevron-open { display: inline-flex; }
+  .chapter-details[open] .chevron-closed { display: none; }
+</style>
+

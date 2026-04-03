@@ -13,6 +13,7 @@
 
 import json
 import os
+from app.services.converter import ConverterService
 from viaa.configuration import ConfigParser
 from viaa.observability import logging
 
@@ -78,7 +79,7 @@ class MetaMapping:
             'publish_item': 'ajax'  # signal ajax request to frontend
         }
 
-    def form_params(self, pid, department, mam_data, errors=[]):
+    def form_params(self, pid, department, mam_data, sm_data = None, errors=[]):
         keyframe_edit_url = '{}{}'.format(
             os.environ.get('KEYFRAME_EDITING_LINK',
                            'https://set_in_secrets?id='),
@@ -93,6 +94,15 @@ class MetaMapping:
         # get_property(mam_data, 'dcterms_abstract')
         dcterms_abstract = mam_data.get('Dynamic').get('dcterms_abstract')
         avo_beschrijving = markdown_to_html(dcterms_abstract)
+        
+        converter = ConverterService();
+        video_url = mam_data.get('Internal').get('PathToVideo')
+        temp_video_url = None
+        if(not video_url):
+            logger.warning(f"No video url found in metadata for pid: {pid}")
+            temp_video_url = converter.get_media_url(video_url, '', '')
+        if(not temp_video_url):
+            logger.error(f"Failed to get temporary media url for pid: {pid}")
 
         result = {
             'department': department,
@@ -138,12 +148,17 @@ class MetaMapping:
             # archived is now isodate!
             'archived': mam_data.get('Administrative').get('ArchiveDate'),
             'keyframe_edit_url': keyframe_edit_url,
-            'video_url': mam_data.get('Internal').get('PathToVideo'),
+            'video_url': temp_video_url,
             'keyframe': mam_data.get('Internal').get('PathToKeyframe'),
             'flowplayer_token': os.environ.get(
                 'FLOWPLAYER_TOKEN', 'set_in_secrets'
             ),
-            'validation_errors': errors
+            'validation_errors': errors,
+            # speechmatics data
+            'sm_job_status': sm_data.get('status') if sm_data else None,
+            'sm_job_transcription': sm_data.get('transcription') if sm_data else None,
+            'sm_job_summary': sm_data.get('summary') if sm_data else None,
+            'sm_job_chapters': json.loads(sm_data['chapters']) if sm_data and isinstance(sm_data.get('chapters'), str) else (sm_data.get('chapters') if sm_data else None),
         }
 
         return result
@@ -259,13 +274,13 @@ class MetaMapping:
 
         return tp
 
-    def mh_to_form(self, pid, department, mam_data, validation_errors):
+    def mh_to_form(self, pid, department, mam_data, sm_data, validation_errors):
         """
         convert json metadata from MediahavenApi back into a
         python hash for populating the view and do the mapping from mh names to
         wanted names in metadata/edit.html
         """
-        return self.form_params(pid, department, mam_data, validation_errors)
+        return self.form_params(pid, department, mam_data, sm_data, validation_errors)
 
     def xml_sidecar(self, metadata, tp):
         xml_data = XMLSidecar().metadata_sidecar(metadata, tp)
