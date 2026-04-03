@@ -92,16 +92,11 @@ class ConverterService:
         session.mount('https://', _MtlsAdapter(ssl_context))
         return session
 
-    def get_ticket(self, path: str, referer: str = '', ip: str = '127.0.0.1') -> dict:
+    def get_ticket(self, path: str) -> dict:
         """
         Request a temporary playback ticket for *path* from the ticket service.
 
         :param path:    Media path to generate a ticket for.
-        :param referer: Domain of the client allowed to play the media.
-                        Falls back to TICKET_SERVICE_HOST when empty.
-        :param ip:      IP address of the client allowed to play the media.
-                        Localhost addresses are automatically resolved to the
-                        machine's public IP.
         :returns:       The ticket payload (dict) returned by the service.
         :raises requests.HTTPError: When the ticket service returns a non-2xx response.
         """
@@ -156,6 +151,6 @@ class ConverterService:
             
         logger.info('converter: get_media_url', data={'relative_path': relative_path})
         logger.info(f"Resolved relative ip: {ip}")
-        ticket = self.get_ticket(relative_path, referer=referer, ip=ip)
+        ticket = self.get_ticket(relative_path)
         serviceUrl = os.environ.get('MEDIA_SERVICE_URL', self.base_url).rstrip('/')
         return f"{serviceUrl}/{relative_path}?token={ticket.get('jwt', '')}"

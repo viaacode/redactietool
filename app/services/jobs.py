@@ -51,6 +51,15 @@ class JobsService:
                 cur.execute(sql, (department, pid))
                 row = cur.fetchone()
                 return dict(row) if row else None
+            
+    def get_job_by_id(self, job_id: int) -> dict | None:
+        """Return a single job by its primary key, or None if not found."""
+        sql = "SELECT * FROM jobs WHERE id = %s"
+        with self._connect() as conn:
+            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+                cur.execute(sql, (job_id,))
+                row = cur.fetchone()
+                return dict(row) if row else None
 
     def get_job_by_speechmatic_id(self, speechmatic_job_id: str) -> dict | None:
         """Return a single job by its Speechmatics job id, or None if not found."""
@@ -99,7 +108,7 @@ class JobsService:
                    'transcription', 'summary', 'chapters', 'status'}
         updates = {k: v for k, v in fields.items() if k in allowed}
         if not updates:
-            return self.get_job(job_id)
+            return self.get_job_by_id(job_id)
 
         set_clause = ', '.join(f"{col} = %s" for col in updates)
         values = list(updates.values()) + [job_id]

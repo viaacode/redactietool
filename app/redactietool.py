@@ -21,7 +21,6 @@
 import datetime
 import json
 import os
-from urllib.parse import urlparse
 
 from flask import (Flask, Response, redirect, render_template, request,
                    send_from_directory, session, url_for)
@@ -75,7 +74,9 @@ app.config['SAML_PATH'] = os.path.join(
 # add routes to saml.py module for login/logout with saml
 app.add_url_rule('/', view_func=saml_login, methods=['GET', 'POST'])
 
-# Start background scheduler that polls Speechmatics for pending job results
+# Start background scheduler that polls Speechmatics for pending job results.
+# In multi-worker deployments, enable this only in a single dedicated process
+# by setting the REDACTIETOOL_ENABLE_SCHEDULER environment variable.
 start_scheduler()
 
 # add routes for legacy login (without saml) when testing or debugging
@@ -511,7 +512,7 @@ def generate_transcript():
             jobs_service.create_job(department, pid, job_id)
         else:
             logger.info(f"Job already exists for pid: {pid}, updating with new job_id: {job_id} and resetting status")
-            jobs_service.update_job(department, pid, speechmatic_job_id=job_id)
+            jobs_service.update_job(job["id"], speechmatic_job_id=job_id)
         return {
             'department': department,
             'pid': pid,
@@ -546,7 +547,14 @@ def transcription_status(department, pid):
             'status': status
         }, HTTPStatus.OK
     except Exception as ex:
-        logger.exception('fetching transcription status failed', data={'job_id': job["id"], 'error': str(ex)})
+        logger.exception(
+            'fetching transcription status failed',
+            data={
+                'department': department,
+                'pid': pid,
+                'error': str(ex),
+            },
+        )
         return {
             'error': str(ex)
         }, HTTPStatus.INTERNAL_SERVER_ERROR

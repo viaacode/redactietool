@@ -97,11 +97,12 @@ class MetaMapping:
         
         converter = ConverterService();
         video_url = mam_data.get('Internal').get('PathToVideo')
+        temp_video_url = None
         if(not video_url):
             logger.warning(f"No video url found in metadata for pid: {pid}")
-        temp_video_url = converter.get_media_url(video_url, '', '')
+            temp_video_url = converter.get_media_url(video_url, '', '')
         if(not temp_video_url):
-            logger.warning(f"Failed to get temporary media url for pid: {pid}")
+            logger.error(f"Failed to get temporary media url for pid: {pid}")
 
         result = {
             'department': department,
