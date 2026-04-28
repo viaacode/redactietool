@@ -334,6 +334,14 @@ def save_item_metadata():
     template_vars['subtitle_files'] = subtitle_files
     template_vars['has_existing_subtitle'] = len(subtitle_files) > 0
 
+    # Re-fetch speechmatics data so the AI section stays populated after save
+    jobs_service = JobsService()
+    speechmatics_data = jobs_service.get_job(department, pid)
+    template_vars['sm_job_status'] = speechmatics_data.get('status') if speechmatics_data else None
+    template_vars['sm_job_transcription'] = speechmatics_data.get('transcription') if speechmatics_data else None
+    template_vars['sm_job_summary'] = speechmatics_data.get('summary') if speechmatics_data else None
+    template_vars['sm_job_chapters'] = json.loads(speechmatics_data['chapters']) if speechmatics_data and isinstance(speechmatics_data.get('chapters'), str) else (speechmatics_data.get('chapters') if speechmatics_data else None)
+
     return render_template(
         'metadata/edit.html',
         **template_vars
