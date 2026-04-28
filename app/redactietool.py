@@ -105,6 +105,56 @@ def load_user_from_request(request):
         session.clear()  # clear bad or timed out session
 
 
+_IMMUTABLE_STATIC_PATHS = frozenset([
+    '/static/avo-logo-i.svg',
+    '/static/images/saml_login_background.jpg',
+])
+
+# Prefixes whose entire subtree is content-hashed (safe for immutable caching)
+_IMMUTABLE_STATIC_PREFIXES = (
+    '/static/vue/',
+    '/static/bulma/fonts/',
+)
+
+# Vendored/minified third-party assets: stable but not content-hashed
+_VENDOR_STATIC_PATHS = frozenset([
+    '/static/flowplayer.min.js',
+    '/static/flowplayer.css',
+    '/static/quill.js',
+    '/static/quill.snow.css',
+    '/static/subtitles.min.js',
+    '/static/turndown.js',
+    '/static/bulma/bulma-tooltip.min.css',
+    '/static/bulma/bundle.js',
+    '/static/favicon.ico',
+])
+
+# App-specific assets without content hashes: cache briefly to allow quick rollouts
+_APP_STATIC_PATHS = frozenset([
+    '/static/redactietool_v2.js',
+    '/static/style.css',
+    '/static/bulma/overrides.css',
+    '/static/bulma/core.css',
+    '/static/bulma/modal_dialog.js',
+])
+
+
+@app.after_request
+def set_static_cache_headers(response):
+    path = request.path
+    if path in _IMMUTABLE_STATIC_PATHS or any(path.startswith(p) for p in _IMMUTABLE_STATIC_PREFIXES):
+        response.cache_control.public = True
+        response.cache_control.max_age = 31536000
+        response.cache_control.immutable = True
+    elif path in _VENDOR_STATIC_PATHS:
+        response.cache_control.public = True
+        response.cache_control.max_age = 604800  # 1 week
+    elif path in _APP_STATIC_PATHS:
+        response.cache_control.public = True
+        response.cache_control.max_age = 3600  # 1 hour
+    return response
+
+
 @app.route('/search_media', methods=['GET'])
 @login_required
 def search_media():

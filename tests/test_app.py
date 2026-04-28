@@ -674,3 +674,69 @@ def test_publicatie_status_protected(client):
     )
     assert res.status_code == HTTPStatus.OK
     assert 'Log in om gebruik te maken' in res.data.decode()
+
+
+# static file cache header tests
+
+def test_cache_immutable_existing_paths(client):
+    for path in ['/static/avo-logo-i.svg', '/static/images/saml_login_background.jpg']:
+        res = client.get(path)
+        assert res.cache_control.public is True
+        assert res.cache_control.max_age == 31536000
+        assert res.cache_control.immutable is True
+
+
+def test_cache_immutable_vue_bundles(client):
+    for path in [
+        '/static/vue/js/app.3c43299f.js',
+        '/static/vue/js/chunk-vendors.84d9dc4d.js',
+        '/static/vue/css/app.b7f7662c.css',
+        '/static/vue/css/chunk-vendors.a902fd7e.css',
+    ]:
+        res = client.get(path)
+        assert res.cache_control.public is True
+        assert res.cache_control.max_age == 31536000
+        assert res.cache_control.immutable is True
+
+
+def test_cache_immutable_fonts(client):
+    for path in [
+        '/static/bulma/fonts/slick.woff',
+        '/static/bulma/fonts/slick.ttf',
+    ]:
+        res = client.get(path)
+        assert res.cache_control.public is True
+        assert res.cache_control.max_age == 31536000
+        assert res.cache_control.immutable is True
+
+
+def test_cache_vendor_libs(client):
+    for path in [
+        '/static/flowplayer.min.js',
+        '/static/flowplayer.css',
+        '/static/quill.js',
+        '/static/quill.snow.css',
+        '/static/subtitles.min.js',
+        '/static/turndown.js',
+        '/static/bulma/bulma-tooltip.min.css',
+        '/static/bulma/bundle.js',
+        '/static/favicon.ico',
+    ]:
+        res = client.get(path)
+        assert res.cache_control.public is True
+        assert res.cache_control.max_age == 604800
+        assert not res.cache_control.immutable
+
+
+def test_cache_app_assets(client):
+    for path in [
+        '/static/redactietool_v2.js',
+        '/static/style.css',
+        '/static/bulma/overrides.css',
+        '/static/bulma/core.css',
+        '/static/bulma/modal_dialog.js',
+    ]:
+        res = client.get(path)
+        assert res.cache_control.public is True
+        assert res.cache_control.max_age == 3600
+        assert not res.cache_control.immutable
