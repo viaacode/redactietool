@@ -426,6 +426,10 @@ hr {
     border: 1px solid #ddd;
 }
 
+.textarea {
+    border-radius: 0 0 4px 4px;
+}
+
 .button.is-link.is-light{
   border-color: #97b8d3 !important;
 }
