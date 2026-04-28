@@ -1,0 +1,82 @@
+
+{% from 'metadata/components/input.html' import input %}
+{% from 'metadata/components/input_readonly.html' import input_readonly %}
+
+  <div class="columns">
+    <div class="column">
+      <h2 class="title is-clickable" onclick="sectionToggle('algemene_metadata')">
+        Algemene metadata
+        <div class="minimize-icon-wrapper" id="algemene_metadata_icon">
+          <span class="icon-unfolded">
+            <ion-icon name="chevron-down-circle-outline"></ion-icon>
+          </span>
+          <span class="icon-folded">
+            <ion-icon name="chevron-forward-circle-outline"></ion-icon>
+          </span>
+        </div>
+      </h2>
+      <hr/>
+    </div>
+  </div>
+
+  <div id="algemene_metadata" class="custom_section">
+    <div class="columns">
+      <div class="column is-half">
+        <h3 class="subtitle" id="algemeen_title">Algemeen</h3>
+        
+        {{- input_readonly('Beherende&nbsp;CP'|safe, 'beherende_cp', original_cp) }}
+        {{- input_readonly('Testbeeld&nbsp;PID'|safe, 'testbeeld_pid', pid) }}
+        {{- input_readonly('Lokale CP ID', 'lokale_cp_id', dc_identifier_localid) }}
+
+       
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">Uitzenddatum</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <div class="control">
+                <input  name="uitzenddatum" id="uitzenddatum" 
+                        class="input is-small" type="text" 
+                        placeholder="Uitzenddatum" 
+                        value="{{dcterms_issued}}"
+                        oninput="checkDateInput('uitzenddatum')"
+                />
+                <p id="uitzenddatum_error" class="help is-danger hidden">Opgelet: foute datumnotatie (JJJJ-MM-DD)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{- input_readonly('Creatiedatum', 'creatiedatum', dcterms_created) }}
+        
+      </div>
+
+      <div class="column is-half">
+        <h3 class="subtitle" id="algemeen_title_right">Titel</h3>
+
+        {{- input('Ontsluitingstitel', 'ontsluitingstitel', ontsluitingstitel) }}
+        {{- input_readonly('Hoofdtitel', 'hoofdtitel', title) }}
+        {{- input('Serie', 'serie', titel_serie) }}
+
+        {{- input_readonly('Episode', 'titel_episode', titel_episode) }}
+        {{- input_readonly('Aflevering', 'titel_aflevering', titel_aflevering) }}
+        {{- input_readonly('Alternatief', 'titel_alternatief', titel_alternatief) }}
+        {{- input_readonly('Programma', 'titel_programma', titel_programma) }}
+        {{- input_readonly('Serienummer', 'titel_serienummer', titel_serienummer) }}
+        {{- input_readonly('Seizoen', 'titel_seizoen', titel_seizoen) }}
+        {{- input_readonly('Nummer', 'titel_seizoen_nummer', titel_seizoen_nr) }}
+        {{- input_readonly('Archief', 'titel_archief', titel_archief) }}
+        {{- input_readonly('Deelarchief', 'titel_deelarchief', titel_deelarchief) }}
+        {{- input_readonly('Reeks', 'titel_reeks', titel_reeks) }}
+        {{- input_readonly('Deelreeks', 'titel_deelreeks', titel_deelreeks) }}
+        {{- input_readonly('Registratie', 'titel_registratie', titel_registratie) }}
+
+      </div> <!-- right side -->
+    </div> 
+    <div class="clearfix"></div>
+  </div> <!-- section wrapper div for hide/unhide -->
+
+
+
+

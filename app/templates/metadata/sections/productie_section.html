@@ -1,0 +1,23 @@
+  <div class="columns">
+    <div class="column">
+      <h2 class="title is-clickable" onclick="sectionToggle('productie_section')">
+        Productie
+        <div class="minimize-icon-wrapper" id="productie_section_icon">
+          <span class="icon-unfolded">
+            <ion-icon name="chevron-down-circle-outline"></ion-icon>
+          </span>
+          <span class="icon-folded">
+            <ion-icon name="chevron-forward-circle-outline"></ion-icon>
+          </span>
+        </div>
+      </h2>
+      <hr/>
+      
+      <div id="productie_section" class="custom_section">
+      {% include 'metadata/components/maker_select.html' %}
+      {% include 'metadata/components/bijdrager_select.html' %}
+      {% include 'metadata/components/publisher_select.html' %}
+      </div>
+ 
+    </div>
+  </div>

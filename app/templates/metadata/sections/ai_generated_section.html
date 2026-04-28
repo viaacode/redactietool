@@ -24,7 +24,7 @@
         </div>
       </h2>
       <hr/>
-      <div id="ai_inhoud_section">
+      <div id="ai_inhoud_section" class="custom_section">
         {% if sm_job_status == "done" %}
           {{- textarea_readonly('Samenvatting', 'ai_gegenereerde_beschrijving', sm_job_summary) }}
           {{- textarea_readonly('Transcriptie', 'ai_gegenereerde_transcriptie', sm_job_transcription) }}

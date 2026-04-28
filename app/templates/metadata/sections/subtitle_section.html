@@ -1,0 +1,98 @@
+<div class="columns">
+	<div class="column">
+		<h2 class="title is-clickable" onclick="sectionToggle('subtitle_section')">
+			Ondertitelbestand
+			<div class="minimize-icon-wrapper" id="subtitle_section_icon">
+          <span class="icon-unfolded">
+            <ion-icon name="chevron-down-circle-outline"></ion-icon>
+          </span>
+				<span class="icon-folded">
+            <ion-icon name="chevron-forward-circle-outline"></ion-icon>
+          </span>
+			</div>
+		</h2>
+		<hr/>
+	</div>
+</div>
+<div id="subtitle_section" class="custom_section">
+	<div class="columns">
+		{% if has_existing_subtitle %}
+			<div class="column">
+				<div class="notification is-warning is-light">
+					<strong>Let op:</strong> er bestaat al een ondertitelbestand voor dit item.
+					Een nieuw bestand zal het bestaande vervangen.
+				</div>
+			</div>
+		{% endif %}
+		<div class="column is-half">
+			<label class="label">Type ondertitelbestand</label>
+			<div class="control">
+				<div class="select">
+					<select name="subtitle_type" id="subtitle_type">
+						<option value="closed">Closed</option>
+						<option value="open">Open</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="column is-half">
+			<label class="label">Kies ondertitelbestand (SRT)</label>
+			<div class="control">
+				<input name="subtitle_file" id="subtitle_file_input"
+							 class="input" type="file" accept=".srt,.SRT"
+							 onchange="previewSubtitleInPlayer(this);">
+			</div>
+		</div>
+
+		{% if subtitle_files|length > 0 %}
+			<div class="column">
+				<div class="field">
+					<label class="label">Bestaande ondertitelbestanden</label>
+					<div class="control">
+						{% for subfile in subtitle_files %}
+						<span class="tag is-info is-light mr-2 mb-2">{{ subfile }}</span>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		{% endif %}
+
+		{% if has_pending_subtitle %}
+			<div class="column">
+				<div class="notification is-info is-light">
+					<strong>Klaarstaand bestand:</strong> <em>{{ pending_subtitle_filename }}</em> staat klaar.
+					Het wordt automatisch opgeladen zodra het item gepubliceerd wordt op AVO.
+				</div>
+			</div>
+		{% endif %}
+
+		{% if subtitle_synced %}
+			<div class="column">
+				<div class="notification is-success fadein" id="subtitle_synced_alert">
+					Het ondertitelbestand werd succesvol opgeladen.
+				</div>
+			</div>
+		{% endif %}
+		{% if subtitle_pending %}
+			<div class="column">
+				<div class="notification is-info fadein" id="subtitle_pending_alert">
+					Het ondertitelbestand is bewaard. Het zal automatisch opgeladen worden wanneer het item gepubliceerd wordt.
+				</div>
+			</div>
+		{% endif %}
+		{% if subtitle_saved_for_retry %}
+			<div class="column">
+				<div class="notification is-warning fadein" id="subtitle_retry_alert">
+					Het ondertitelbestand is bewaard. Het zal opgeladen worden bij een volgende succesvolle opslag.
+				</div>
+			</div>
+		{% endif %}
+		{% if subtitle_error %}
+			<div class="column">
+				<div class="notification is-danger fadein" id="subtitle_error_alert">
+					Fout bij het opladen van ondertitels: {{ subtitle_error }}
+				</div>
+			</div>
+		{% endif %}
+	</div>
+</div>

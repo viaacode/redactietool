@@ -93,12 +93,13 @@ Metadata bewerken
 
       </div>
     </div>
-  
+
     {% include 'includes/hidden_fields.html' %}
-    {% include 'metadata/components/algemene_section.html' %}
-    {% include 'metadata/components/productie_section.html' %}
-    {% include 'metadata/components/inhoud_section.html' %}
-    {% include 'metadata/components/ai_generated_section.html' %}
+		{% include 'metadata/sections/subtitle_section.html' %}
+    {% include 'metadata/sections/algemene_section.html' %}
+    {% include 'metadata/sections/productie_section.html' %}
+    {% include 'metadata/sections/inhoud_section.html' %}
+    {% include 'metadata/sections/ai_generated_section.html' %}
 
     <!-- ======================== Leerobject section ========================== -->
     <div class="hidden" id="redactie_api_url">deployed_server_url</div>
@@ -110,78 +111,6 @@ Metadata bewerken
     </textarea>
 
     <div id="app"></div>
-
-    <!-- ======================== Subtitle upload section ===================== -->
-    <div class="subtitle-upload-section box mt-4">
-      <h3 class="title is-5">Ondertitelbestand (optioneel)</h3>
-
-      {% if has_existing_subtitle %}
-      <div class="notification is-warning is-light">
-        <strong>Let op:</strong> er bestaat al een ondertitelbestand voor dit item.
-        Een nieuw bestand zal het bestaande vervangen.
-      </div>
-      {% endif %}
-
-      <div class="field">
-        <label class="label">Type ondertitelbestand</label>
-        <div class="control">
-          <div class="select">
-            <select name="subtitle_type" id="subtitle_type">
-              <option value="closed">Closed</option>
-              <option value="open">Open</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">Kies ondertitelbestand (SRT)</label>
-        <div class="control">
-          <input name="subtitle_file" id="subtitle_file_input"
-                 class="input" type="file" accept=".srt,.SRT"
-                 onchange="previewSubtitleInPlayer(this);">
-        </div>
-      </div>
-
-      {% if subtitle_files|length > 0 %}
-      <div class="field">
-        <label class="label">Bestaande ondertitelbestanden</label>
-        <div class="control">
-          {% for subfile in subtitle_files %}
-            <span class="tag is-info is-light mr-2 mb-2">{{ subfile }}</span>
-          {% endfor %}
-        </div>
-      </div>
-      {% endif %}
-
-      {% if has_pending_subtitle %}
-      <div class="notification is-info is-light">
-        <strong>Klaarstaand bestand:</strong> <em>{{ pending_subtitle_filename }}</em> staat klaar.
-        Het wordt automatisch opgeladen zodra het item gepubliceerd wordt op AVO.
-      </div>
-      {% endif %}
-
-      {% if subtitle_synced %}
-      <div class="notification is-success fadein" id="subtitle_synced_alert">
-        Het ondertitelbestand werd succesvol opgeladen.
-      </div>
-      {% endif %}
-      {% if subtitle_pending %}
-      <div class="notification is-info fadein" id="subtitle_pending_alert">
-        Het ondertitelbestand is bewaard. Het zal automatisch opgeladen worden wanneer het item gepubliceerd wordt.
-      </div>
-      {% endif %}
-      {% if subtitle_saved_for_retry %}
-      <div class="notification is-warning fadein" id="subtitle_retry_alert">
-        Het ondertitelbestand is bewaard. Het zal opgeladen worden bij een volgende succesvolle opslag.
-      </div>
-      {% endif %}
-      {% if subtitle_error %}
-      <div class="notification is-danger fadein" id="subtitle_error_alert">
-        Fout bij het opladen van ondertitels: {{ subtitle_error }}
-      </div>
-      {% endif %}
-    </div>
     
     <button type="submit" 
       id="metadata_submit_btn"
