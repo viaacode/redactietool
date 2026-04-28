@@ -1,4 +1,6 @@
 python_env
+.env*
+!.env.example
 *secret*
 __pycache__
 .coverage
