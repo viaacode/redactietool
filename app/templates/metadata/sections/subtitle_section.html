@@ -15,15 +15,17 @@
 	</div>
 </div>
 <div id="subtitle_section" class="custom_section">
-	<div class="columns">
-		{% if has_existing_subtitle %}
+	{% if has_existing_subtitle %}
+		<div class="columns">
 			<div class="column">
 				<div class="notification is-warning is-light">
 					<strong>Let op:</strong> er bestaat al een ondertitelbestand voor dit item.
 					Een nieuw bestand zal het bestaande vervangen.
 				</div>
 			</div>
-		{% endif %}
+		</div>
+	{% endif %}
+	<div class="columns">
 		<div class="column is-half">
 			<label class="label">Type ondertitelbestand</label>
 			<div class="control">
@@ -43,9 +45,11 @@
 							 onchange="previewSubtitleInPlayer(this);">
 			</div>
 		</div>
+	</div>
 
-		{% if subtitle_files|length > 0 %}
-			<div class="column">
+	<div class="columns">
+		<div class="column">
+			{% if subtitle_files|length > 0 %}
 				<div class="field">
 					<label class="label">Bestaande ondertitelbestanden</label>
 					<div class="control">
@@ -54,45 +58,30 @@
 						{% endfor %}
 					</div>
 				</div>
-			</div>
-		{% endif %}
-
-		{% if has_pending_subtitle %}
-			<div class="column">
+			{% endif %}
+			{% if has_pending_subtitle %}
 				<div class="notification is-info is-light">
-					<strong>Klaarstaand bestand:</strong> <em>{{ pending_subtitle_filename }}</em> staat klaar.
+					<strong>Klaarstaand bestand:</strong><br/>
+					<em>{{ pending_subtitle_filename }}</em> staat klaar.<br/>
 					Het wordt automatisch opgeladen zodra het item gepubliceerd wordt op AVO.
 				</div>
-			</div>
-		{% endif %}
+			{% endif %}
 
-		{% if subtitle_synced %}
-			<div class="column">
+			{% if subtitle_synced %}
 				<div class="notification is-success fadein" id="subtitle_synced_alert">
 					Het ondertitelbestand werd succesvol opgeladen.
 				</div>
-			</div>
-		{% endif %}
-		{% if subtitle_pending %}
-			<div class="column">
-				<div class="notification is-info fadein" id="subtitle_pending_alert">
-					Het ondertitelbestand is bewaard. Het zal automatisch opgeladen worden wanneer het item gepubliceerd wordt.
-				</div>
-			</div>
-		{% endif %}
-		{% if subtitle_saved_for_retry %}
-			<div class="column">
+			{% endif %}
+			{% if subtitle_saved_for_retry %}
 				<div class="notification is-warning fadein" id="subtitle_retry_alert">
 					Het ondertitelbestand is bewaard. Het zal opgeladen worden bij een volgende succesvolle opslag.
 				</div>
-			</div>
-		{% endif %}
-		{% if subtitle_error %}
-			<div class="column">
+			{% endif %}
+			{% if subtitle_error %}
 				<div class="notification is-danger fadein" id="subtitle_error_alert">
 					Fout bij het opladen van ondertitels: {{ subtitle_error }}
 				</div>
-			</div>
-		{% endif %}
+			{% endif %}
+		</div>
 	</div>
 </div>

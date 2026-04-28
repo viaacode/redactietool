@@ -1,3 +1,5 @@
+-- Table: public.pending_subtitles
+
 CREATE TABLE IF NOT EXISTS public.pending_subtitles
 (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

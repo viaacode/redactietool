@@ -348,7 +348,7 @@ def save_item_metadata():
                     pending_subs_service.save(
                         department, pid, subtitle_type,
                         f"{pid}.srt", srt_content)
-                    template_vars['subtitle_pending'] = True
+                    template_vars['has_pending_subtitle'] = True
                 except Exception as e:
                     logger.exception('saving pending subtitle failed', data={'pid': pid, 'error': str(e)})
                     template_vars['subtitle_error'] = str(e)
