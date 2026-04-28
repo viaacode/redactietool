@@ -3,8 +3,8 @@
 #
 #  app/services/jobs_service.py
 #
-#   CRUD service for the 'jobs' table in the Speechmatics Postgres database.
-#   Reads the connection string from the SPEECHMATIC_CONNECTIONSTRING
+#   CRUD service for the 'jobs' table in the Postgres database that stores speechmatics ai metadata and jobs info.
+#   Reads the connection string from the POSTGRES_CONNECTIONSTRING
 #   environment variable.
 #
 
@@ -16,7 +16,7 @@ import psycopg2.extras
 
 
 class JobsService:
-    CONNECTION_STRING = os.environ.get('SPEECHMATIC_CONNECTIONSTRING', '')
+    CONNECTION_STRING = os.environ.get('POSTGRES_CONNECTIONSTRING', '')
 
     def _connect(self):
         return psycopg2.connect(self.CONNECTION_STRING)
