@@ -49,7 +49,6 @@ function restoreButton(btn_id, btn_label){
 
 function clearButtonLoadingState(){
   restoreButton("btn_metadata_bewerken", "Metadata bewerken");
-  restoreButton("btn_ondertitels_toevoegen", "Ondertitels toevoegen");
 }
 
 function resetSearch(){
@@ -87,67 +86,48 @@ function flashModalWarning(){
 
 
 // ============================== SUBTITLE FORMS ===============================
-function pidSubmitForSubtitles(btn){
-  hf = get_id('redirect_subtitles');
-  hf.value = 'yes';
-  window.localStorage.removeItem("productie_section_opened");
-  execute(btn, 'Item opzoeken...');
-}
-
 function pidSubmitForMetadata(btn){
-  hf = get_id('redirect_subtitles');
-  hf.value = 'no';
   window.localStorage.removeItem("productie_section_opened");
   execute(btn, 'Item opzoeken...');
 }
 
-function uploadSubmit(btn){
-  execute(btn, 'Opladen...');
+// Preview a locally selected SRT file in the Flowplayer video player
+function previewSubtitleInPlayer(input){
+  if(!input.files || !input.files[0]) return;
 
-  // also disable anuleren link
-  cancel_btn = get_id('upload_cancel');
-  if( cancel_btn ){ 
-    cancel_btn.className += ' disabled';
-    cancel_btn.href = "#disabled";
-  }
-}
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var srtText = e.target.result;
+    // Convert SRT to WebVTT: add header, replace comma with period in timestamps
+    var vttText = "WEBVTT\n\n" + srtText
+      .replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, '$1.$2');
 
-function uploadCancel(ref){
-  console.log("uploadCancel clicked!")
-  ref.className += ' disabled';
-}
+    var blob = new Blob([vttText], {type: 'text/vtt'});
+    var blobUrl = URL.createObjectURL(blob);
 
-function previewSubmit(btn){
-  execute(btn, 'Versturen...')
+    // Try to add/replace a <track> element on the underlying <video>
+    var video = document.querySelector('#player_container video');
+    if(video){
+      // Remove any existing preview tracks
+      var existingTracks = video.querySelectorAll('track.preview-track');
+      existingTracks.forEach(function(t){ t.remove(); });
 
-  //disable wissen button
-  cancel_btn = get_id('preview_cancel');
-  if( cancel_btn ){ 
-    cancel_btn.className += ' disabled';
-    cancel_btn.href = "#disabled";
-  }
-}
+      var track = document.createElement('track');
+      track.className = 'preview-track';
+      track.kind = 'subtitles';
+      track.label = 'Preview';
+      track.srclang = 'nl';
+      track.src = blobUrl;
+      track.default = true;
+      video.appendChild(track);
 
-function previewCancel(ref){
-  ref.className += ' disabled';
-}
-
-function confirmSubmit(btn){
-  execute(btn, 'Versturen...');
-
-  cancel_btn = get_id('confirm_cancel')
-  if(cancel_btn){
-    cancel_btn.disabled=true;
-  }
-}
-
-function confirmCancel(btn){
-  execute(btn, 'Wissen...');
-
-  repl_btn = get_id('confirm_submit')
-  if(repl_btn){
-    repl_btn.disabled=true;
-  }
+      // Activate the new track
+      for(var i = 0; i < video.textTracks.length; i++){
+        video.textTracks[i].mode = (video.textTracks[i].label === 'Preview') ? 'showing' : 'hidden';
+      }
+    }
+  };
+  reader.readAsText(input.files[0]);
 }
 
 

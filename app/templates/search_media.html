@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block title %}
-Ondertitels toevoegen
+Zoek een item op
 {% endblock %}
 
 {% block content %}
@@ -31,7 +31,6 @@ Ondertitels toevoegen
           <input id="pid_search" class="input" type="text" name="pid" placeholder="Item pid" autofocus/>
         </div>
       </div>
-      <input type="hidden" value="yes" name="redirect_subtitles" id="redirect_subtitles"/>
 
       {% if SHOW_DEBUG_PIDS %}
         <fieldset class="debug-pids">
@@ -60,16 +59,6 @@ Ondertitels toevoegen
           value="Metadata bewerken"
           onclick="pidSubmitForMetadata(this);"
         />
-
-        <input 
-          id="btn_ondertitels_toevoegen"
-          name="action"
-          class="button is-primary is-pulled-right ml-4"
-          type="submit" 
-          value="Ondertitels toevoegen"
-          onclick="pidSubmitForSubtitles(this);"
-        />
-
       </div>
   </form>
 

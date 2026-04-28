@@ -73,6 +73,31 @@ def validate_upload(template_params, request_files):
     return None, uploaded_file
 
 
+def validate_optional_subtitle_upload(request_files):
+    """Validate an optional subtitle file upload.
+
+    Returns an error string only when a file was selected but is
+    invalid/empty.  Returns None when no file was selected (subtitle
+    is optional) or the file looks fine.
+    """
+    if 'subtitle_file' not in request_files:
+        return None
+
+    uploaded_file = request_files['subtitle_file']
+    if uploaded_file.filename == '':
+        return None  # no file selected — that's OK, subtitle is optional
+
+    allowed_extensions = {'srt'}
+    if '.' not in uploaded_file.filename:
+        return 'Ondertitelbestand moet een .srt extensie hebben'
+
+    ext = uploaded_file.filename.rsplit('.', 1)[1].lower()
+    if ext not in allowed_extensions:
+        return 'Ondertitelbestand moet een .srt extensie hebben'
+
+    return None
+
+
 def validate_conversion(template_params):
     if not template_params.get('subtitle_file'):
         return 'Ondertitels moeten in SRT formaat'
