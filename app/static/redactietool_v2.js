@@ -98,6 +98,9 @@ function previewSubtitleInPlayer(input){
   var previewMsg = document.getElementById('subtitle_preview_msg');
   if(previewMsg) previewMsg.style.display = '';
 
+  var clearBtn = document.getElementById('subtitle_clear_btn');
+  if(clearBtn) clearBtn.style.display = '';
+
   var reader = new FileReader();
   reader.onload = function(e){
     var srtText = e.target.result;
@@ -131,6 +134,17 @@ function previewSubtitleInPlayer(input){
     }
   };
   reader.readAsText(input.files[0]);
+}
+
+function clearSubtitleInput(){
+  var input = document.getElementById('subtitle_file_input');
+  if(input) input.value = '';
+
+  var previewMsg = document.getElementById('subtitle_preview_msg');
+  if(previewMsg) previewMsg.style.display = 'none';
+
+  var clearBtn = document.getElementById('subtitle_clear_btn');
+  if(clearBtn) clearBtn.style.display = 'none';
 }
 
 
