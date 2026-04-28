@@ -46,7 +46,6 @@
 			</div>
 		</div>
 	</div>
-
 	<div class="columns">
 		<div class="column">
 			{% if subtitle_files|length > 0 %}
@@ -59,22 +58,9 @@
 					</div>
 				</div>
 			{% endif %}
-			{% if has_pending_subtitle %}
-				<div class="notification is-info is-light">
-					<strong>Klaarstaand bestand:</strong><br/>
-					<em>{{ pending_subtitle_filename }}</em> staat klaar.<br/>
-					Het wordt automatisch opgeladen zodra het item gepubliceerd wordt op AVO.
-				</div>
-			{% endif %}
-
 			{% if subtitle_synced %}
 				<div class="notification is-success fadein" id="subtitle_synced_alert">
 					Het ondertitelbestand werd succesvol opgeladen.
-				</div>
-			{% endif %}
-			{% if subtitle_saved_for_retry %}
-				<div class="notification is-warning fadein" id="subtitle_retry_alert">
-					Het ondertitelbestand is bewaard. Het zal opgeladen worden bij een volgende succesvolle opslag.
 				</div>
 			{% endif %}
 			{% if subtitle_error %}

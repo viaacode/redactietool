@@ -43,7 +43,6 @@ from app.services.speechmatic_api import SpeechmaticsApi
 from app.services.converter import ConverterService
 from app.services.jobs import JobsService
 from app.services.jobs_cron import start_scheduler
-from app.services.pending_subtitles_service import PendingSubtitlesService
 from app.services.suggest_api import SuggestApi
 from app.services.user import User, check_saml_session
 from app.services.validation import (pid_error, validate_input,
@@ -254,16 +253,6 @@ def edit_metadata():
     template_vars['subtitle_files'] = subtitle_files
     template_vars['has_existing_subtitle'] = len(subtitle_files) > 0
 
-    # Check for pending subtitle in DB
-    try:
-        pending_subs_service = PendingSubtitlesService()
-        pending_row = pending_subs_service.get(department, pid)
-        template_vars['has_pending_subtitle'] = pending_row is not None
-        template_vars['pending_subtitle_filename'] = pending_row['srt_filename'] if pending_row else ''
-    except Exception:
-        template_vars['has_pending_subtitle'] = False
-        template_vars['pending_subtitle_filename'] = ''
-
     return render_template(
         'metadata/edit.html',
         **template_vars
@@ -304,12 +293,10 @@ def save_item_metadata():
         template_vars['mh_errors'] = response['errors']
 
     # Phase 2 — Subtitle handling
-    pending_subs_service = PendingSubtitlesService()
-
     if template_vars['mh_synced']:
         if has_subtitle_file and not subtitle_validation_error:
             if publicatiestatus_checked:
-                # 2a: Upload subtitle immediately via FTP
+                # Upload subtitle immediately via FTP
                 try:
                     tp = {
                         'pid': pid,
@@ -330,65 +317,14 @@ def save_item_metadata():
                             template_vars['subtitle_error'] = ftp_response['ftp_error']
                         else:
                             template_vars['subtitle_synced'] = True
-                        # Remove any pending subtitle for this PID (superseded)
-                        try:
-                            pending_subs_service.delete(department, pid)
-                        except Exception:
-                            pass
                     else:
                         template_vars['subtitle_error'] = 'Ondertitels moeten in SRT formaat'
                 except Exception as e:
                     logger.exception('subtitle upload failed', data={'pid': pid, 'error': str(e)})
                     template_vars['subtitle_error'] = str(e)
-            else:
-                # 2b: Save subtitle to DB for deferred upload
-                try:
-                    srt_content = uploaded_file.read().decode('utf-8')
-                    uploaded_file.seek(0)
-                    pending_subs_service.save(
-                        department, pid, subtitle_type,
-                        f"{pid}.srt", srt_content)
-                    template_vars['has_pending_subtitle'] = True
-                except Exception as e:
-                    logger.exception('saving pending subtitle failed', data={'pid': pid, 'error': str(e)})
-                    template_vars['subtitle_error'] = str(e)
-
-        elif not has_subtitle_file and publicatiestatus_checked:
-            # 2c: Rehydrate pending subtitle from DB and upload
-            try:
-                rehydrated = pending_subs_service.rehydrate_to_disk(
-                    department, pid, upload_folder())
-                if rehydrated:
-                    rehydrated['srt_file'] = move_subtitle(upload_folder(), rehydrated)
-                    rehydrated['xml_file'], _ = save_sidecar_xml(
-                        upload_folder(), mam_data, rehydrated)
-                    ftp_uploader = FtpUploader()
-                    ftp_response = ftp_uploader.upload_subtitles(
-                        upload_folder(), mam_data, rehydrated)
-                    delete_files(upload_folder(), rehydrated)
-                    if 'ftp_error' in ftp_response:
-                        template_vars['subtitle_error'] = ftp_response['ftp_error']
-                    else:
-                        template_vars['subtitle_synced'] = True
-                        pending_subs_service.delete(department, pid)
-            except Exception as e:
-                logger.exception('rehydrate subtitle upload failed', data={'pid': pid, 'error': str(e)})
 
         if subtitle_validation_error and has_subtitle_file:
             template_vars['subtitle_error'] = subtitle_validation_error
-
-    else:
-        # Failsafe: metadata save failed but subtitle was attached — save to DB
-        if has_subtitle_file and not subtitle_validation_error:
-            try:
-                srt_content = uploaded_file.read().decode('utf-8')
-                uploaded_file.seek(0)
-                pending_subs_service.save(
-                    department, pid, subtitle_type,
-                    f"{pid}.srt", srt_content)
-                template_vars['subtitle_saved_for_retry'] = True
-            except Exception as e:
-                logger.exception('failsafe subtitle save failed', data={'pid': pid, 'error': str(e)})
 
     # Re-fetch subtitle info for the template
     all_subs = mh_api.get_subtitles(department, pid)
@@ -397,14 +333,6 @@ def save_item_metadata():
         subtitle_files.append(sub.get('Descriptive', {}).get('OriginalFilename', ''))
     template_vars['subtitle_files'] = subtitle_files
     template_vars['has_existing_subtitle'] = len(subtitle_files) > 0
-
-    try:
-        pending_row = pending_subs_service.get(department, pid)
-        template_vars['has_pending_subtitle'] = pending_row is not None
-        template_vars['pending_subtitle_filename'] = pending_row['srt_filename'] if pending_row else ''
-    except Exception:
-        template_vars['has_pending_subtitle'] = False
-        template_vars['pending_subtitle_filename'] = ''
 
     return render_template(
         'metadata/edit.html',

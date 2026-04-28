@@ -1,8 +1,8 @@
-# Standalone development compose file — run directly from WebStorm or CLI:
-#   docker compose -f docker-compose.develop.yml up
+# Docker compose file for development environment.
+# docker compose -f docker-compose.develop.yml up
 #
 # Mounts local source into the container and uses Flask's dev server
-# so templates, static files and Python code hot-reload on save.
+# so templates, static files and Python code reload on save.
 services:
   app:
     build: .

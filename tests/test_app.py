@@ -462,14 +462,6 @@ def test_edit_metadata_with_subtitle_published(auth_client, mocker):
         'app.services.ftp_uploader.FtpUploader.ftp_client',
         mock_ftp_client
     )
-    mocker.patch(
-        'app.services.pending_subtitles_service.PendingSubtitlesService.get',
-        return_value=None
-    )
-    mocker.patch(
-        'app.services.pending_subtitles_service.PendingSubtitlesService.delete',
-        return_value=True
-    )
 
     filepath = os.path.join('./tests/test_subs', 'testing_good.srt')
     res = auth_client.post("/edit_metadata?pid=qsf7664p39&department=testbeeld", data={
@@ -508,67 +500,10 @@ def test_edit_metadata_with_subtitle_published(auth_client, mocker):
 
 
 @pytest.mark.vcr
-def test_edit_metadata_with_subtitle_not_published(auth_client, mocker):
-    """POST with SRT but publicatiestatus_checked=false should save subtitle to DB."""
-    with open('./tests/fixture_data/edit_mam_data.json', "r") as f:
-        mam_data = json.loads(f.read())
-
-    pending_save_mock = mocker.patch(
-        'app.services.pending_subtitles_service.PendingSubtitlesService.save',
-        return_value={'id': 1, 'department': 'testbeeld', 'pid': 'qsf7664p39',
-                      'subtitle_type': 'closed', 'srt_filename': 'qsf7664p39.srt',
-                      'srt_content': 'test', 'created_at': '2026-01-01'}
-    )
-    mocker.patch(
-        'app.services.pending_subtitles_service.PendingSubtitlesService.get',
-        return_value={'id': 1, 'srt_filename': 'qsf7664p39.srt'}
-    )
-
-    filepath = os.path.join('./tests/test_subs', 'testing_good.srt')
-    res = auth_client.post("/edit_metadata?pid=qsf7664p39&department=testbeeld", data={
-        'pid': 'qsf7664p39',
-        'department': 'testbeeld',
-        'mam_data': json.dumps(mam_data),
-        'sm_data': json.dumps({}),
-        'serie': 'Serie veld test',
-        'uitzenddatum': '2021-11-21',
-        'ontsluitingstitel': 'Fietsstraten in centrum Gent',
-        'prd_maker_attribute': 'Maker',
-        'prd_maker_value': '',
-        'prd_bijdrager_attribute': 'Aanwezig',
-        'prd_bijdrager_value': '',
-        'prd_publisher_attribute': 'Distributeur',
-        'prd_publisher_value': '',
-        'avo_beschrijving': 'Beschrijving test',
-        'lom_type': '[{"name":"Video","code":"Video"}]',
-        'lom1_beoogde_eindgebruiker': '[{"name":"Student","code":"Student"}]',
-        'talen': '[{"name":"Nederlands","code":"nl"}]',
-        'lom_onderwijs_combo': '[]',
-        'lom1_onderwijsniveaus': '[]',
-        'lom1_onderwijsgraden': '[]',
-        'themas': '[]',
-        'vakken': '[]',
-        'trefwoorden': '[]',
-        'subtitle_type': 'closed',
-        'subtitle_file': (open(filepath, 'rb'), 'testing_good.srt'),
-    }, follow_redirects=True)
-
-    assert res.status_code == HTTPStatus.OK
-    assert 'werden opgeslagen' in res.data.decode()
-    assert 'automatisch opgeladen' in res.data.decode()
-    pending_save_mock.assert_called_once()
-
-
-@pytest.mark.vcr
 def test_edit_metadata_without_subtitle(auth_client, mocker):
     """POST without subtitle file should only save metadata."""
     with open('./tests/fixture_data/edit_mam_data.json', "r") as f:
         mam_data = json.loads(f.read())
-
-    mocker.patch(
-        'app.services.pending_subtitles_service.PendingSubtitlesService.get',
-        return_value=None
-    )
 
     res = auth_client.post("/edit_metadata?pid=qsf7664p39&department=testbeeld", data={
         'pid': 'qsf7664p39',
@@ -604,97 +539,10 @@ def test_edit_metadata_without_subtitle(auth_client, mocker):
 
 
 @pytest.mark.vcr
-def test_edit_metadata_publishes_pending_subtitle(auth_client, mocker):
-    """POST with publish=true and no new file should rehydrate pending subtitle from DB."""
-    with open('./tests/fixture_data/edit_mam_data.json', "r") as f:
-        mam_data = json.loads(f.read())
-
-    ftp_mock = MagicMock()
-
-    def mock_ftp_client(self, server):
-        ftp_mock.login.return_value = 'login ok'
-        ftp_mock.cwd.return_value = 'dir changed'
-        ftp_mock.storbinary.return_value = '226 Transfer complete.'
-        return ftp_mock
-
-    mocker.patch(
-        'app.services.ftp_uploader.FtpUploader.ftp_client',
-        mock_ftp_client
-    )
-
-    # Create a real SRT file for rehydration
-    srt_content = "1\n00:00:01,000 --> 00:00:02,000\nTest subtitle\n"
-    rehydrate_mock = mocker.patch(
-        'app.services.pending_subtitles_service.PendingSubtitlesService.rehydrate_to_disk',
-    )
-
-    def fake_rehydrate(dept, pid, folder):
-        srt_path = os.path.join(folder, f"{pid}.srt")
-        with open(srt_path, 'w') as f:
-            f.write(srt_content)
-        return {
-            'pid': pid,
-            'department': dept,
-            'subtitle_type': 'closed',
-            'srt_file': f"{pid}.srt",
-        }
-
-    rehydrate_mock.side_effect = fake_rehydrate
-
-    delete_mock = mocker.patch(
-        'app.services.pending_subtitles_service.PendingSubtitlesService.delete',
-        return_value=True
-    )
-    mocker.patch(
-        'app.services.pending_subtitles_service.PendingSubtitlesService.get',
-        return_value=None
-    )
-
-    res = auth_client.post("/edit_metadata?pid=qsf7664p39&department=testbeeld", data={
-        'pid': 'qsf7664p39',
-        'department': 'testbeeld',
-        'mam_data': json.dumps(mam_data),
-        'sm_data': json.dumps({}),
-        'serie': 'Serie veld test',
-        'uitzenddatum': '2021-11-21',
-        'ontsluitingstitel': 'Fietsstraten in centrum Gent',
-        'prd_maker_attribute': 'Maker',
-        'prd_maker_value': '',
-        'prd_bijdrager_attribute': 'Aanwezig',
-        'prd_bijdrager_value': '',
-        'prd_publisher_attribute': 'Distributeur',
-        'prd_publisher_value': '',
-        'avo_beschrijving': 'Beschrijving test',
-        'lom_type': '[{"name":"Video","code":"Video"}]',
-        'lom1_beoogde_eindgebruiker': '[{"name":"Student","code":"Student"}]',
-        'talen': '[{"name":"Nederlands","code":"nl"}]',
-        'lom_onderwijs_combo': '[]',
-        'lom1_onderwijsniveaus': '[]',
-        'lom1_onderwijsgraden': '[]',
-        'themas': '[]',
-        'vakken': '[]',
-        'trefwoorden': '[]',
-        'publicatiestatus_checked': 'on',
-    }, follow_redirects=True)
-
-    assert res.status_code == HTTPStatus.OK
-    assert 'werden opgeslagen' in res.data.decode()
-    assert 'succesvol opgeladen' in res.data.decode()
-    rehydrate_mock.assert_called_once()
-    delete_mock.assert_called_once()
-    assert ftp_mock.login.called
-
-
-@pytest.mark.vcr
 def test_edit_metadata_with_invalid_srt(auth_client, mocker):
     """POST with a non-SRT file should show a subtitle validation error."""
     with open('./tests/fixture_data/edit_mam_data.json', "r") as f:
         mam_data = json.loads(f.read())
-
-    mocker.patch(
-        'app.services.pending_subtitles_service.PendingSubtitlesService.get',
-        return_value=None
-    )
 
     res = auth_client.post("/edit_metadata?pid=qsf7664p39&department=testbeeld", data={
         'pid': 'qsf7664p39',
@@ -728,63 +576,6 @@ def test_edit_metadata_with_invalid_srt(auth_client, mocker):
     assert res.status_code == HTTPStatus.OK
     assert 'werden opgeslagen' in res.data.decode()
     assert '.srt extensie' in res.data.decode()
-
-
-@pytest.mark.vcr
-def test_edit_metadata_failsafe_saves_subtitle_on_mh_error(auth_client, mocker):
-    """If metadata save fails, subtitle should still be saved to DB as pending."""
-    with open('./tests/fixture_data/edit_mam_data.json', "r") as f:
-        mam_data = json.loads(f.read())
-
-    mocker.patch(
-        'app.services.mediahaven_api.MediahavenApi.update_metadata',
-        return_value={'status': False, 'errors': ['MH error']}
-    )
-    pending_save_mock = mocker.patch(
-        'app.services.pending_subtitles_service.PendingSubtitlesService.save',
-        return_value={'id': 1, 'department': 'testbeeld', 'pid': 'qsf7664p39',
-                      'subtitle_type': 'closed', 'srt_filename': 'qsf7664p39.srt',
-                      'srt_content': 'test', 'created_at': '2026-01-01'}
-    )
-    mocker.patch(
-        'app.services.pending_subtitles_service.PendingSubtitlesService.get',
-        return_value={'id': 1, 'srt_filename': 'qsf7664p39.srt'}
-    )
-
-    filepath = os.path.join('./tests/test_subs', 'testing_good.srt')
-    res = auth_client.post("/edit_metadata?pid=qsf7664p39&department=testbeeld", data={
-        'pid': 'qsf7664p39',
-        'department': 'testbeeld',
-        'mam_data': json.dumps(mam_data),
-        'sm_data': json.dumps({}),
-        'serie': 'Serie veld test',
-        'uitzenddatum': '2021-11-21',
-        'ontsluitingstitel': 'Fietsstraten in centrum Gent',
-        'prd_maker_attribute': 'Maker',
-        'prd_maker_value': '',
-        'prd_bijdrager_attribute': 'Aanwezig',
-        'prd_bijdrager_value': '',
-        'prd_publisher_attribute': 'Distributeur',
-        'prd_publisher_value': '',
-        'avo_beschrijving': 'Beschrijving test',
-        'lom_type': '[{"name":"Video","code":"Video"}]',
-        'lom1_beoogde_eindgebruiker': '[{"name":"Student","code":"Student"}]',
-        'talen': '[{"name":"Nederlands","code":"nl"}]',
-        'lom_onderwijs_combo': '[]',
-        'lom1_onderwijsniveaus': '[]',
-        'lom1_onderwijsgraden': '[]',
-        'themas': '[]',
-        'vakken': '[]',
-        'trefwoorden': '[]',
-        'publicatiestatus_checked': 'on',
-        'subtitle_type': 'closed',
-        'subtitle_file': (open(filepath, 'rb'), 'testing_good.srt'),
-    }, follow_redirects=True)
-
-    assert res.status_code == HTTPStatus.OK
-    assert 'kon niet opgeslagen worden' in res.data.decode()
-    assert 'bewaard' in res.data.decode()
-    pending_save_mock.assert_called_once()
 
 
 # security check without session routes redirect to login:
