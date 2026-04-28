@@ -232,14 +232,14 @@ function sectionToggle(section_div_id){
   var form_section = get_id(section_div_id);
   if(!form_section) return;
  
-  if(form_section.style.display == 'none'){
-    if(section_div_id=="productie_section"){
+  if (form_section.style.display === 'none'){
+    if (section_div_id === "productie_section"){
       window.localStorage.setItem("productie_section_opened", "true");
     }
     openSection(section_div_id);
   }
   else{
-    if(section_div_id=="productie_section"){
+    if (section_div_id === "productie_section"){
       window.localStorage.removeItem("productie_section_opened");
     }
 
@@ -249,8 +249,8 @@ function sectionToggle(section_div_id){
 
 function updateProductionSection(){
   // use localstorage to keep state of opened production section
-  if(window.localStorage.getItem("productie_section_opened") == "true"){
-    openSection("productio_section");
+  if (window.localStorage.getItem("productie_section_opened") === "true"){
+    openSection("productie_section");
   }
   else{
     closeSection("productie_section");
@@ -258,8 +258,8 @@ function updateProductionSection(){
 }
 
 function collapseEmptyTextarea(area_id, uncollapsable=false){
-  var ta = get_id(area_id);
-  if( ta && ta.innerHTML.length == 0){
+  const ta = get_id(area_id);
+  if (ta && ta.innerHTML.length === 0) {
     if(uncollapsable){
       ta.parentNode.parentNode.style.display="none";
     }
@@ -286,7 +286,7 @@ function hideEmptyTitleInput(input_id){
   var input_field = get_id(input_id);
   if( input_field ){
     var input_box = input_field.getElementsByTagName("input")[0];
-    if( input_box && input_box.value.length == 0){
+    if( input_box && input_box.value.length === 0){
       input_field.style.display = "none";
     }
     else{
@@ -412,7 +412,7 @@ function metadataInputChanged(name){
 function metadataFormEdited(){
   edited = get_id("metadata_form_edited");
   if(edited){
-    return edited.value == "true"
+    return edited.value === "true"
   }
   else{
     return false;
