@@ -95,13 +95,14 @@ class MetaMapping:
         dcterms_abstract = mam_data.get('Dynamic').get('dcterms_abstract')
         avo_beschrijving = markdown_to_html(dcterms_abstract)
         
-        converter = ConverterService();
+        converter = ConverterService()
         video_url = mam_data.get('Internal').get('PathToVideo')
         temp_video_url = None
-        if(not video_url):
-            logger.warning(f"No video url found in metadata for pid: {pid}")
+        if video_url:
             temp_video_url = converter.get_media_url(video_url, '', '')
-        if(not temp_video_url):
+        else:
+            logger.warning(f"No video url found in metadata for pid: {pid}")
+        if not temp_video_url:
             logger.error(f"Failed to get temporary media url for pid: {pid}")
 
         result = {
