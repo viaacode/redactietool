@@ -145,6 +145,15 @@ function clearSubtitleInput(){
 
   var clearBtn = document.getElementById('subtitle_clear_btn');
   if(clearBtn) clearBtn.style.display = 'none';
+
+  var video = document.querySelector('#player_container video');
+  if(video){
+    video.querySelectorAll('track.preview-track').forEach(function(t){ t.remove(); });
+    var restoreMode = (typeof hasExistingSubtitle !== 'undefined' && hasExistingSubtitle) ? 'showing' : 'hidden';
+    for(var i = 0; i < video.textTracks.length; i++){
+      video.textTracks[i].mode = restoreMode;
+    }
+  }
 }
 
 

@@ -56,6 +56,7 @@ Metadata bewerken
         <div id="player_container"></div>
   
         <script>
+          var hasExistingSubtitle = {{ has_existing_subtitle | tojson }};
           flowplayer('#player_container', {
             src: '{{video_url}}',
             token: '{{flowplayer_token}}',
