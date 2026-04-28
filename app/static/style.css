@@ -543,6 +543,15 @@ h3.subtitle{
   height: 60px;
 }
 
+#avo_beschrijving_panel .ql-toolbar {
+	border-top-left-radius: 0 !important;
+	border-top-right-radius: 0 !important;
+}
+
+#avo_beschrijving_panel #redactietool-richtext-editor {
+	border-radius: 0 0 4px 4px;
+}
+
 
 /* ====================== Richtext editor / quill styling =====================*/
 .richtext-wrapper {
