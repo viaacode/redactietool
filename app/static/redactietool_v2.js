@@ -95,6 +95,9 @@ function pidSubmitForMetadata(btn){
 function previewSubtitleInPlayer(input){
   if(!input.files || !input.files[0]) return;
 
+  var previewMsg = document.getElementById('subtitle_preview_msg');
+  if(previewMsg) previewMsg.style.display = '';
+
   var reader = new FileReader();
   reader.onload = function(e){
     var srtText = e.target.result;
