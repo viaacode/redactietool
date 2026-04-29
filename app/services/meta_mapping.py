@@ -99,7 +99,10 @@ class MetaMapping:
         video_url = mam_data.get('Internal').get('PathToVideo')
         temp_video_url = None
         if video_url:
-            temp_video_url = converter.get_media_url(video_url, '', '')
+            try:
+                temp_video_url = converter.get_media_url(video_url, '', '')
+            except Exception as ex:
+                logger.error(f"Failed to get temporary media url for pid: {pid}", data={'error': str(ex)})
         else:
             logger.warning(f"No video url found in metadata for pid: {pid}")
         if not temp_video_url:

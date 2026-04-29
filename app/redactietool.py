@@ -241,7 +241,11 @@ def edit_metadata():
     if not mam_data:
         return pid_error(pid, f"PID niet gevonden in {department}")
 
-    speechmatics_data = jobs_service.get_job(department, pid)
+    try:
+        speechmatics_data = jobs_service.get_job(department, pid)
+    except Exception as ex:
+        logger.error('edit_metadata: failed to fetch job data', data={'pid': pid, 'error': str(ex)})
+        speechmatics_data = None
     mm = MetaMapping()
     template_vars = mm.mh_to_form(pid, department, mam_data, speechmatics_data, errors)
 
@@ -336,7 +340,11 @@ def save_item_metadata():
 
     # Re-fetch speechmatics data so the AI section stays populated after save
     jobs_service = JobsService()
-    speechmatics_data = jobs_service.get_job(department, pid)
+    try:
+        speechmatics_data = jobs_service.get_job(department, pid)
+    except Exception as ex:
+        logger.error('save_item_metadata: failed to fetch job data', data={'pid': pid, 'error': str(ex)})
+        speechmatics_data = None
     template_vars['sm_job_status'] = speechmatics_data.get('status') if speechmatics_data else None
     template_vars['sm_job_transcription'] = speechmatics_data.get('transcription') if speechmatics_data else None
     template_vars['sm_job_summary'] = speechmatics_data.get('summary') if speechmatics_data else None
