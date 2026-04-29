@@ -57,6 +57,7 @@ class ConverterService:
     def __init__(self):
         self.base_url = os.environ.get('TICKET_SERVICE_URL', '').rstrip('/')
         self.passphrase = os.environ.get('TICKET_SERVICE_PASSPHRASE') or None
+        print(f"############################## Passphrase: {self.passphrase}")
         self.max_age = int(os.environ.get('TICKET_SERVICE_MAX_AGE', '3600'))
 
     def _build_session(self) -> requests.Session:
