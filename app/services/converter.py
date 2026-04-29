@@ -14,7 +14,6 @@
 #   TICKET_SERVICE_KEY          - Client private key PEM content
 #   TICKET_SERVICE_PASSPHRASE   - Passphrase protecting the private key
 #   TICKET_SERVICE_MAX_AGE      - Token validity in seconds (default: 3600)
-#   TICKET_SERVICE_HOST         - Default referer/host when none is provided
 #                                 by the caller
 #
 
