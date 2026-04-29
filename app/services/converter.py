@@ -117,14 +117,19 @@ class ConverterService:
             headers={'Accept': '*/*'},
             timeout=10,
         )
-        response.raise_for_status()
-
         logger.info('converter: ticket response', data={
             'status': response.status_code,
             'url': response.url,
             'content_type': response.headers.get('Content-Type', ''),
             'body': response.text[:500],
         })
+        if not response.ok:
+            logger.error('converter: ticket service error', data={
+                'status': response.status_code,
+                'url': response.url,
+                'body': response.text[:500],
+            })
+        response.raise_for_status()
         ticket = response.json()
         logger.info('converter: ticket received', data={'path': path})
         return ticket
