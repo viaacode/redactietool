@@ -37,13 +37,16 @@ from app.services.ftp_uploader import FtpUploader
 from app.services.mediahaven_api import MediahavenApi
 from app.services.meta_mapping import MetaMapping
 from app.services.subtitle_files import (delete_files, get_vtt_subtitles,
-                                         move_subtitle, not_deleted,
+                                         move_subtitle,
                                          save_sidecar_xml, save_subtitles)
+from app.services.speechmatic_api import SpeechmaticsApi
+from app.services.converter import ConverterService
+from app.services.jobs import JobsService
+from app.services.jobs_cron import start_scheduler
 from app.services.suggest_api import SuggestApi
 from app.services.user import User, check_saml_session
-from app.services.validation import (pid_error, upload_error,
-                                     validate_conversion, validate_input,
-                                     validate_upload)
+from app.services.validation import (pid_error, validate_input,
+                                     validate_optional_subtitle_upload)
 
 app = Flask(__name__)
 config = ConfigParser()
@@ -69,6 +72,11 @@ app.config['SAML_PATH'] = os.path.join(
 
 # add routes to saml.py module for login/logout with saml
 app.add_url_rule('/', view_func=saml_login, methods=['GET', 'POST'])
+
+# Start background scheduler that polls Speechmatics for pending job results.
+# In multi-worker deployments, enable this only in a single dedicated process
+# by setting the REDACTIETOOL_ENABLE_SCHEDULER environment variable.
+start_scheduler()
 
 # add routes for legacy login (without saml) when testing or debugging
 print("DEBUG legacy_login routes added")
@@ -96,6 +104,56 @@ def load_user_from_request(request):
         session.clear()  # clear bad or timed out session
 
 
+_IMMUTABLE_STATIC_PATHS = frozenset([
+    '/static/avo-logo-i.svg',
+    '/static/images/saml_login_background.jpg',
+])
+
+# Prefixes whose entire subtree is content-hashed (safe for immutable caching)
+_IMMUTABLE_STATIC_PREFIXES = (
+    '/static/vue/',
+    '/static/bulma/fonts/',
+)
+
+# Vendored/minified third-party assets: stable but not content-hashed
+_VENDOR_STATIC_PATHS = frozenset([
+    '/static/flowplayer.min.js',
+    '/static/flowplayer.css',
+    '/static/quill.js',
+    '/static/quill.snow.css',
+    '/static/subtitles.min.js',
+    '/static/turndown.js',
+    '/static/bulma/bulma-tooltip.min.css',
+    '/static/bulma/bundle.js',
+    '/static/favicon.ico',
+])
+
+# App-specific assets without content hashes: cache briefly to allow quick rollouts
+_APP_STATIC_PATHS = frozenset([
+    '/static/redactietool_v2.js',
+    '/static/style.css',
+    '/static/bulma/overrides.css',
+    '/static/bulma/core.css',
+    '/static/bulma/modal_dialog.js',
+])
+
+
+@app.after_request
+def set_static_cache_headers(response):
+    path = request.path
+    if path in _IMMUTABLE_STATIC_PATHS or any(path.startswith(p) for p in _IMMUTABLE_STATIC_PREFIXES):
+        response.cache_control.public = True
+        response.cache_control.max_age = 31536000
+        response.cache_control.immutable = True
+    elif path in _VENDOR_STATIC_PATHS:
+        response.cache_control.public = True
+        response.cache_control.max_age = 604800  # 1 week
+    elif path in _APP_STATIC_PATHS:
+        response.cache_control.public = True
+        response.cache_control.max_age = 3600  # 1 hour
+    return response
+
+
 @app.route('/search_media', methods=['GET'])
 @login_required
 def search_media():
@@ -116,169 +174,12 @@ def post_media():
     if not pid:
         return pid_error(pid, 'Geef een PID')
     else:
-        if request.form.get('redirect_subtitles') == 'yes':
-            logger.info('post_media, editing subtitles', data={'pid': pid})
-            return redirect(url_for('.get_upload', **locals()))
-        else:
-            logger.info('post_media, editing metadata', data={'pid': pid})
-            return redirect(url_for('.edit_metadata', **locals()))
-
-
-@app.route('/upload', methods=['GET'])
-@login_required
-def get_upload():
-    logger.info('get_upload')
-
-    pid = request.args.get('pid').strip()
-    department = request.args.get('department')
-
-    validation_error = validate_input(pid, department)
-    if validation_error:
-        return pid_error(pid, validation_error)
-
-    mh_api = MediahavenApi()
-    mam_data = mh_api.find_item_by_pid(department, pid)
-    if not mam_data:
-        return pid_error(pid, f"PID niet gevonden in {department}")
-
-    # subtitle files already uploaded:
-    all_subs = mh_api.get_subtitles(department, pid)
-    subfiles = []
-    for sub in all_subs:
-        subfiles.append(sub.get('Descriptive').get('OriginalFilename'))
-
-    return render_template(
-        'subtitles/upload.html',
-        pid=pid,
-        department=department,
-        mam_data=json.dumps(mam_data),
-        subtitle_files=subfiles,
-        title=mam_data.get('Descriptive').get('Title'),
-        description=mam_data.get('Descriptive').get('Description'),
-        created=mam_data.get('Descriptive').get('CreationDate'),
-        archived=mam_data.get('Descriptive').get('ArchiveDate'),
-        original_cp=mam_data.get('Dynamic').get('Original_CP'),
-        video_url=mam_data.get('Internal').get('PathToVideo'),
-        keyframe=mam_data.get('Internal').get('PathToKeyframe'),
-        flowplayer_token=os.environ.get('FLOWPLAYER_TOKEN', 'set_in_secrets')
-    )
-
-
-@app.route('/upload', methods=['POST'])
-@login_required
-def post_upload():
-    tp = {
-        'pid': request.form.get('pid'),
-        'department': request.form.get('department'),
-        'mam_data': request.form.get('mam_data'),
-        'video_url': request.form.get('video_url'),
-        'subtitle_type': request.form.get('subtitle_type')
-    }
-
-    validation_error, uploaded_file = validate_upload(tp, request.files)
-    if validation_error:
-        return upload_error(tp, validation_error)
-
-    tp['subtitle_file'], tp['vtt_file'] = save_subtitles(
-        upload_folder(), tp['pid'], uploaded_file)
-
-    conversion_error = validate_conversion(tp)
-    if conversion_error:
-        return upload_error(tp, conversion_error)
-
-    logger.info('subtitles/preview', data={
-        'pid': tp['pid'],
-        'file': tp['subtitle_file']
-    })
-
-    video_data = json.loads(tp['mam_data'])
-    tp['title'] = video_data.get('Descriptive').get('Title')
-    tp['description'] = video_data.get('description')
-    tp['keyframe'] = video_data.get('Internal').get('PathToKeyframe')
-    tp['created'] = video_data.get('Descriptive').get('CreationDate')
-    tp['archived'] = video_data.get('Descriptive').get('ArchiveDate')
-    tp['original_cp'] = video_data.get('Dynamic').get('Original_CP')
-    tp['flowplayer_token'] = os.environ.get(
-        'FLOWPLAYER_TOKEN', 'set_in_secrets')
-
-    return render_template('subtitles/preview.html', **tp)
+        logger.info('post_media, editing metadata', data={'pid': pid})
+        return redirect(url_for('.edit_metadata', **locals()))
 
 
 def upload_folder():
     return os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
-
-
-@app.route('/cancel_upload')
-@login_required
-def cancel_upload():
-    pid = request.args.get('pid')
-    department = request.args.get('department')
-    vtt_file = request.args.get('vtt_file')
-    srt_file = request.args.get('srt_file')
-
-    delete_files(upload_folder(), {
-        'srt_file': srt_file,
-        'vtt_file': vtt_file
-    })
-
-    return redirect(url_for('.get_upload', pid=pid, department=department))
-
-
-@app.route('/send_to_mam', methods=['POST'])
-@login_required
-def send_subtitles_to_mam():
-
-    tp = {
-        'pid': request.form.get('pid'),
-        'department': request.form.get('department'),
-        'video_url': request.form.get('video_url'),
-        'subtitle_type': request.form.get('subtitle_type'),
-        'srt_file': request.form.get('subtitle_file'),
-        'vtt_file': request.form.get('vtt_file'),
-        'xml_file': request.form.get('xml_file'),
-        'xml_sidecar': request.form.get('xml_sidecar'),
-        'mh_response': request.form.get('mh_response'),
-        'mam_data': request.form.get('mam_data'),
-        'replace_existing': request.form.get('replace_existing'),
-    }
-
-    video_data = json.loads(tp['mam_data'])
-    tp['title'] = video_data.get('Descriptive').get('Title')
-    tp['keyframe'] = video_data.get('previewImagePath')
-    tp['flowplayer_token'] = os.environ.get(
-        'FLOWPLAYER_TOKEN', 'set_in_secrets')
-
-    if tp['replace_existing'] == 'cancel':
-        # abort and remove temporary files
-        delete_files(upload_folder(), tp)
-
-    # extra check to avoid re-sending if user refreshes page
-    if not_deleted(upload_folder(), tp['srt_file']):
-        metadata = json.loads(tp['mam_data'])
-        if not tp['replace_existing']:
-            # first request, generate xml_file
-            tp['srt_file'] = move_subtitle(upload_folder(), tp)
-
-            tp['xml_file'], tp['xml_sidecar'] = save_sidecar_xml(
-                upload_folder(), metadata, tp)
-
-        # upload subtitle and xml sidecar with ftp
-        ftp_uploader = FtpUploader()
-        ftp_response = ftp_uploader.upload_subtitles(
-            upload_folder(), metadata, tp)
-        tp['mh_response'] = json.dumps(ftp_response)
-        if 'ftp_error' in ftp_response:
-            tp['mh_error'] = True
-
-        # cleanup temp files and show final page with mh request results
-        delete_files(upload_folder(), tp)
-        return render_template('subtitles/sent.html', **tp)
-    else:
-        # user refreshed page (tempfiles already deleted),
-        # or user chose 'cancel' above. in both cases show
-        # subtitles already sent
-        tp['upload_cancelled'] = True
-        return render_template('subtitles/sent.html', **tp)
 
 
 # for subtitles files we need to switch of caching so we get the latest content
@@ -335,12 +236,22 @@ def edit_metadata():
         return pid_error(pid, validation_error)
 
     mh_api = MediahavenApi()
+    jobs_service = JobsService()
     mam_data = mh_api.find_item_by_pid(department, pid)
     if not mam_data:
         return pid_error(pid, f"PID niet gevonden in {department}")
 
+    speechmatics_data = jobs_service.get_job(department, pid)
     mm = MetaMapping()
-    template_vars = mm.mh_to_form(pid, department, mam_data, errors)
+    template_vars = mm.mh_to_form(pid, department, mam_data, speechmatics_data, errors)
+
+    # Fetch existing subtitle files from MediaHaven
+    all_subs = mh_api.get_subtitles(department, pid)
+    subtitle_files = []
+    for sub in all_subs:
+        subtitle_files.append(sub.get('Descriptive', {}).get('OriginalFilename', ''))
+    template_vars['subtitle_files'] = subtitle_files
+    template_vars['has_existing_subtitle'] = len(subtitle_files) > 0
 
     return render_template(
         'metadata/edit.html',
@@ -359,6 +270,17 @@ def save_item_metadata():
     if not mam_data:
         return pid_error(pid, f"PID niet gevonden in {department}")
 
+    # Check if a subtitle file was attached and validate it
+    subtitle_validation_error = validate_optional_subtitle_upload(request.files)
+    has_subtitle_file = (
+        'subtitle_file' in request.files
+        and request.files['subtitle_file'].filename != ''
+    )
+    uploaded_file = request.files.get('subtitle_file') if has_subtitle_file else None
+    subtitle_type = request.form.get('subtitle_type', 'closed')
+    publicatiestatus_checked = bool(request.form.get('publicatiestatus_checked'))
+
+    # Phase 1 — Metadata save (unchanged logic)
     mm = MetaMapping()
     template_vars = mm.form_to_mh(request, mam_data)
     frag_id, ext_id, xml_sidecar = mm.xml_sidecar(mam_data, template_vars)
@@ -370,7 +292,55 @@ def save_item_metadata():
         template_vars['mh_synced'] = False
         template_vars['mh_errors'] = response['errors']
 
-    # we can even do another GET call here to validate the changed modified timestamp
+    # Phase 2 — Subtitle handling
+    if template_vars['mh_synced']:
+        if has_subtitle_file and not subtitle_validation_error:
+            if publicatiestatus_checked:
+                # Upload subtitle immediately via FTP
+                try:
+                    tp = {
+                        'pid': pid,
+                        'department': department,
+                        'subtitle_type': subtitle_type,
+                    }
+                    tp['srt_file'], tp['vtt_file'] = save_subtitles(
+                        upload_folder(), pid, uploaded_file)
+                    if tp['srt_file']:
+                        tp['srt_file'] = move_subtitle(upload_folder(), tp)
+                        tp['xml_file'], _ = save_sidecar_xml(
+                            upload_folder(), mam_data, tp)
+                        ftp_uploader = FtpUploader()
+                        ftp_response = ftp_uploader.upload_subtitles(
+                            upload_folder(), mam_data, tp)
+                        delete_files(upload_folder(), tp)
+                        if 'ftp_error' in ftp_response:
+                            template_vars['subtitle_error'] = ftp_response['ftp_error']
+                        else:
+                            template_vars['subtitle_synced'] = True
+                    else:
+                        template_vars['subtitle_error'] = 'Ondertitels moeten in SRT formaat'
+                except Exception as e:
+                    logger.exception('subtitle upload failed', data={'pid': pid, 'error': str(e)})
+                    template_vars['subtitle_error'] = str(e)
+
+        if subtitle_validation_error and has_subtitle_file:
+            template_vars['subtitle_error'] = subtitle_validation_error
+
+    # Re-fetch subtitle info for the template
+    all_subs = mh_api.get_subtitles(department, pid)
+    subtitle_files = []
+    for sub in all_subs:
+        subtitle_files.append(sub.get('Descriptive', {}).get('OriginalFilename', ''))
+    template_vars['subtitle_files'] = subtitle_files
+    template_vars['has_existing_subtitle'] = len(subtitle_files) > 0
+
+    # Re-fetch speechmatics data so the AI section stays populated after save
+    jobs_service = JobsService()
+    speechmatics_data = jobs_service.get_job(department, pid)
+    template_vars['sm_job_status'] = speechmatics_data.get('status') if speechmatics_data else None
+    template_vars['sm_job_transcription'] = speechmatics_data.get('transcription') if speechmatics_data else None
+    template_vars['sm_job_summary'] = speechmatics_data.get('summary') if speechmatics_data else None
+    template_vars['sm_job_chapters'] = json.loads(speechmatics_data['chapters']) if speechmatics_data and isinstance(speechmatics_data.get('chapters'), str) else (speechmatics_data.get('chapters') if speechmatics_data else None)
 
     return render_template(
         'metadata/edit.html',
@@ -447,6 +417,148 @@ def keyword_search():
     es_api = ElasticApi()
     return es_api.search_keyword(json_data['qry'])
 
+@app.route('/speechmatic/generate', methods=['POST'])
+@login_required
+def generate_transcript():
+    json_data = request.json
+    department = json_data.get('department')
+    pid = json_data.get('pid')
+    language = json_data.get('language') or 'nl'
+
+    if not pid or not department:
+        return {
+            'error': 'pid and department are required in request body'
+        }, HTTPStatus.BAD_REQUEST
+
+    jobs_service = JobsService()
+    mh_api = MediahavenApi()
+    speechmatics_api = SpeechmaticsApi()
+
+    try:
+        mam_data = mh_api.find_item_by_pid(department, pid)
+        if not mam_data:
+            return {
+                'error': f'PID not found: {pid}'
+            }, HTTPStatus.NOT_FOUND
+        
+        job = jobs_service.get_job(department, pid)
+        if job and job["processed_at"] is None:
+            return {
+                'error': f'Job already exists for pid: {pid} with status: {job["status"]}, but not processed yet'
+            }, HTTPStatus.CONFLICT
+        elif job and job["processed_at"] is not None and job["status"] == "done":
+            return {
+                'error': f'Job already exists for pid: {pid} and is completed'
+            }, HTTPStatus.CONFLICT
+        
+        # If job does not exist or exists but is deleted, rejected or expired, we can launch a new job
+
+        video_url = mam_data.get('Internal', {}).get('PathToVideo')
+        if not video_url:
+            return {
+                'error': f'No media url found for pid: {pid}'
+            }, HTTPStatus.NOT_FOUND
+        converter = ConverterService();
+        temp_video_url = converter.get_media_url(video_url, '', '')
+        if(not temp_video_url):
+            return {
+                'error': f'Failed to get temporary media url for pid: {pid}'
+            }, HTTPStatus.INTERNAL_SERVER_ERROR
+        logger.info(f"Launching transcription job for video url: {temp_video_url} with language: {language}")
+        job_id = speechmatics_api.launch_job(temp_video_url, language=language)
+        if(job is None):
+            logger.info("Job is None, creating new job in database")
+            jobs_service.create_job(department, pid, job_id)
+        else:
+            logger.info(f"Job already exists for pid: {pid}, updating with new job_id: {job_id} and resetting status")
+            jobs_service.update_job(job["id"], speechmatic_job_id=job_id)
+        return {
+            'department': department,
+            'pid': pid,
+            'job_id': job_id
+        }, HTTPStatus.OK
+    except Exception as ex:
+        logger.exception('generate transcript failed', data={'pid': pid, 'error': str(ex)})
+        return {
+            'error': str(ex)
+        }, HTTPStatus.INTERNAL_SERVER_ERROR
+# Fetch status of a transcription job
+@app.route('/<string:department>/<string:pid>/speechmatic/status', methods=['GET'])
+@login_required
+def transcription_status(department, pid):
+    speechmatics_api = SpeechmaticsApi()
+    jobs_service = JobsService()
+    try:
+        job = jobs_service.get_job(department, pid)
+        if(not job):
+            return {
+                'job_id': None,
+                'status': 'not found'
+            }, HTTPStatus.NOT_FOUND
+        if (job["processed_at"] is not None):
+            status = job["status"] 
+        else:
+            status = speechmatics_api.get_job_status(job["speechmatic_job_id"])
+            jobs_service.update_job_status(job["id"], status)
+
+        return {
+            'job_id': job["id"],
+            'status': status
+        }, HTTPStatus.OK
+    except Exception as ex:
+        logger.exception(
+            'fetching transcription status failed',
+            data={
+                'department': department,
+                'pid': pid,
+                'error': str(ex),
+            },
+        )
+        return {
+            'error': str(ex)
+        }, HTTPStatus.INTERNAL_SERVER_ERROR
+
+@app.route('/<string:department>/<string:pid>/speechmatic/result', methods=['GET'])
+@login_required
+def transcription_result(department, pid):
+    jobs_service = JobsService()
+    try:
+        job = jobs_service.get_job(department, pid)
+        if not job:
+            return {'error': 'Job not found'}, HTTPStatus.NOT_FOUND
+
+        if job['processed_at'] is not None:
+            return {
+                'job_id': job['id'],
+                'status': job['status'],
+                'transcript': job['transcription'],
+                'summary': job['summary'],
+                'chapters': job['chapters'],
+            }, HTTPStatus.OK
+
+        return {
+            'job_id': job['id'],
+            'status': job['status'],
+            'message': 'Transcription not completed yet'
+        }, HTTPStatus.OK
+    except Exception as ex:
+        logger.exception('fetching transcription result failed', data={'error': str(ex)})
+        return {'error': str(ex)}, HTTPStatus.INTERNAL_SERVER_ERROR
+
+# Ticket was moved to the backlog
+# @app.route('/speechmatic/jobs', methods=['GET'])
+# def list_jobs():
+#     jobs_service = JobsService()
+#     try:
+#         jobs = jobs_service.list_jobs()
+#         return {
+#             'jobs': jobs
+#         }, HTTPStatus.OK
+#     except Exception as ex:
+#         logger.exception('listing transcription jobs failed', data={'error': str(ex)})
+#         return {
+#             'error': str(ex)
+#         }, HTTPStatus.INTERNAL_SERVER_ERROR
 
 # =================== HEALTH CHECK ROUTES AND ERROR HANDLING ==================
 @app.route("/health/live")

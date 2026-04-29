@@ -1,0 +1,80 @@
+{% from 'metadata/components/textarea_readonly.html' import textarea_readonly%}
+
+  <div class="columns">
+    <div class="column">
+      <h2 class="title is-clickable" onclick="sectionToggle('ai_inhoud_section')">
+        AI gegenereerde inhoud
+        {% set status_map = {
+          'created':  ('aangevraagd', 'is-info'),
+          'running':  ('verwerken',   'is-warning'),
+          'done':     ('gegenereerd', 'is-success'),
+          'rejected': ('mislukt',     'is-danger'),
+          'deleted':  ('verwijderd',  'is-dark'),
+          'expired':  ('verlopen',    'is-light')
+        } %}
+        {% set status_label, status_class = status_map.get(sm_job_status, ('nog niet aangevraagd', 'is-light')) %}
+        <span class="tag {{ status_class }} sm-status-badge">{{ status_label }}</span>
+        <div class="minimize-icon-wrapper" id="ai_inhoud_section_icon">
+          <span class="icon-unfolded">
+            <ion-icon name="chevron-down-circle-outline"></ion-icon>
+          </span>
+          <span class="icon-folded">
+            <ion-icon name="chevron-forward-circle-outline"></ion-icon>
+          </span>
+        </div>
+      </h2>
+      <hr/>
+      <div id="ai_inhoud_section" class="custom_section">
+        {% if sm_job_status == "done" %}
+          {{- textarea_readonly('Samenvatting', 'ai_gegenereerde_beschrijving', sm_job_summary) }}
+          {{- textarea_readonly('Transcriptie', 'ai_gegenereerde_transcriptie', sm_job_transcription) }}
+
+					{% if sm_job_chapters %}
+						<article class="panel">
+							<p class="panel-heading">
+								Hoofdstukken
+							</p>
+							<div class="panel-block" style="padding: 0">
+								<p class="control">
+								<textarea
+									name="{{name}}"
+									id="{{name}}"
+									class="textarea is-hover"
+									placeholder="{{label}}"
+									style="height:30vh"
+									readonly>{% for chapter in sm_job_chapters %}
+{% set st = chapter.start_time | int %}{{ '%02d:%02d:%02d' | format(st // 3600, (st % 3600) // 60, st % 60) }} - {{ chapter.title }}
+{{ chapter.summary }}{% if not loop.last %}
+{% endif %}{% endfor %}</textarea>
+								</textarea>
+								</p>
+							</div>
+						</article>
+					{% endif %}
+        {% elif sm_job_status in ['created', 'running'] %}
+            <div class="notification is-info">
+              De AI gegenereerde inhoud is aangevraagd en wordt momenteel verwerkt. Kom later terug om de resultaten te bekijken.
+            </div>
+        {% elif sm_job_status in ['rejected', 'deleted', 'expired'] %}
+          <div class="notification is-danger">
+            De aanvraag voor AI gegenereerde inhoud is mislukt of verlopen. Er kan een nieuwe aanvraag worden ingediend door de originele taal van het audio/beeldfragment te selecteren en op de knop te klikken bovenaan de pagina.
+          </div>    
+        {% elif sm_job_status is none %}
+          <div class="notification is-light">
+            Er is nog geen AI gegenereerde inhoud beschikbaar voor dit item. Selecteer de originele taal van het audio/beeldfragment en op de knop te klikken bovenaan de pagina.
+          </div>
+        {% endif %}
+
+
+
+      </div> <!-- ai_inhoud_section -->
+
+    </div>
+
+  </div>
+
+
+<style>
+  .sm-status-badge { vertical-align: middle; margin-left: 0.5rem; font-size: 0.75rem; }
+</style>
+

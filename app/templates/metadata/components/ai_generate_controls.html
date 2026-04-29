@@ -1,0 +1,85 @@
+<div class="ai-language-controls is-inline-flex  is-justify-content-center">
+  <div class="column is-flex is-justify-content-end">
+    <div class="select">
+      <select id="ai_language_select">
+        <option value="nl">Nederlands</option>
+        <option value="fr">Frans</option>
+        <option value="en">Engels</option>
+        <option value="de">Duits</option>
+        <option value="es">Spaans</option>
+        <option value="it">Italiaans</option>
+        <option value="pt">Portugees</option>
+        <option value="ar">Arabisch</option>
+        <option value="zh">Chinees</option>
+        <option value="ru">Russisch</option>
+      </select>
+    </div>
+  </div>
+  <div class="column pr-0">
+    <button class="button is-info" id="request_ai_content_btn">
+      <ion-icon name="cloud-upload-outline" class="pr-2"></ion-icon>
+      AI inhoud opvragen
+    </button>
+  </div>
+</div>
+
+
+<script>
+  (function () {
+    var btn = document.getElementById('request_ai_content_btn');
+    if (!btn) return;
+
+    function showAiToast(colorClass, message) {
+      var container = document.getElementById('ai_toast_container');
+      if (!container) return;
+      container.innerHTML =
+        '<div class="notification ' + colorClass + ' fadein">' +
+        '<button class="delete" onclick="this.parentNode.remove()"></button>' +
+        message +
+        '</div>';
+      setTimeout(function () {
+        var el = container.firstChild;
+        if (el) {
+          el.classList.replace('fadein', 'fadeout');
+          setTimeout(function () { container.innerHTML = ''; }, 600);
+        }
+      }, 5000);
+    }
+
+    btn.addEventListener('click', function () {
+      var language = document.getElementById('ai_language_select').value;
+
+      btn.classList.add('is-loading');
+      btn.disabled = true;
+
+      fetch('/speechmatic/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          department: '{{ department }}',
+          pid: '{{ pid }}',
+          language: language
+        })
+      })
+      .then(function (response) {
+        return response.json().then(function (data) {
+          return { ok: response.ok, data: data };
+        });
+      })
+      .then(function (result) {
+        if (result.ok) {
+          showAiToast('is-success', 'Aanvraag ingediend. De AI inhoud wordt verwerkt.');
+        } else {
+          showAiToast('is-danger', result.data.error || 'Er is een fout opgetreden.');
+        }
+      })
+      .catch(function () {
+        showAiToast('is-danger', 'Netwerkfout: de aanvraag kon niet worden verzonden.');
+      })
+      .finally(function () {
+        btn.classList.remove('is-loading');
+        btn.disabled = false;
+      });
+    });
+  })();
+</script>

@@ -34,11 +34,6 @@
           href="/edit_metadata?pid={{pid}}&department={{department}}">
           Metadata
         </a>
-
-        <a class="navbar-item {{'is-active' if url_for(request.endpoint) in ['/upload', '/preview', '/send_to_mam']}}"
-           href="/upload?pid={{pid}}&department={{department}}">
-          Ondertitels
-        </a>
       {% endif %}
       
       <div class="navbar-item has-dropdown is-hoverable">

@@ -117,11 +117,10 @@ def test_working_pid_search(auth_client):
     res = auth_client.post("/search_media", data={
         'department': 'testbeeld',
         'pid': 'qsxs5jbm5c',
-        'redirect_subtitles': 'yes'
     }, follow_redirects=True)
 
     assert res.status_code == HTTPStatus.OK
-    assert 'Kies ondertitelbestand' in res.data.decode()
+    assert 'Algemene metadata' in res.data.decode()
 
 
 def test_invalid_long_pid_entry(auth_client):
@@ -155,123 +154,6 @@ def test_invalid_long_department(auth_client):
 
 
 @pytest.mark.vcr
-def test_bad_srt_upload(auth_client):
-    filename = 'subtitles.srt'
-
-    res = auth_client.post("/upload", data={
-        'pid': 'qsxs5jbm5c',
-        'department': 'testbeeld',
-        'mam_data': '',
-        'video_url': 'http://somevideopath',
-        'subtitle_type': 'closed',
-        'subtitle_file': (io.BytesIO(b"some initial data"), filename)
-    }, follow_redirects=True)
-
-    assert res.status_code == HTTPStatus.OK
-    assert 'Ondertitels moeten in SRT formaat' in res.data.decode()
-
-
-@pytest.mark.vcr
-def test_invalid_upload(auth_client):
-    filename = 'somefile.png'
-
-    res = auth_client.post("/upload", data={
-        'pid': 'qsxs5jbm5c',
-        'department': 'testbeeld',
-        'mam_data': '',
-        'video_url': 'http://somevideopath',
-        'subtitle_type': 'closed',
-        'subtitle_file': (io.BytesIO(b"some initial data"), filename)
-    }, follow_redirects=True)
-
-    assert res.status_code == HTTPStatus.OK
-    assert 'Ondertitels moeten in SRT formaat' in res.data.decode()
-
-
-@pytest.mark.vcr
-def test_empty_upload(auth_client):
-    res = auth_client.post("/upload", data={
-        'pid': 'qsxs5jbm5c',
-        'department': 'testbeeld',
-        'mam_data': '',
-        'video_url': 'http://somevideopath',
-        'subtitle_type': 'closed',
-        'subtitle_file': None
-    }, follow_redirects=True)
-
-    assert res.status_code == HTTPStatus.OK
-    assert 'Geen ondertitels bestand' in res.data.decode()
-
-
-@pytest.mark.vcr
-def test_valid_subtitle(auth_client):
-    filename = 'testing_good.srt'
-    filepath = os.path.join('./tests/test_subs', filename)
-
-    with open('./tests/test_subs/mam_data.json') as mam_json_file:
-        mam_data = json.load(mam_json_file)
-
-    res = auth_client.post("/upload", data={
-        'pid': 'qsxs5jbm5c',
-        'department': 'testbeeld',
-        'mam_data': json.dumps(mam_data),
-        'video_url': 'http://somevideopath',
-        'subtitle_type': 'closed',
-        'subtitle_file': (open(filepath, 'rb'), filename)
-    }, follow_redirects=True)
-
-    assert res.status_code == HTTPStatus.OK
-    assert 'Ondertitelbestand' in res.data.decode()
-    assert 'PID' in res.data.decode()
-    assert 'qsxs5jbm5c' in res.data.decode()
-    assert 'qsxs5jbm5c.srt' in res.data.decode()
-    assert 'Toevoegen' in res.data.decode()
-    assert 'Wissen' in res.data.decode()
-
-
-@pytest.mark.vcr
-def test_valid_subtitle_capitals(auth_client):
-    filename = 'test_good2.SRT'
-    filepath = os.path.join('./tests/test_subs', filename)
-
-    with open('./tests/test_subs/mam_data.json') as mam_json_file:
-        mam_data = json.load(mam_json_file)
-
-    res = auth_client.post("/upload", data={
-        'pid': 'qsxs5jbm5c',
-        'department': 'testbeeld',
-        'mam_data': json.dumps(mam_data),
-        'video_url': 'http://somevideopath',
-        'subtitle_type': 'closed',
-        'subtitle_file': (open(filepath, 'rb'), filename)
-    }, follow_redirects=True)
-
-    assert res.status_code == HTTPStatus.OK
-    assert 'Ondertitelbestand' in res.data.decode()
-    assert 'PID' in res.data.decode()
-    assert 'qsxs5jbm5c' in res.data.decode()
-    assert 'qsxs5jbm5c.srt' in res.data.decode()
-    assert 'Toevoegen' in res.data.decode()
-    assert 'Wissen' in res.data.decode()
-
-
-@pytest.mark.vcr
-def test_cancel_upload(auth_client):
-    data = {
-        'pid': 'abc',
-        'department': 'testbeeld',
-        'srt_file': 'somefile.srt',
-        'vtt_file': 'somefile.vtt',
-    }
-    res = auth_client.get(
-        "/cancel_upload",
-        query_string=data,
-        follow_redirects=True)
-    assert res.status_code == HTTPStatus.OK
-    assert 'PID niet gevonden in testbeeld' in res.data.decode()
-
-
-@pytest.mark.vcr
 def test_subtitle_videoplayer_route(auth_client):
     res = auth_client.get('/subtitles/qsxs5jbm5c.vtt')
     assert res.status_code == HTTPStatus.OK
@@ -281,27 +163,6 @@ def test_subtitle_videoplayer_route(auth_client):
 def test_subtitle_videoplayer_route_unknownfile(client):
     res = client.get('/subtitles/someinvalidpath.vtt')
     assert res.status_code == HTTPStatus.FOUND  # redirects to 404 page
-
-
-@pytest.mark.vcr
-def test_send_to_mam_cancel_works(auth_client):
-    with open('./tests/test_subs/mam_data.json') as mam_json_file:
-        mam_data = json.load(mam_json_file)
-
-    # replace existing subtitle now
-    res = auth_client.post("/send_to_mam", data={
-        'pid': 'qsxs5jbm5c',
-        'department': 'testbeeld',
-        'subtitle_type': 'closed',
-        'subtitle_file': 'qsxs5jbm5c_closed.srt',
-        'vtt_file': 'qsxs5jbm5c.vtt',
-        'xml_file': 'qsxs5jbm5c_closed.xml',
-        'mam_data': json.dumps(mam_data),
-        'replace_existing': 'cancel'
-    }, follow_redirects=True)
-
-    assert res.status_code == HTTPStatus.OK
-    assert 'Bestaande ondertitels werden behouden' in res.data.decode()
 
 
 @pytest.mark.vcr
@@ -494,6 +355,7 @@ def test_update_metadata(auth_client):
         'pid': 'qsf7664p39',
         'department': 'testbeeld',
         'mam_data': json.dumps(mam_data),
+        'sm_data': json.dumps({}),
         'serie': 'Serie veld test',
         'uitzenddatum': '2021-11-21',
         'ontsluitingstitel': 'Fietsstraten in centrum Gent',
@@ -579,46 +441,21 @@ def test_random_404(client, setup):
     assert resp.location.endswith("/404")
 
 
-@pytest.mark.vcr
-def test_valid_subtitle_for_ftp(auth_client):
-    filename = 'testing_good.srt'
-    filepath = os.path.join('./tests/test_subs', filename)
-
-    with open('./tests/test_subs/mam_data.json') as mam_json_file:
-        mam_data = json.load(mam_json_file)
-
-    res = auth_client.post("/upload", data={
-        'pid': 'qsxs5jbm5c',
-        'department': 'testbeeld',
-        'mam_data': json.dumps(mam_data),
-        'video_url': 'http://somevideopath',
-        'subtitle_type': 'closed',
-        'subtitle_file': (open(filepath, 'rb'), filename)
-    }, follow_redirects=True)
-
-    assert res.status_code == HTTPStatus.OK
-    assert 'PID' in res.data.decode()
-    assert 'Ondertitelbestand' in res.data.decode()
-    assert 'qsxs5jbm5c' in res.data.decode()
-    assert 'qsxs5jbm5c.srt' in res.data.decode()
-    assert 'Toevoegen' in res.data.decode()
-    assert 'Wissen' in res.data.decode()
+# =================== Combined metadata + subtitle tests =====================
 
 
 @pytest.mark.vcr
-def test_subtitle_ftp_upload(auth_client, mocker):
-    with open('./tests/test_subs/mam_data.json') as mam_json_file:
-        mam_data = json.load(mam_json_file)
+def test_edit_metadata_with_subtitle_published(auth_client, mocker):
+    """POST with a valid SRT file and publicatiestatus_checked=true should FTP-upload."""
+    with open('./tests/fixture_data/edit_mam_data.json', "r") as f:
+        mam_data = json.loads(f.read())
 
-    # mock ftp calls
     ftp_mock = MagicMock()
 
     def mock_ftp_client(self, server):
-        assert server == 'ftp.localhost'
         ftp_mock.login.return_value = 'login ok'
         ftp_mock.cwd.return_value = 'dir changed'
         ftp_mock.storbinary.return_value = '226 Transfer complete.'
-
         return ftp_mock
 
     mocker.patch(
@@ -626,27 +463,119 @@ def test_subtitle_ftp_upload(auth_client, mocker):
         mock_ftp_client
     )
 
-    # replace existing subtitle now
-    res = auth_client.post("/send_to_mam", data={
-        'pid': 'qsxs5jbm5c',
+    filepath = os.path.join('./tests/test_subs', 'testing_good.srt')
+    res = auth_client.post("/edit_metadata?pid=qsf7664p39&department=testbeeld", data={
+        'pid': 'qsf7664p39',
         'department': 'testbeeld',
-        'subtitle_type': 'closed',
-        'subtitle_file': 'qsxs5jbm5c.srt',
-        'xml_file': 'qsxs5jbm5c.xml',
         'mam_data': json.dumps(mam_data),
-        'transfer_method': 'ftp'
-
+        'sm_data': json.dumps({}),
+        'serie': 'Serie veld test',
+        'uitzenddatum': '2021-11-21',
+        'ontsluitingstitel': 'Fietsstraten in centrum Gent',
+        'prd_maker_attribute': 'Maker',
+        'prd_maker_value': '',
+        'prd_bijdrager_attribute': 'Aanwezig',
+        'prd_bijdrager_value': '',
+        'prd_publisher_attribute': 'Distributeur',
+        'prd_publisher_value': '',
+        'avo_beschrijving': 'Beschrijving test',
+        'lom_type': '[{"name":"Video","code":"Video"}]',
+        'lom1_beoogde_eindgebruiker': '[{"name":"Student","code":"Student"}]',
+        'talen': '[{"name":"Nederlands","code":"nl"}]',
+        'lom_onderwijs_combo': '[]',
+        'lom1_onderwijsniveaus': '[]',
+        'lom1_onderwijsgraden': '[]',
+        'themas': '[]',
+        'vakken': '[]',
+        'trefwoorden': '[]',
+        'publicatiestatus_checked': 'on',
+        'subtitle_type': 'closed',
+        'subtitle_file': (open(filepath, 'rb'), 'testing_good.srt'),
     }, follow_redirects=True)
 
+    assert res.status_code == HTTPStatus.OK
+    assert 'werden opgeslagen' in res.data.decode()
+    assert 'succesvol opgeladen' in res.data.decode()
     assert ftp_mock.login.called
-    assert ftp_mock.cwd.called
-    ftp_mock.cwd.assert_called_with('/FTP_DIR/')
-    assert ftp_mock.storbinary.called_twice
+
+
+@pytest.mark.vcr
+def test_edit_metadata_without_subtitle(auth_client, mocker):
+    """POST without subtitle file should only save metadata."""
+    with open('./tests/fixture_data/edit_mam_data.json', "r") as f:
+        mam_data = json.loads(f.read())
+
+    res = auth_client.post("/edit_metadata?pid=qsf7664p39&department=testbeeld", data={
+        'pid': 'qsf7664p39',
+        'department': 'testbeeld',
+        'mam_data': json.dumps(mam_data),
+        'sm_data': json.dumps({}),
+        'serie': 'Serie veld test',
+        'uitzenddatum': '2021-11-21',
+        'ontsluitingstitel': 'Fietsstraten in centrum Gent',
+        'prd_maker_attribute': 'Maker',
+        'prd_maker_value': '',
+        'prd_bijdrager_attribute': 'Aanwezig',
+        'prd_bijdrager_value': '',
+        'prd_publisher_attribute': 'Distributeur',
+        'prd_publisher_value': '',
+        'avo_beschrijving': 'Beschrijving test',
+        'lom_type': '[{"name":"Video","code":"Video"}]',
+        'lom1_beoogde_eindgebruiker': '[{"name":"Student","code":"Student"}]',
+        'talen': '[{"name":"Nederlands","code":"nl"}]',
+        'lom_onderwijs_combo': '[]',
+        'lom1_onderwijsniveaus': '[]',
+        'lom1_onderwijsgraden': '[]',
+        'themas': '[]',
+        'vakken': '[]',
+        'trefwoorden': '[]',
+    }, follow_redirects=True)
 
     assert res.status_code == HTTPStatus.OK
+    assert 'werden opgeslagen' in res.data.decode()
     body = res.data.decode()
-    assert 'De ondertitels werden succesvol opgeladen' in body
-    assert '226 Transfer complete' in body
+    assert 'succesvol opgeladen' not in body
+    assert 'automatisch opgeladen' not in body
+
+
+@pytest.mark.vcr
+def test_edit_metadata_with_invalid_srt(auth_client, mocker):
+    """POST with a non-SRT file should show a subtitle validation error."""
+    with open('./tests/fixture_data/edit_mam_data.json', "r") as f:
+        mam_data = json.loads(f.read())
+
+    res = auth_client.post("/edit_metadata?pid=qsf7664p39&department=testbeeld", data={
+        'pid': 'qsf7664p39',
+        'department': 'testbeeld',
+        'mam_data': json.dumps(mam_data),
+        'sm_data': json.dumps({}),
+        'serie': 'Serie veld test',
+        'uitzenddatum': '2021-11-21',
+        'ontsluitingstitel': 'Fietsstraten in centrum Gent',
+        'prd_maker_attribute': 'Maker',
+        'prd_maker_value': '',
+        'prd_bijdrager_attribute': 'Aanwezig',
+        'prd_bijdrager_value': '',
+        'prd_publisher_attribute': 'Distributeur',
+        'prd_publisher_value': '',
+        'avo_beschrijving': 'Beschrijving test',
+        'lom_type': '[{"name":"Video","code":"Video"}]',
+        'lom1_beoogde_eindgebruiker': '[{"name":"Student","code":"Student"}]',
+        'talen': '[{"name":"Nederlands","code":"nl"}]',
+        'lom_onderwijs_combo': '[]',
+        'lom1_onderwijsniveaus': '[]',
+        'lom1_onderwijsgraden': '[]',
+        'themas': '[]',
+        'vakken': '[]',
+        'trefwoorden': '[]',
+        'publicatiestatus_checked': 'on',
+        'subtitle_type': 'closed',
+        'subtitle_file': (io.BytesIO(b"not a subtitle"), 'badfile.png'),
+    }, follow_redirects=True)
+
+    assert res.status_code == HTTPStatus.OK
+    assert 'werden opgeslagen' in res.data.decode()
+    assert '.srt extensie' in res.data.decode()
 
 
 # security check without session routes redirect to login:
@@ -673,3 +602,69 @@ def test_publicatie_status_protected(client):
     )
     assert res.status_code == HTTPStatus.OK
     assert 'Log in om gebruik te maken' in res.data.decode()
+
+
+# static file cache header tests
+
+def test_cache_immutable_existing_paths(client):
+    for path in ['/static/avo-logo-i.svg', '/static/images/saml_login_background.jpg']:
+        res = client.get(path)
+        assert res.cache_control.public is True
+        assert res.cache_control.max_age == 31536000
+        assert res.cache_control.immutable is True
+
+
+def test_cache_immutable_vue_bundles(client):
+    for path in [
+        '/static/vue/js/app.3c43299f.js',
+        '/static/vue/js/chunk-vendors.84d9dc4d.js',
+        '/static/vue/css/app.b7f7662c.css',
+        '/static/vue/css/chunk-vendors.a902fd7e.css',
+    ]:
+        res = client.get(path)
+        assert res.cache_control.public is True
+        assert res.cache_control.max_age == 31536000
+        assert res.cache_control.immutable is True
+
+
+def test_cache_immutable_fonts(client):
+    for path in [
+        '/static/bulma/fonts/slick.woff',
+        '/static/bulma/fonts/slick.ttf',
+    ]:
+        res = client.get(path)
+        assert res.cache_control.public is True
+        assert res.cache_control.max_age == 31536000
+        assert res.cache_control.immutable is True
+
+
+def test_cache_vendor_libs(client):
+    for path in [
+        '/static/flowplayer.min.js',
+        '/static/flowplayer.css',
+        '/static/quill.js',
+        '/static/quill.snow.css',
+        '/static/subtitles.min.js',
+        '/static/turndown.js',
+        '/static/bulma/bulma-tooltip.min.css',
+        '/static/bulma/bundle.js',
+        '/static/favicon.ico',
+    ]:
+        res = client.get(path)
+        assert res.cache_control.public is True
+        assert res.cache_control.max_age == 604800
+        assert not res.cache_control.immutable
+
+
+def test_cache_app_assets(client):
+    for path in [
+        '/static/redactietool_v2.js',
+        '/static/style.css',
+        '/static/bulma/overrides.css',
+        '/static/bulma/core.css',
+        '/static/bulma/modal_dialog.js',
+    ]:
+        res = client.get(path)
+        assert res.cache_control.public is True
+        assert res.cache_control.max_age == 3600
+        assert not res.cache_control.immutable

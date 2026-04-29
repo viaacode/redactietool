@@ -15,7 +15,7 @@
       </h2>
       <hr/>
 
-      <div id="inhoud_section">
+      <div id="inhoud_section" class="custom_section">
 
 
         {{- textarea_readonly('Hoofdbeschrijving', 'originele_hoofdbeschrijving', description) }}
@@ -34,7 +34,7 @@
           <p class="panel-heading">
             Beschrijving Het Archief voor Onderwijs
           </p>
-          <div class="panel-block" id="avo_beschrijving_panel">
+          <div class="panel-block" style="padding: 0" id="avo_beschrijving_panel">
             <div class="richtext-wrapper" id="richtext_bounds">
               <div id="redactietool-richtext-editor">{{avo_beschrijving | safe}}</div> 
            </div>

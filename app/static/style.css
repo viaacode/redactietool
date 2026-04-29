@@ -426,6 +426,10 @@ hr {
     border: 1px solid #ddd;
 }
 
+.textarea {
+    border-radius: 0 0 4px 4px;
+}
+
 .button.is-link.is-light{
   border-color: #97b8d3 !important;
 }
@@ -526,8 +530,26 @@ h3.subtitle{
   display: none;
 }
 
+.custom_section {
+	padding-bottom: 30px;
+}
+
+#subtitle_section {
+	/* Counteract strange negative margins on headers in columns */
+	margin-top: -50px
+}
+
 .form-footer-spacing {
   height: 60px;
+}
+
+#avo_beschrijving_panel .ql-toolbar {
+	border-top-left-radius: 0 !important;
+	border-top-right-radius: 0 !important;
+}
+
+#avo_beschrijving_panel #redactietool-richtext-editor {
+	border-radius: 0 0 4px 4px;
 }
 
 

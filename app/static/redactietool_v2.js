@@ -49,7 +49,6 @@ function restoreButton(btn_id, btn_label){
 
 function clearButtonLoadingState(){
   restoreButton("btn_metadata_bewerken", "Metadata bewerken");
-  restoreButton("btn_ondertitels_toevoegen", "Ondertitels toevoegen");
 }
 
 function resetSearch(){
@@ -87,66 +86,73 @@ function flashModalWarning(){
 
 
 // ============================== SUBTITLE FORMS ===============================
-function pidSubmitForSubtitles(btn){
-  hf = get_id('redirect_subtitles');
-  hf.value = 'yes';
-  window.localStorage.removeItem("productie_section_opened");
-  execute(btn, 'Item opzoeken...');
-}
-
 function pidSubmitForMetadata(btn){
-  hf = get_id('redirect_subtitles');
-  hf.value = 'no';
   window.localStorage.removeItem("productie_section_opened");
   execute(btn, 'Item opzoeken...');
 }
 
-function uploadSubmit(btn){
-  execute(btn, 'Opladen...');
+// Preview a locally selected SRT file in the Flowplayer video player
+function previewSubtitleInPlayer(input){
+  if(!input.files || !input.files[0]) return;
 
-  // also disable anuleren link
-  cancel_btn = get_id('upload_cancel');
-  if( cancel_btn ){ 
-    cancel_btn.className += ' disabled';
-    cancel_btn.href = "#disabled";
-  }
+  var previewMsg = document.getElementById('subtitle_preview_msg');
+  if(previewMsg) previewMsg.style.display = '';
+
+  var clearBtn = document.getElementById('subtitle_clear_btn');
+  if(clearBtn) clearBtn.style.display = '';
+
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var srtText = e.target.result;
+    // Convert SRT to WebVTT: add header, replace comma with period in timestamps
+    var vttText = "WEBVTT\n\n" + srtText
+      .replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, '$1.$2');
+
+    var blob = new Blob([vttText], {type: 'text/vtt'});
+    var blobUrl = URL.createObjectURL(blob);
+
+    // Try to add/replace a <track> element on the underlying <video>
+    var video = document.querySelector('#player_container video');
+    if(video){
+      // Remove any existing preview tracks
+      var existingTracks = video.querySelectorAll('track.preview-track');
+      existingTracks.forEach(function(t){ t.remove(); });
+
+      var track = document.createElement('track');
+      track.className = 'preview-track';
+      track.kind = 'subtitles';
+      track.label = 'Preview';
+      track.srclang = 'nl';
+      track.src = blobUrl;
+      track.default = true;
+      video.appendChild(track);
+
+      // Activate the new track
+      for(var i = 0; i < video.textTracks.length; i++){
+        video.textTracks[i].mode = (video.textTracks[i].label === 'Preview') ? 'showing' : 'hidden';
+      }
+    }
+  };
+  reader.readAsText(input.files[0]);
 }
 
-function uploadCancel(ref){
-  console.log("uploadCancel clicked!")
-  ref.className += ' disabled';
-}
+function clearSubtitleInput(){
+  var input = document.getElementById('subtitle_file_input');
+  if(input) input.value = '';
 
-function previewSubmit(btn){
-  execute(btn, 'Versturen...')
+  var previewMsg = document.getElementById('subtitle_preview_msg');
+  if(previewMsg) previewMsg.style.display = 'none';
 
-  //disable wissen button
-  cancel_btn = get_id('preview_cancel');
-  if( cancel_btn ){ 
-    cancel_btn.className += ' disabled';
-    cancel_btn.href = "#disabled";
-  }
-}
+  var clearBtn = document.getElementById('subtitle_clear_btn');
+  if(clearBtn) clearBtn.style.display = 'none';
 
-function previewCancel(ref){
-  ref.className += ' disabled';
-}
-
-function confirmSubmit(btn){
-  execute(btn, 'Versturen...');
-
-  cancel_btn = get_id('confirm_cancel')
-  if(cancel_btn){
-    cancel_btn.disabled=true;
-  }
-}
-
-function confirmCancel(btn){
-  execute(btn, 'Wissen...');
-
-  repl_btn = get_id('confirm_submit')
-  if(repl_btn){
-    repl_btn.disabled=true;
+  var video = document.querySelector('#player_container video');
+  if(video){
+    video.querySelectorAll('track.preview-track').forEach(function(t){ t.remove(); });
+    var restoreMode = (typeof hasExistingSubtitle !== 'undefined' && hasExistingSubtitle) ? 'showing' : 'hidden';
+    for(var i = 0; i < video.textTracks.length; i++){
+      video.textTracks[i].mode = restoreMode;
+    }
   }
 }
 
@@ -226,14 +232,14 @@ function sectionToggle(section_div_id){
   var form_section = get_id(section_div_id);
   if(!form_section) return;
  
-  if(form_section.style.display == 'none'){
-    if(section_div_id=="productie_section"){
+  if (form_section.style.display === 'none'){
+    if (section_div_id === "productie_section"){
       window.localStorage.setItem("productie_section_opened", "true");
     }
     openSection(section_div_id);
   }
   else{
-    if(section_div_id=="productie_section"){
+    if (section_div_id === "productie_section"){
       window.localStorage.removeItem("productie_section_opened");
     }
 
@@ -243,8 +249,8 @@ function sectionToggle(section_div_id){
 
 function updateProductionSection(){
   // use localstorage to keep state of opened production section
-  if(window.localStorage.getItem("productie_section_opened") == "true"){
-    openSection("productio_section");
+  if (window.localStorage.getItem("productie_section_opened") === "true"){
+    openSection("productie_section");
   }
   else{
     closeSection("productie_section");
@@ -252,8 +258,8 @@ function updateProductionSection(){
 }
 
 function collapseEmptyTextarea(area_id, uncollapsable=false){
-  var ta = get_id(area_id);
-  if( ta && ta.innerHTML.length == 0){
+  const ta = get_id(area_id);
+  if (ta && ta.innerHTML.length === 0) {
     if(uncollapsable){
       ta.parentNode.parentNode.style.display="none";
     }
@@ -280,7 +286,7 @@ function hideEmptyTitleInput(input_id){
   var input_field = get_id(input_id);
   if( input_field ){
     var input_box = input_field.getElementsByTagName("input")[0];
-    if( input_box && input_box.value.length == 0){
+    if( input_box && input_box.value.length === 0){
       input_field.style.display = "none";
     }
     else{
@@ -406,7 +412,7 @@ function metadataInputChanged(name){
 function metadataFormEdited(){
   edited = get_id("metadata_form_edited");
   if(edited){
-    return edited.value == "true"
+    return edited.value === "true"
   }
   else{
     return false;
