@@ -68,8 +68,10 @@ class ConverterService:
             raise ValueError("TICKET_SERVICE_CERT environment variable is not set")
         if not key_pem_str:
             raise ValueError("TICKET_SERVICE_KEY environment variable is not set")
-        cert_pem = cert_pem_str.encode()
-        key_pem = key_pem_str.encode()
+        # Secrets stored via OpenShift UI or --from-literal often have literal \n
+        # instead of real newlines; ssl.load_cert_chain requires real newlines.
+        cert_pem = cert_pem_str.replace('\\n', '\n').encode()
+        key_pem = key_pem_str.replace('\\n', '\n').encode()
         ssl_context = ssl.create_default_context()
         cert_file = tempfile.NamedTemporaryFile(delete=False, suffix='.pem')
         key_file = tempfile.NamedTemporaryFile(delete=False, suffix='.pem')
@@ -134,7 +136,7 @@ class ConverterService:
         logger.info('converter: ticket received', data={'path': path})
         return ticket
 
-    def get_media_url(self, path: str, referer: str = '', ip: str = '127.0.0.1') -> str:
+    def get_media_url(self, path: str, referer: str = '', ip: str = '') -> str:
         """
         Returns a playback URL constructed from the ticket service base URL,
         the relative path, and the jwt token from get_ticket.
@@ -154,7 +156,6 @@ class ConverterService:
             relative_path = parsed_url.path.removeprefix('/')
             
         logger.info('converter: get_media_url', data={'relative_path': relative_path})
-        logger.info(f"Resolved relative ip: {ip}")
         ticket = self.get_ticket(relative_path)
         serviceUrl = os.environ.get('MEDIA_SERVICE_URL', self.base_url).rstrip('/')
         return f"{serviceUrl}/{relative_path}?token={ticket.get('jwt', '')}"
