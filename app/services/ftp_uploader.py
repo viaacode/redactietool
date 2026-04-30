@@ -61,6 +61,18 @@ class FtpUploader:
                 fp=open(xml_path, 'rb')
             )
 
+            logger.info(
+                'FTP upload completed',
+                data={
+                    'srt_file': tp['srt_file'],
+                    'xml_file': tp['xml_file'],
+                    'srt_ftp_response': srt_result,
+                    'xml_ftp_response': xml_result,
+                    'ftp_server': self.FTP_SERVER,
+                    'ftp_dir': self.FTP_DIR,
+                }
+            )
+
             return {
                 'srt_ftp_response': srt_result,
                 'xml_ftp_response': xml_result

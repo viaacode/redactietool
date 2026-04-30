@@ -80,11 +80,31 @@ class MediahavenApi:
     def get_subtitles(self, department, pid):
         matched_subs = self.client.records.search(
             q=f"+(dc_relationsis_verwant_aan:{pid})")
+        logger.info(
+            'get_subtitles query result',
+            data={
+                'pid': pid,
+                'department': department,
+                'total_nr_of_results': matched_subs.total_nr_of_results,
+            }
+        )
         if not matched_subs.total_nr_of_results:
             return []
 
         sub_response = json.loads(
             matched_subs.raw_response).get('Results', [{}])
+        filenames = [
+            sub.get('Descriptive', {}).get('OriginalFilename', '')
+            for sub in sub_response
+        ]
+        logger.info(
+            'get_subtitles found files',
+            data={
+                'pid': pid,
+                'filenames': filenames,
+                'count': len(sub_response),
+            }
+        )
         return sub_response
 
     def get_subtitle(self, department, pid, subtype):

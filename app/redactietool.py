@@ -282,7 +282,6 @@ def save_item_metadata():
     )
     uploaded_file = request.files.get('subtitle_file') if has_subtitle_file else None
     subtitle_type = request.form.get('subtitle_type', 'closed')
-    publicatiestatus_checked = bool(request.form.get('publicatiestatus_checked'))
 
     # Phase 1 — Metadata save (unchanged logic)
     mm = MetaMapping()
@@ -297,35 +296,47 @@ def save_item_metadata():
         template_vars['mh_errors'] = response['errors']
 
     # Phase 2 — Subtitle handling
+    logger.info(
+        'subtitle upload check',
+        data={
+            'pid': pid,
+            'mh_synced': template_vars.get('mh_synced'),
+            'has_subtitle_file': has_subtitle_file,
+            'subtitle_validation_error': subtitle_validation_error,
+        }
+    )
     if template_vars['mh_synced']:
         if has_subtitle_file and not subtitle_validation_error:
-            if publicatiestatus_checked:
-                # Upload subtitle immediately via FTP
-                try:
-                    tp = {
-                        'pid': pid,
-                        'department': department,
-                        'subtitle_type': subtitle_type,
-                    }
-                    tp['srt_file'], tp['vtt_file'] = save_subtitles(
-                        upload_folder(), pid, uploaded_file)
-                    if tp['srt_file']:
-                        tp['srt_file'] = move_subtitle(upload_folder(), tp)
-                        tp['xml_file'], _ = save_sidecar_xml(
-                            upload_folder(), mam_data, tp)
-                        ftp_uploader = FtpUploader()
-                        ftp_response = ftp_uploader.upload_subtitles(
-                            upload_folder(), mam_data, tp)
-                        delete_files(upload_folder(), tp)
-                        if 'ftp_error' in ftp_response:
-                            template_vars['subtitle_error'] = ftp_response['ftp_error']
-                        else:
-                            template_vars['subtitle_synced'] = True
+            # Upload subtitle via FTP
+            try:
+                tp = {
+                    'pid': pid,
+                    'department': department,
+                    'subtitle_type': subtitle_type,
+                }
+                tp['srt_file'], tp['vtt_file'] = save_subtitles(
+                    upload_folder(), pid, uploaded_file)
+                if tp['srt_file']:
+                    tp['srt_file'] = move_subtitle(upload_folder(), tp)
+                    tp['xml_file'], _ = save_sidecar_xml(
+                        upload_folder(), mam_data, tp)
+                    ftp_uploader = FtpUploader()
+                    ftp_response = ftp_uploader.upload_subtitles(
+                        upload_folder(), mam_data, tp)
+                    logger.info(
+                        'subtitle FTP upload response',
+                        data={'pid': pid, 'ftp_response': ftp_response}
+                    )
+                    delete_files(upload_folder(), tp)
+                    if 'ftp_error' in ftp_response:
+                        template_vars['subtitle_error'] = ftp_response['ftp_error']
                     else:
-                        template_vars['subtitle_error'] = 'Ondertitels moeten in SRT formaat'
-                except Exception as e:
-                    logger.exception('subtitle upload failed', data={'pid': pid, 'error': str(e)})
-                    template_vars['subtitle_error'] = str(e)
+                        template_vars['subtitle_synced'] = True
+                else:
+                    template_vars['subtitle_error'] = 'Ondertitels moeten in SRT formaat'
+            except Exception as e:
+                logger.exception('subtitle upload failed', data={'pid': pid, 'error': str(e)})
+                template_vars['subtitle_error'] = str(e)
 
         if subtitle_validation_error and has_subtitle_file:
             template_vars['subtitle_error'] = subtitle_validation_error
