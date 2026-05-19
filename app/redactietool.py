@@ -376,6 +376,7 @@ def save_item_metadata():
                                 api_response['errors'])
                         else:
                             template_vars['subtitle_synced'] = True
+                            template_vars['subtitle_synced_filename'] = f"{pid}_{subtitle_type}.srt"
                     else:
                         template_vars['subtitle_error'] = 'Ondertitels moeten in SRT formaat'
             except Exception as e:
@@ -430,6 +431,23 @@ def delete_subtitle():
     result = mh_api.delete_subtitle(fragment_id, reason=f"Deleted by editor for {pid}")
 
     return jsonify(result)
+
+
+@app.route('/subtitle_files', methods=['GET'])
+@login_required
+def get_subtitle_files():
+    pid = request.args.get('pid')
+    department = request.args.get('department')
+
+    mh_api = MediahavenApi()
+    all_subs = mh_api.get_subtitles(department, pid)
+    subtitle_files = []
+    for sub in all_subs:
+        filename = sub.get('Descriptive', {}).get('OriginalFilename', '')
+        fragment_id = sub.get('Internal', {}).get('FragmentId', '')
+        subtitle_files.append({'filename': filename, 'fragment_id': fragment_id})
+
+    return jsonify(subtitle_files)
 
 
 @app.route('/publicatie_status', methods=['GET'])

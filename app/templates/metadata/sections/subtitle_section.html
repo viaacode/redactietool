@@ -56,10 +56,10 @@
 					Je kan de ondertitel bekijken op de bovenstaande videoplayer
 				</div>
 			{% endif %}
-			{% if subtitle_files|length > 0 %}
-				<div class="field">
+			{% if subtitle_files|length > 0 or subtitle_synced %}
+				<div class="field" id="subtitle_files_section">
 					<label class="label">Bestaande ondertitelbestanden</label>
-					<div class="control">
+					<div class="control" id="subtitle_files_list">
 						{% for subfile in subtitle_files %}
 						<span class="tag is-info is-light mr-2 mb-2" style="padding-right:0;" data-fragment-id="{{ subfile.fragment_id }}">
 							{{ subfile.filename }}
@@ -67,11 +67,17 @@
 						</span>
 						{% endfor %}
 					</div>
+					{% if subtitle_synced %}
+					<div id="subtitle_polling_spinner" class="mt-2">
+						<span class="icon"><ion-icon name="sync-outline" class="rotating"></ion-icon></span>
+						<span class="is-size-7 has-text-grey">Bezig met verwerken...</span>
+					</div>
+					{% endif %}
 				</div>
 			{% endif %}
 			{% if subtitle_synced %}
 				<div class="notification is-success fadein" id="subtitle_synced_alert">
-					Het ondertitelbestand werd succesvol opgeladen.
+					Het ondertitelbestand werd succesvol opgeladen. Verwerking in het MAM kan even duren.
 				</div>
 			{% endif %}
 			{% if subtitle_error %}
@@ -118,8 +124,74 @@
 		</footer>
 	</div>
 </div>
+<style>
+@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.rotating { display: inline-block; animation: rotate 1.2s linear infinite; }
+</style>
 <script>
 var existingSubtitleTypes = {{ existing_subtitle_types | default([]) | tojson }};
+var existingSubtitleFilenames = {
+	{% for subfile in subtitle_files %}
+		{% if '_open.' in subfile.filename %}'open': '{{ subfile.filename }}',{% endif %}
+		{% if '_closed.' in subfile.filename %}'closed': '{{ subfile.filename }}',{% endif %}
+	{% endfor %}
+};
+var subtitleSyncedFilename = {{ subtitle_synced_filename | default(None) | tojson }};
+
+function buildSubtitleTag(subfile) {
+	var span = document.createElement('span');
+	span.className = 'tag is-info is-light mr-2 mb-2';
+	span.style.paddingRight = '0';
+	span.setAttribute('data-fragment-id', subfile.fragment_id);
+	span.textContent = subfile.filename;
+	var btn = document.createElement('button');
+	btn.type = 'button';
+	btn.className = 'button is-danger is-small';
+	btn.style.cssText = 'height:24px; min-height:24px; padding:0 6px; margin-left:0.75em;';
+	btn.textContent = 'x';
+	btn.onclick = function() { openDeleteSubtitleModal(subfile.fragment_id, subfile.filename); };
+	span.appendChild(btn);
+	return span;
+}
+
+function startSubtitlePolling() {
+	var expectedFilename = subtitleSyncedFilename;
+	if (!expectedFilename) return;
+	var maxAttempts = 20;
+	var attempts = 0;
+	var interval = setInterval(function() {
+		attempts++;
+		fetch('/subtitle_files?pid={{ pid }}&department={{ department }}')
+			.then(function(r) { return r.json(); })
+			.then(function(files) {
+				var found = files.some(function(f) { return f.filename === expectedFilename; });
+				if (found || attempts >= maxAttempts) {
+					clearInterval(interval);
+					var spinner = document.getElementById('subtitle_polling_spinner');
+					if (spinner) spinner.remove();
+					var alert = document.getElementById('subtitle_synced_alert');
+					if (alert) alert.textContent = 'Het ondertitelbestand werd succesvol opgeladen.';
+					var list = document.getElementById('subtitle_files_list');
+					if (list) {
+						list.innerHTML = '';
+						files.forEach(function(subfile) { list.appendChild(buildSubtitleTag(subfile)); });
+						existingSubtitleTypes = files.map(function(f) {
+							if (f.filename.indexOf('_open.') !== -1) return 'open';
+							if (f.filename.indexOf('_closed.') !== -1) return 'closed';
+							return null;
+						}).filter(Boolean);
+						existingSubtitleFilenames = {};
+						files.forEach(function(f) {
+							if (f.filename.indexOf('_open.') !== -1) existingSubtitleFilenames['open'] = f.filename;
+							if (f.filename.indexOf('_closed.') !== -1) existingSubtitleFilenames['closed'] = f.filename;
+						});
+						updateSubtitleExistingWarning();
+					}
+				}
+			})
+			.catch(function() { if (attempts >= maxAttempts) clearInterval(interval); });
+	}, 3000);
+}
 
 var deleteSubtitleFragmentId = null;
 var deleteSubtitleFilename = null;
@@ -148,8 +220,10 @@ function confirmDeleteSubtitle() {
 			if (tag) tag.remove();
 			if (deleteSubtitleFilename.indexOf('_open.') !== -1) {
 				existingSubtitleTypes = existingSubtitleTypes.filter(function(t) { return t !== 'open'; });
+				delete existingSubtitleFilenames['open'];
 			} else if (deleteSubtitleFilename.indexOf('_closed.') !== -1) {
 				existingSubtitleTypes = existingSubtitleTypes.filter(function(t) { return t !== 'closed'; });
+				delete existingSubtitleFilenames['closed'];
 			}
 			updateSubtitleExistingWarning();
 		} else {
@@ -167,9 +241,15 @@ function subtitleTypeMatchesExisting() {
 }
 
 function updateSubtitleExistingWarning() {
-	var typeExists = subtitleTypeMatchesExisting();
+	var subtitleType = document.getElementById('subtitle_type').value;
+	var typeExists = existingSubtitleTypes.indexOf(subtitleType) !== -1;
 	document.getElementById('subtitle_file_column').style.display = typeExists ? 'none' : '';
-	document.getElementById('subtitle_type_exists_warning').style.display = typeExists ? '' : 'none';
+	var warning = document.getElementById('subtitle_type_exists_warning');
+	warning.style.display = typeExists ? '' : 'none';
+	if (typeExists) {
+		var filename = existingSubtitleFilenames[subtitleType] || '';
+		warning.innerHTML = 'De ondertitel <strong>' + filename + '</strong> bestaat reeds, wis die eerst om een nieuwe te kunnen uploaden.';
+	}
 }
 
 function subtitleNeedsReplacement() {
@@ -178,6 +258,10 @@ function subtitleNeedsReplacement() {
 
 document.getElementById('subtitle_type').addEventListener('change', updateSubtitleExistingWarning);
 updateSubtitleExistingWarning();
+
+if (subtitleSyncedFilename) {
+	startSubtitlePolling();
+}
 
 function closeReplaceSubtitleModal() {
 	document.getElementById('replace_subtitle_modal').classList.remove('is-active');
