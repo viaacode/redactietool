@@ -566,12 +566,8 @@ def generate_transcript():
             return {
                 'error': f'Job already exists for pid: {pid} with status: {job["status"]}, but not processed yet'
             }, HTTPStatus.CONFLICT
-        elif job and job["processed_at"] is not None and job["status"] == "done":
-            return {
-                'error': f'Job already exists for pid: {pid} and is completed'
-            }, HTTPStatus.CONFLICT
-        
-        # If job does not exist or exists but is deleted, rejected or expired, we can launch a new job
+
+        # If job does not exist, or is completed/rejected/deleted/expired, launch a new job
 
         video_url = mam_data.get('Internal', {}).get('PathToVideo')
         if not video_url:

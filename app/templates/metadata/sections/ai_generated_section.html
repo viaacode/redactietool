@@ -5,7 +5,6 @@
       <h2 class="title is-clickable" onclick="sectionToggle('ai_inhoud_section')">
         AI gegenereerde inhoud
         {% set status_map = {
-          'created':  ('aangevraagd', 'is-info'),
           'running':  ('verwerken',   'is-warning'),
           'done':     ('gegenereerd', 'is-success'),
           'rejected': ('mislukt',     'is-danger'),
@@ -13,7 +12,7 @@
           'expired':  ('verlopen',    'is-light')
         } %}
         {% set status_label, status_class = status_map.get(sm_job_status, ('nog niet aangevraagd', 'is-light')) %}
-        <span class="tag {{ status_class }} sm-status-badge">{{ status_label }}</span>
+        <span class="tag {{ status_class }} sm-status-badge" id="sm_status_badge">{{ status_label }}</span>
         <div class="minimize-icon-wrapper" id="ai_inhoud_section_icon">
           <span class="icon-unfolded">
             <ion-icon name="chevron-down-circle-outline"></ion-icon>
@@ -51,7 +50,7 @@
 							</div>
 						</article>
 					{% endif %}
-        {% elif sm_job_status in ['created', 'running'] %}
+        {% elif sm_job_status == 'running' %}
             <div class="notification is-info">
               De AI gegenereerde inhoud is aangevraagd en wordt momenteel verwerkt. Kom later terug om de resultaten te bekijken.
             </div>

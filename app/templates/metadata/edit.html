@@ -85,9 +85,7 @@ Metadata bewerken
               <div></div>
             {% endif %}
             
-          {% if sm_job_status not in ['created', 'running', 'done'] %}
-              {% include 'metadata/components/ai_generate_controls.html' %}
-          {% endif %}
+          {% include 'metadata/components/ai_generate_controls.html' %}
         </div>
         
         <div id="ai_toast_container" class="mt-3"></div>

@@ -16,18 +16,104 @@
     </div>
   </div>
   <div class="column pr-0">
-    <button class="button is-info" id="request_ai_content_btn">
+    <button class="button is-info{% if sm_job_status == 'running' %} is-loading{% endif %}"
+            id="request_ai_content_btn"
+            {% if sm_job_status == 'running' %}disabled{% endif %}>
       <ion-icon name="cloud-upload-outline" class="pr-2"></ion-icon>
       AI inhoud opvragen
     </button>
   </div>
 </div>
 
+{% if sm_job_status in ['rejected', 'deleted'] %}
+<div class="notification is-danger is-light mt-2" id="ai_status_error">
+  De vorige aanvraag voor AI inhoud is mislukt. Je kan een nieuwe aanvraag indienen.
+</div>
+{% else %}
+<div class="notification is-danger is-light mt-2" id="ai_status_error" style="display:none;"></div>
+{% endif %}
+
 
 <script>
   (function () {
     var btn = document.getElementById('request_ai_content_btn');
     if (!btn) return;
+
+    var statusBadgeClasses = {
+      'running':  'is-warning',
+      'done':     'is-success',
+      'rejected': 'is-danger',
+      'deleted':  'is-dark',
+      'expired':  'is-light'
+    };
+    var statusBadgeLabels = {
+      'running':  'verwerken',
+      'done':     'gegenereerd',
+      'rejected': 'mislukt',
+      'deleted':  'verwijderd',
+      'expired':  'verlopen'
+    };
+
+    function updateBadge(status) {
+      var badge = document.getElementById('sm_status_badge');
+      if (!badge) return;
+      Object.values(statusBadgeClasses).forEach(function(cls) { badge.classList.remove(cls); });
+      badge.classList.add(statusBadgeClasses[status] || 'is-light');
+      badge.textContent = statusBadgeLabels[status] || status;
+    }
+
+    function setButtonRunning() {
+      btn.classList.add('is-loading');
+      btn.disabled = true;
+    }
+
+    function setButtonReady() {
+      btn.classList.remove('is-loading');
+      btn.disabled = false;
+    }
+
+    function showError(message) {
+      var el = document.getElementById('ai_status_error');
+      if (!el) return;
+      el.textContent = message;
+      el.style.display = '';
+    }
+
+    function hideError() {
+      var el = document.getElementById('ai_status_error');
+      if (el) el.style.display = 'none';
+    }
+
+    var pollingInterval = null;
+
+    function startPolling() {
+      if (pollingInterval) return;
+      pollingInterval = setInterval(function () {
+        fetch('/{{ department }}/{{ pid }}/speechmatic/status')
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            var status = data.status;
+            updateBadge(status);
+            if (status === 'done') {
+              clearInterval(pollingInterval);
+              pollingInterval = null;
+              window.location.reload();
+            } else if (status === 'running') {
+              // keep polling
+            } else {
+              clearInterval(pollingInterval);
+              pollingInterval = null;
+              setButtonReady();
+              if (status === 'rejected' || status === 'deleted') {
+                showError('De aanvraag voor AI inhoud is mislukt. Je kan een nieuwe aanvraag indienen.');
+              } else if (status === 'expired') {
+                showError('De aanvraag voor AI inhoud is verlopen. Je kan een nieuwe aanvraag indienen.');
+              }
+            }
+          })
+          .catch(function () { /* keep polling on network error */ });
+      }, 5000);
+    }
 
     function showAiToast(colorClass, message) {
       var container = document.getElementById('ai_toast_container');
@@ -48,9 +134,8 @@
 
     btn.addEventListener('click', function () {
       var language = document.getElementById('ai_language_select').value;
-
-      btn.classList.add('is-loading');
-      btn.disabled = true;
+      setButtonRunning();
+      hideError();
 
       fetch('/speechmatic/generate', {
         method: 'POST',
@@ -69,17 +154,22 @@
       .then(function (result) {
         if (result.ok) {
           showAiToast('is-success', 'Aanvraag ingediend. De AI inhoud wordt verwerkt.');
+          updateBadge('running');
+          startPolling();
         } else {
+          setButtonReady();
           showAiToast('is-danger', result.data.error || 'Er is een fout opgetreden.');
         }
       })
       .catch(function () {
+        setButtonReady();
         showAiToast('is-danger', 'Netwerkfout: de aanvraag kon niet worden verzonden.');
-      })
-      .finally(function () {
-        btn.classList.remove('is-loading');
-        btn.disabled = false;
       });
     });
+
+    // Auto-start polling if job is already running on page load
+    {% if sm_job_status == 'running' %}
+    startPolling();
+    {% endif %}
   })();
 </script>
