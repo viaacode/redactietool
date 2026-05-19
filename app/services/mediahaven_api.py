@@ -124,6 +124,56 @@ class MediahavenApi:
         else:
             return False
 
+    def delete_subtitle(self, record_id, reason=None):
+        """Delete a subtitle record from MediaHaven."""
+        try:
+            logger.info(
+                'deleting existing subtitle record',
+                data={'record_id': record_id, 'reason': reason}
+            )
+            self.client.records.delete(record_id, reason=reason)
+            return {'status': True, 'errors': []}
+        except MediaHavenException as me:
+            logger.error(
+                'failed to delete subtitle record',
+                data={'record_id': record_id, 'error': str(me)}
+            )
+            return {'status': False, 'errors': [str(me)]}
+
+    def upload_subtitle(self, srt_path, srt_filename, xml_sidecar):
+        """Upload a subtitle file directly to MediaHaven via the API.
+
+        Posts the SRT file with the XML sidecar metadata to create
+        a new record in MediaHaven.
+        """
+        try:
+            logger.info(
+                'uploading subtitle via API',
+                data={'srt_filename': srt_filename}
+            )
+            with open(srt_path, 'rb') as srt_file:
+                files = {
+                    "file": (srt_filename, srt_file, "application/x-subrip"),
+                    "metadata": ("metadata", xml_sidecar, "application/xml"),
+                }
+                response = self.client.records.mh_client._post(
+                    self.client.records._construct_path(),
+                    files=files,
+                    autoPublish="true",
+                    ignoreDuplicates="true",
+                )
+            logger.info(
+                'subtitle API upload response',
+                data={'srt_filename': srt_filename, 'response': str(response)}
+            )
+            return {'status': True, 'response': response, 'errors': []}
+        except MediaHavenException as me:
+            logger.error(
+                'subtitle API upload failed',
+                data={'srt_filename': srt_filename, 'error': str(me)}
+            )
+            return {'status': False, 'errors': [str(me)]}
+
     def update_metadata(self, department, fragment_id, external_id, xml_sidecar):
         try:
             logger.info("syncing metadata to mediahaven...")

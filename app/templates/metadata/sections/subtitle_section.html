@@ -43,6 +43,7 @@
 			</div>
 		</div>
 	</div>
+	<input type="hidden" name="replace_subtitle" id="replace_subtitle_field" value=""/>
 	<div class="columns">
 		<div class="column">
 			{% if not subtitle_synced %}
@@ -50,8 +51,7 @@
 					Je kan de ondertitel bekijken op de bovenstaande videoplayer
 				</div>
 			{% endif %}
-			{% if has_existing_subtitle %}
-				<div class="columns">
+			<div class="columns" id="subtitle_existing_warning" style="display:none;">
 					<div class="column">
 						<div class="notification is-warning is-light">
 							<strong>Let op:</strong> er bestaat al een ondertitelbestand voor dit item.
@@ -59,7 +59,6 @@
 						</div>
 					</div>
 				</div>
-			{% endif %}
 			{% if subtitle_files|length > 0 %}
 				<div class="field">
 					<label class="label">Bestaande ondertitelbestanden</label>
@@ -83,3 +82,58 @@
 		</div>
 	</div>
 </div>
+
+<!-- Replace subtitle confirmation modal -->
+<div class="modal" id="replace_subtitle_modal">
+	<div class="modal-background"></div>
+	<div class="modal-card">
+		<header class="modal-card-head">
+			<p class="modal-card-title">Ondertitelbestand bestaat al</p>
+			<button class="delete" aria-label="close" onclick="closeReplaceSubtitleModal()"></button>
+		</header>
+		<section class="modal-card-body">
+			<p>Er bestaat al een ondertitelbestand van dit type voor deze video. Wil je het vervangen?</p>
+		</section>
+		<footer class="modal-card-foot">
+			<button class="button is-warning" id="replace_subtitle_confirm_btn" onclick="confirmReplaceSubtitle()">Vervangen</button>
+			<button class="button" onclick="closeReplaceSubtitleModal()">Annuleren</button>
+		</footer>
+	</div>
+</div>
+
+<script>
+var existingSubtitleTypes = {{ existing_subtitle_types | default([]) | tojson }};
+
+function subtitleTypeMatchesExisting() {
+	var subtitleType = document.getElementById('subtitle_type').value;
+	return existingSubtitleTypes.indexOf(subtitleType) !== -1;
+}
+
+function updateSubtitleExistingWarning() {
+	var warning = document.getElementById('subtitle_existing_warning');
+	if (warning) {
+		warning.style.display = subtitleTypeMatchesExisting() ? '' : 'none';
+	}
+}
+
+function subtitleNeedsReplacement() {
+	var fileInput = document.getElementById('subtitle_file_input');
+	if (!fileInput || !fileInput.value) return false;
+	return subtitleTypeMatchesExisting();
+}
+
+document.getElementById('subtitle_type').addEventListener('change', updateSubtitleExistingWarning);
+updateSubtitleExistingWarning();
+
+function closeReplaceSubtitleModal() {
+	document.getElementById('replace_subtitle_modal').classList.remove('is-active');
+}
+
+function confirmReplaceSubtitle() {
+	document.getElementById('replace_subtitle_field').value = 'confirm';
+	closeReplaceSubtitleModal();
+	var btn = document.getElementById('metadata_submit_btn');
+	btn.classList.add('is-loading');
+	btn.form.submit();
+}
+</script>

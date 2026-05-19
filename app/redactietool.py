@@ -33,7 +33,6 @@ from app.config import flask_environment
 from app.debug_login import legacy_login, legacy_login_submit
 from app.saml import saml_login
 from app.services.elastic_api import ElasticApi
-from app.services.ftp_uploader import FtpUploader
 from app.services.mediahaven_api import MediahavenApi
 from app.services.meta_mapping import MetaMapping
 from app.services.subtitle_files import (delete_files, get_vtt_subtitles,
@@ -252,10 +251,17 @@ def edit_metadata():
     # Fetch existing subtitle files from MediaHaven
     all_subs = mh_api.get_subtitles(department, pid)
     subtitle_files = []
+    existing_subtitle_types = []
     for sub in all_subs:
-        subtitle_files.append(sub.get('Descriptive', {}).get('OriginalFilename', ''))
+        filename = sub.get('Descriptive', {}).get('OriginalFilename', '')
+        subtitle_files.append(filename)
+        if '_open.' in filename:
+            existing_subtitle_types.append('open')
+        if '_closed.' in filename:
+            existing_subtitle_types.append('closed')
     template_vars['subtitle_files'] = subtitle_files
     template_vars['has_existing_subtitle'] = len(subtitle_files) > 0
+    template_vars['existing_subtitle_types'] = existing_subtitle_types
 
     return render_template(
         'metadata/edit.html',
@@ -296,6 +302,7 @@ def save_item_metadata():
         template_vars['mh_errors'] = response['errors']
 
     # Phase 2 — Subtitle handling
+    replace_subtitle = request.form.get('replace_subtitle') == 'confirm'
     logger.info(
         'subtitle upload check',
         data={
@@ -303,37 +310,58 @@ def save_item_metadata():
             'mh_synced': template_vars.get('mh_synced'),
             'has_subtitle_file': has_subtitle_file,
             'subtitle_validation_error': subtitle_validation_error,
+            'replace_subtitle': replace_subtitle,
         }
     )
     if template_vars['mh_synced']:
         if has_subtitle_file and not subtitle_validation_error:
-            # Upload subtitle via FTP
+            # Upload subtitle directly via MediaHaven API
             try:
                 tp = {
                     'pid': pid,
                     'department': department,
                     'subtitle_type': subtitle_type,
                 }
-                tp['srt_file'], tp['vtt_file'] = save_subtitles(
-                    upload_folder(), pid, uploaded_file)
-                if tp['srt_file']:
-                    tp['srt_file'] = move_subtitle(upload_folder(), tp)
-                    tp['xml_file'], _ = save_sidecar_xml(
-                        upload_folder(), mam_data, tp)
-                    ftp_uploader = FtpUploader()
-                    ftp_response = ftp_uploader.upload_subtitles(
-                        upload_folder(), mam_data, tp)
-                    logger.info(
-                        'subtitle FTP upload response',
-                        data={'pid': pid, 'ftp_response': ftp_response}
-                    )
-                    delete_files(upload_folder(), tp)
-                    if 'ftp_error' in ftp_response:
-                        template_vars['subtitle_error'] = ftp_response['ftp_error']
+
+                # If replacing, delete existing subtitle record from MH first
+                if replace_subtitle:
+                    existing_sub = mh_api.get_subtitle(department, pid, subtitle_type)
+                    if existing_sub:
+                        sub_fragment_id = existing_sub.get(
+                            'Internal', {}).get('FragmentId')
+                        if sub_fragment_id:
+                            del_response = mh_api.delete_subtitle(
+                                sub_fragment_id,
+                                reason=f"Replacing subtitle for {pid}"
+                            )
+                            if not del_response['status']:
+                                template_vars['subtitle_error'] = (
+                                    'Fout bij verwijderen bestaand ondertitelbestand: '
+                                    + ', '.join(del_response['errors'])
+                                )
+
+                if not template_vars.get('subtitle_error'):
+                    tp['srt_file'], tp['vtt_file'] = save_subtitles(
+                        upload_folder(), pid, uploaded_file)
+                    if tp['srt_file']:
+                        tp['srt_file'] = move_subtitle(upload_folder(), tp)
+                        tp['xml_file'], xml_sidecar_data = save_sidecar_xml(
+                            upload_folder(), mam_data, tp)
+
+                        srt_path = os.path.join(upload_folder(), tp['srt_file'])
+                        api_response = mh_api.upload_subtitle(
+                            srt_path, tp['srt_file'], xml_sidecar_data)
+
+                        delete_files(upload_folder(), tp)
+                        if not api_response['status']:
+                            template_vars['subtitle_error'] = (
+                                'Fout bij uploaden ondertitel: '
+                                + ', '.join(api_response['errors'])
+                            )
+                        else:
+                            template_vars['subtitle_synced'] = True
                     else:
-                        template_vars['subtitle_synced'] = True
-                else:
-                    template_vars['subtitle_error'] = 'Ondertitels moeten in SRT formaat'
+                        template_vars['subtitle_error'] = 'Ondertitels moeten in SRT formaat'
             except Exception as e:
                 logger.exception('subtitle upload failed', data={'pid': pid, 'error': str(e)})
                 template_vars['subtitle_error'] = str(e)
@@ -344,10 +372,17 @@ def save_item_metadata():
     # Re-fetch subtitle info for the template
     all_subs = mh_api.get_subtitles(department, pid)
     subtitle_files = []
+    existing_subtitle_types = []
     for sub in all_subs:
-        subtitle_files.append(sub.get('Descriptive', {}).get('OriginalFilename', ''))
+        filename = sub.get('Descriptive', {}).get('OriginalFilename', '')
+        subtitle_files.append(filename)
+        if '_open.' in filename:
+            existing_subtitle_types.append('open')
+        if '_closed.' in filename:
+            existing_subtitle_types.append('closed')
     template_vars['subtitle_files'] = subtitle_files
     template_vars['has_existing_subtitle'] = len(subtitle_files) > 0
+    template_vars['existing_subtitle_types'] = existing_subtitle_types
 
     # Re-fetch speechmatics data so the AI section stays populated after save
     jobs_service = JobsService()

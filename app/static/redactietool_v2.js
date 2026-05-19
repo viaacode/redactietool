@@ -433,6 +433,17 @@ function checkMetadataSaved(event) {
 function metadataSubmit(btn){
   edited = get_id("metadata_form_edited");
   edited.value = "false";
+
+  // Check if subtitle replacement confirmation is needed
+  if (typeof subtitleNeedsReplacement === 'function' && subtitleNeedsReplacement()) {
+    var replaceField = document.getElementById('replace_subtitle_field');
+    if (replaceField && replaceField.value !== 'confirm') {
+      btn.classList.remove('is-loading');
+      document.getElementById('replace_subtitle_modal').classList.add('is-active');
+      return;
+    }
+  }
+
   btn.classList.add('is-loading');
   btn.form.submit();
 }
