@@ -248,6 +248,19 @@ def edit_metadata():
     mm = MetaMapping()
     template_vars = mm.mh_to_form(pid, department, mam_data, speechmatics_data, errors)
 
+    # Restore POST result state passed via session (PRG pattern)
+    post_result = session.pop('post_result', {})
+    if post_result.get('mh_synced') is not None:
+        template_vars['mh_synced'] = post_result['mh_synced']
+    if post_result.get('mh_errors'):
+        template_vars['mh_errors'] = post_result['mh_errors']
+    if post_result.get('subtitle_synced'):
+        template_vars['subtitle_synced'] = True
+    if post_result.get('subtitle_synced_filename'):
+        template_vars['subtitle_synced_filename'] = post_result['subtitle_synced_filename']
+    if post_result.get('subtitle_error'):
+        template_vars['subtitle_error'] = post_result['subtitle_error']
+
     # Fetch existing subtitle files from MediaHaven
     all_subs = mh_api.get_subtitles(department, pid)
     subtitle_files = []
@@ -414,10 +427,15 @@ def save_item_metadata():
     template_vars['sm_job_summary'] = speechmatics_data.get('summary') if speechmatics_data else None
     template_vars['sm_job_chapters'] = json.loads(speechmatics_data['chapters']) if speechmatics_data and isinstance(speechmatics_data.get('chapters'), str) else (speechmatics_data.get('chapters') if speechmatics_data else None)
 
-    return render_template(
-        'metadata/edit.html',
-        **template_vars
-    )
+    session['post_result'] = {
+        'mh_synced': template_vars.get('mh_synced'),
+        'mh_errors': template_vars.get('mh_errors'),
+        'subtitle_synced': template_vars.get('subtitle_synced'),
+        'subtitle_synced_filename': template_vars.get('subtitle_synced_filename'),
+        'subtitle_error': template_vars.get('subtitle_error'),
+    }
+
+    return redirect(url_for('edit_metadata', pid=pid, department=department))
 
 
 @app.route('/delete_subtitle', methods=['POST'])
