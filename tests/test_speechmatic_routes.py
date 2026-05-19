@@ -54,15 +54,19 @@ class TestGenerateTranscript:
             res = self._post(auth_client, {'pid': 'abc', 'department': 'vrt'})
         assert res.status_code == HTTPStatus.CONFLICT
 
-    def test_completed_job_returns_409(self, auth_client):
+    def test_completed_job_allows_reanalysis(self, auth_client):
         mam_data = {'Internal': {'PathToVideo': 'https://media.example.com/vid.mp4'}}
         done_job = {'id': 1, 'status': 'done', 'processed_at': '2026-01-01', 'speechmatic_job_id': 'sm-1'}
         with patch('app.redactietool.MediahavenApi') as MockMH, \
-             patch('app.redactietool.JobsService') as MockJobs:
+             patch('app.redactietool.JobsService') as MockJobs, \
+             patch('app.redactietool.ConverterService') as MockConverter, \
+             patch('app.redactietool.SpeechmaticsApi') as MockSM:
             MockMH.return_value.find_item_by_pid.return_value = mam_data
             MockJobs.return_value.get_job.return_value = done_job
+            MockConverter.return_value.get_media_url.return_value = 'https://temp.example.com/vid.mp4'
+            MockSM.return_value.launch_job.return_value = 'sm-new'
             res = self._post(auth_client, {'pid': 'abc', 'department': 'vrt'})
-        assert res.status_code == HTTPStatus.CONFLICT
+        assert res.status_code == HTTPStatus.OK
 
     def test_no_video_url_in_mam_data_returns_404(self, auth_client):
         mam_data = {'Internal': {}}
