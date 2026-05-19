@@ -178,7 +178,9 @@ def post_media():
 
 
 def upload_folder():
-    return os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+    path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+    os.makedirs(path, exist_ok=True)
+    return path
 
 
 # for subtitles files we need to switch of caching so we get the latest content
