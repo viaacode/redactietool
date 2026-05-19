@@ -22,7 +22,7 @@ import datetime
 import json
 import os
 
-from flask import (Flask, Response, redirect, render_template, request,
+from flask import (Flask, Response, jsonify, redirect, render_template, request,
                    send_from_directory, session, url_for)
 from http import HTTPStatus
 from flask_login import LoginManager, login_required  # current_user
@@ -422,14 +422,14 @@ def save_item_metadata():
 @app.route('/delete_subtitle', methods=['POST'])
 @login_required
 def delete_subtitle():
-    fragment_id = request.form.get('fragment_id')
-    pid = request.form.get('pid')
-    department = request.form.get('department')
+    data = request.get_json()
+    fragment_id = data.get('fragment_id')
+    pid = data.get('pid')
 
     mh_api = MediahavenApi()
-    mh_api.delete_subtitle(fragment_id, reason=f"Deleted by editor for {pid}")
+    result = mh_api.delete_subtitle(fragment_id, reason=f"Deleted by editor for {pid}")
 
-    return redirect(f'/edit_metadata?pid={pid}&department={department}')
+    return jsonify(result)
 
 
 @app.route('/publicatie_status', methods=['GET'])
