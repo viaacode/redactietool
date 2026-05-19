@@ -254,7 +254,8 @@ def edit_metadata():
     existing_subtitle_types = []
     for sub in all_subs:
         filename = sub.get('Descriptive', {}).get('OriginalFilename', '')
-        subtitle_files.append(filename)
+        fragment_id = sub.get('Internal', {}).get('FragmentId', '')
+        subtitle_files.append({'filename': filename, 'fragment_id': fragment_id})
         if '_open.' in filename:
             existing_subtitle_types.append('open')
         if '_closed.' in filename:
@@ -267,6 +268,23 @@ def edit_metadata():
         'metadata/edit.html',
         **template_vars
     )
+
+
+def _subtitle_upload_error(errors):
+    """Return a human-readable subtitle upload error message.
+
+    Detects EDUPLICATE responses and surfaces the conflicting record ID.
+    """
+    error_str = errors[0] if errors else ''
+    if 'EDUPLICATE' in error_str:
+        try:
+            error_data = json.loads(error_str)
+            record_ids = error_data.get('ExistingRecordIds', [])
+            record_id = record_ids[0] if record_ids else '(onbekend)'
+            return f'Dit ondertitel bestand is reeds in gebruik voor Record: {record_id}'
+        except Exception:
+            pass
+    return 'Fout bij uploaden ondertitel: ' + error_str
 
 
 @app.route('/edit_metadata', methods=['POST'])
@@ -354,10 +372,8 @@ def save_item_metadata():
 
                         delete_files(upload_folder(), tp)
                         if not api_response['status']:
-                            template_vars['subtitle_error'] = (
-                                'Fout bij uploaden ondertitel: '
-                                + ', '.join(api_response['errors'])
-                            )
+                            template_vars['subtitle_error'] = _subtitle_upload_error(
+                                api_response['errors'])
                         else:
                             template_vars['subtitle_synced'] = True
                     else:
@@ -375,7 +391,8 @@ def save_item_metadata():
     existing_subtitle_types = []
     for sub in all_subs:
         filename = sub.get('Descriptive', {}).get('OriginalFilename', '')
-        subtitle_files.append(filename)
+        fragment_id = sub.get('Internal', {}).get('FragmentId', '')
+        subtitle_files.append({'filename': filename, 'fragment_id': fragment_id})
         if '_open.' in filename:
             existing_subtitle_types.append('open')
         if '_closed.' in filename:
@@ -400,6 +417,19 @@ def save_item_metadata():
         'metadata/edit.html',
         **template_vars
     )
+
+
+@app.route('/delete_subtitle', methods=['POST'])
+@login_required
+def delete_subtitle():
+    fragment_id = request.form.get('fragment_id')
+    pid = request.form.get('pid')
+    department = request.form.get('department')
+
+    mh_api = MediahavenApi()
+    mh_api.delete_subtitle(fragment_id, reason=f"Deleted by editor for {pid}")
+
+    return redirect(f'/edit_metadata?pid={pid}&department={department}')
 
 
 @app.route('/publicatie_status', methods=['GET'])
