@@ -143,14 +143,14 @@ class SpeechmaticsApi:
 		  - chapters:      list of {title, summary, start_time, end_time}
 		"""
 		transcription = SpeechmaticsApi.build_transcript(raw.get("results") or []) \
-			or "Speechmatics reply didn't contain a transcription. Please try again."
+			or "Het antwoord van Speechmatics bevatte geen transcritpie. Gelieve opnieuw te proberen."
 
 		summary = (raw.get("summary") or {}).get("content") \
-			or "Speechmatics reply didn't contain a summary. Please try again."
+			or "Het antwoord van Speechmatics bevatte geen samenvatting. Gelieve opnieuw te proberen."
 
 		chapters = [
 			{
-				"title": ch.get("title") or "Speechmatics reply didn't contain any chapters. Please try again.",
+				"title": ch.get("title") or "Het antwoord van Speechmatics bevatte geen hoofdstukken. Gelieve opnieuw te proberen.",
 				"summary": ch.get("summary") or "",
 				"start_time": ch.get("start_time"),
 				"end_time": ch.get("end_time"),
