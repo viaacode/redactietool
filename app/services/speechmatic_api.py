@@ -21,8 +21,12 @@ logger = logging.get_logger(__name__, config=config)
 class SpeechmaticsApi:
 
 	def __init__(self):
+		self.base_url = os.environ.get('SPEECHMATIC_BASE_URL', '')
+		if not self.base_url:
+			raise ValueError("SPEECHMATIC_BASE_URL environment variable is not set")
 		self.api_key = os.environ.get('SPEECHMATIC_API_KEY', '')
-		self.base_url = os.environ.get('SPEECHMATIC_BASE_URL', 'https://eu1.asr.api.speechmatics.com')
+		if not self.api_key:
+			raise ValueError("SPEECHMATIC_API_KEY environment variable is not set")
 		
 	def _headers(self) -> dict:
 		return {"Authorization": f"Bearer {self.api_key}"}
@@ -54,7 +58,7 @@ class SpeechmaticsApi:
 			"auto_chapters_config": {}
 		}
 		try:
-			logger.info(f"Submitting transcription job for audio file: {audio_path} with language: {language}")
+			logger.info(f"Submitting transcription job for media file: {audio_path} with language: {language}: {json.dumps(config)}")
 			response = requests.post(
 				f"{self.base_url}/v2/jobs",
 				headers=self._headers(),
@@ -69,7 +73,7 @@ class SpeechmaticsApi:
 
 	def get_job_status(self, job_id: str) -> str:
 		"""Return the current status string of the transcription job *job_id*."""
-		if(job_id is None):
+		if (job_id is None):
 			logger.error("Job ID is required to fetch job result")
 			raise ValueError("Job ID is required to fetch job result")
 		try:
@@ -77,8 +81,9 @@ class SpeechmaticsApi:
 				f"{self.base_url}/v2/jobs/{job_id}",
 				headers=self._headers(),
 			)
-			logger.info(f"Fetched job status from Speechmatics for job {job_id}")
+			logger.info(f"Fetched job status from Speechmatics for job {job_id}...")
 			responseData = response.json()
+			logger.info(f"Fetched job status from Speechmatics for job {job_id}...{json.dumps(responseData)}")
 			return responseData["job"]["status"]
 		except requests.HTTPError as e:
 			logger.exception(f"Error fetching job status for job {job_id}: {e.response.text}")

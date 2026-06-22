@@ -80,14 +80,6 @@ class MediahavenApi:
     def get_subtitles(self, department, pid):
         matched_subs = self.client.records.search(
             q=f"+(dc_relationsis_verwant_aan:{pid})")
-        logger.info(
-            'get_subtitles query result',
-            data={
-                'pid': pid,
-                'department': department,
-                'total_nr_of_results': matched_subs.total_nr_of_results,
-            }
-        )
         if not matched_subs.total_nr_of_results:
             return []
 
