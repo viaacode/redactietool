@@ -142,18 +142,20 @@ class SpeechmaticsApi:
 		  - summary:       bullet-point summary string
 		  - chapters:      list of {title, summary, start_time, end_time}
 		"""
-		transcription = SpeechmaticsApi.build_transcript(raw.get("results", []))
+		transcription = SpeechmaticsApi.build_transcript(raw.get("results") or []) \
+			or "Speechmatics reply didn't contain a transcription. Please try again."
 
-		summary = raw.get("summary", {}).get("content", "")
+		summary = (raw.get("summary") or {}).get("content") \
+			or "Speechmatics reply didn't contain a summary. Please try again."
 
 		chapters = [
 			{
-				"title": ch["title"],
-				"summary": ch["summary"],
-				"start_time": ch["start_time"],
-				"end_time": ch["end_time"],
+				"title": ch.get("title") or "Speechmatics reply didn't contain any chapters. Please try again.",
+				"summary": ch.get("summary") or "",
+				"start_time": ch.get("start_time"),
+				"end_time": ch.get("end_time"),
 			}
-			for ch in raw.get("chapters", [])
+			for ch in (raw.get("chapters") or [])
 		]
 
 		return {
