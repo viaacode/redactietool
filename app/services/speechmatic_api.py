@@ -140,14 +140,10 @@ class SpeechmaticsApi:
 		"""Parse a raw Speechmatics transcript response into structured fields.
 
 		Returns a dict with:
-		  - transcription: plain-text transcript
+		  - transcription: plain-text transcript with chapter timestamps interleaved
 		  - summary:       bullet-point summary string
 		  - chapters:      list of {title, summary, start_time, end_time}
 		"""
-		transcription = SpeechmaticsApi.build_transcript(raw.get("results", []))
-
-		summary = raw.get("summary", {}).get("content", "")
-
 		chapters = [
 			{
 				"title": ch["title"],
@@ -158,6 +154,10 @@ class SpeechmaticsApi:
 			for ch in raw.get("chapters", [])
 		]
 
+		transcription = SpeechmaticsApi.build_transcript(raw.get("results", []), chapters=chapters)
+
+		summary = raw.get("summary", {}).get("content", "")
+
 		return {
 			"transcription": transcription,
 			"summary": summary,
@@ -165,19 +165,39 @@ class SpeechmaticsApi:
 		}
 
 	@staticmethod
-	def build_transcript(events: list) -> str:
+	def build_transcript(events: list, chapters: list = None) -> str:
 		result_lines = []
-		
+
 		current_speaker = None
 		current_sentence = []
+		current_start_time = None
+
+		sorted_chapters = sorted(chapters or [], key=lambda c: c["start_time"])
+		next_chapter_idx = 0
+
+		def format_time(seconds: float) -> str:
+			total_seconds = int(seconds)
+			h = total_seconds // 3600
+			m = (total_seconds % 3600) // 60
+			s = total_seconds % 60
+			return f"{h:02d}:{m:02d}:{s:02d}"
 
 		def flush():
-			"""Flush current sentence into result_lines."""
-			nonlocal current_sentence, current_speaker
+			"""Flush current sentence into result_lines, inserting chapter timestamps as needed."""
+			nonlocal current_sentence, current_speaker, next_chapter_idx, current_start_time
 			if current_speaker and current_sentence:
 				sentence = "".join(current_sentence).strip()
+				# Insert any chapter timestamps whose boundary has been reached
+				while (next_chapter_idx < len(sorted_chapters) and
+						current_start_time is not None and
+						sorted_chapters[next_chapter_idx]["start_time"] <= current_start_time):
+					if result_lines:
+						result_lines.append("")
+					result_lines.append(format_time(sorted_chapters[next_chapter_idx]["start_time"]))
+					next_chapter_idx += 1
 				result_lines.append(f"{current_speaker}: {sentence}")
 			current_sentence = []
+			current_start_time = None
 
 		for event in events:
 			if not event.get("alternatives"):
@@ -196,6 +216,9 @@ class SpeechmaticsApi:
 				current_speaker = speaker
 
 			if event_type == "word":
+				# Capture start time of first word in the segment for chapter boundary checks
+				if current_start_time is None:
+					current_start_time = event.get("start_time")
 				# Add space before word if needed
 				if current_sentence:
 					current_sentence.append(" ")
