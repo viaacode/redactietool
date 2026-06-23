@@ -37,9 +37,13 @@ class TestHeaders:
         api = _make_api(monkeypatch, api_key='secret-key')
         assert api._headers() == {'Authorization': 'Bearer secret-key'}
 
-    def test_empty_key_gives_empty_bearer(self, monkeypatch):
-        api = _make_api(monkeypatch, api_key='')
-        assert api._headers() == {'Authorization': 'Bearer '}
+    def test_empty_key_raises_value_error(self, monkeypatch):
+        import pytest
+        monkeypatch.setenv('SPEECHMATIC_BASE_URL', 'https://eu1.asr.api.speechmatics.com')
+        monkeypatch.delenv('SPEECHMATIC_API_KEY', raising=False)
+        with pytest.raises(ValueError, match='SPEECHMATIC_API_KEY'):
+            from app.services.speechmatic_api import SpeechmaticsApi
+            SpeechmaticsApi()
 
 
 # ---------------------------------------------------------------------------

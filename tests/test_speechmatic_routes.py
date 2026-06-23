@@ -38,7 +38,8 @@ class TestGenerateTranscript:
 
     def test_pid_not_found_in_mediahaven_returns_404(self, auth_client):
         with patch('app.redactietool.MediahavenApi') as MockMH, \
-             patch('app.redactietool.JobsService') as MockJobs:
+             patch('app.redactietool.JobsService') as MockJobs, \
+             patch('app.redactietool.SpeechmaticsApi'):
             MockMH.return_value.find_item_by_pid.return_value = None
             MockJobs.return_value.get_job.return_value = None
             res = self._post(auth_client, {'pid': 'unknown', 'department': 'vrt'})
@@ -48,7 +49,8 @@ class TestGenerateTranscript:
         mam_data = {'Internal': {'PathToVideo': 'https://media.example.com/vid.mp4'}}
         pending_job = {'id': 1, 'status': 'running', 'processed_at': None, 'speechmatic_job_id': 'sm-1'}
         with patch('app.redactietool.MediahavenApi') as MockMH, \
-             patch('app.redactietool.JobsService') as MockJobs:
+             patch('app.redactietool.JobsService') as MockJobs, \
+             patch('app.redactietool.SpeechmaticsApi'):
             MockMH.return_value.find_item_by_pid.return_value = mam_data
             MockJobs.return_value.get_job.return_value = pending_job
             res = self._post(auth_client, {'pid': 'abc', 'department': 'vrt'})
@@ -71,7 +73,8 @@ class TestGenerateTranscript:
     def test_no_video_url_in_mam_data_returns_404(self, auth_client):
         mam_data = {'Internal': {}}
         with patch('app.redactietool.MediahavenApi') as MockMH, \
-             patch('app.redactietool.JobsService') as MockJobs:
+             patch('app.redactietool.JobsService') as MockJobs, \
+             patch('app.redactietool.SpeechmaticsApi'):
             MockMH.return_value.find_item_by_pid.return_value = mam_data
             MockJobs.return_value.get_job.return_value = None
             res = self._post(auth_client, {'pid': 'abc', 'department': 'vrt'})
@@ -81,7 +84,8 @@ class TestGenerateTranscript:
         mam_data = {'Internal': {'PathToVideo': 'https://media.example.com/vid.mp4'}}
         with patch('app.redactietool.MediahavenApi') as MockMH, \
              patch('app.redactietool.JobsService') as MockJobs, \
-             patch('app.redactietool.ConverterService') as MockConverter:
+             patch('app.redactietool.ConverterService') as MockConverter, \
+             patch('app.redactietool.SpeechmaticsApi'):
             MockMH.return_value.find_item_by_pid.return_value = mam_data
             MockJobs.return_value.get_job.return_value = None
             MockConverter.return_value.get_media_url.return_value = None
