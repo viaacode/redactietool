@@ -64,15 +64,17 @@ class SpeechmaticsApi:
 				headers=self._headers(),
 				files={"config": (None, json.dumps(config), "application/json")},
 			)
+			logger.info(f"Speechmatics launch_job response: status={response.status_code} body={response.text}")
+			response.raise_for_status()
 			job_id = response.json()["id"]
-			logger.info(f"Received response from Speechmatics, job {job_id}")
+			logger.info(f"Speechmatics job created: {job_id}")
 			return job_id
 		except requests.HTTPError as e:
-			logger.exception(f"Error launching transcription job for audio {audio_path}: {e.response.text}")
+			logger.exception(f"Error launching transcription job for audio {audio_path}: status={e.response.status_code} body={e.response.text}")
 			raise
 
-	def get_job_status(self, job_id: str) -> str:
-		"""Return the current status string of the transcription job *job_id*."""
+	def get_job_status(self, job_id: str) -> tuple[str, list]:
+		"""Return (status, errors) for the transcription job *job_id*."""
 		if (job_id is None):
 			logger.error("Job ID is required to fetch job result")
 			raise ValueError("Job ID is required to fetch job result")
@@ -81,12 +83,14 @@ class SpeechmaticsApi:
 				f"{self.base_url}/v2/jobs/{job_id}",
 				headers=self._headers(),
 			)
-			logger.info(f"Fetched job status from Speechmatics for job {job_id}...")
+			logger.info(f"Speechmatics get_job_status response: job={job_id} status={response.status_code} body={response.text}")
+			response.raise_for_status()
 			responseData = response.json()
-			logger.info(f"Fetched job status from Speechmatics for job {job_id}...{json.dumps(responseData)}")
-			return responseData["job"]["status"]
+			job = responseData["job"]
+			errors = [e.get("message", "") for e in job.get("errors", [])]
+			return job["status"], errors
 		except requests.HTTPError as e:
-			logger.exception(f"Error fetching job status for job {job_id}: {e.response.text}")
+			logger.exception(f"Error fetching job status for job {job_id}: status={e.response.status_code} body={e.response.text}")
 			raise
 
 	def get_job_result(self, job_id: str) -> dict:
@@ -99,12 +103,14 @@ class SpeechmaticsApi:
 				f"{self.base_url}/v2/jobs/{job_id}/transcript",
 				headers=self._headers(),
 			)
+			logger.info(f"Speechmatics get_job_result response: job={job_id} status={response.status_code}")
 			response.raise_for_status()
-			logger.info(f"Successfully fetched job result from Speechmatics for job {job_id}")
-			return response.json()
+			response_json = response.json()
+			logger.info(f"Successfully fetched job result from Speechmatics for job {job_id}: {json.dumps(response_json)}")
+			return response_json
 		except requests.HTTPError as e:
 			error_body = e.response.text if e.response is not None else str(e)
-			logger.exception(f"Error fetching job result for job {job_id}: {error_body}")
+			logger.exception(f"Error fetching job result for job {job_id}: status={e.response.status_code if e.response is not None else 'N/A'} body={error_body}")
 			raise
 
 	def list_jobs(self) -> list:
@@ -138,7 +144,7 @@ class SpeechmaticsApi:
 		"""Parse a raw Speechmatics transcript response into structured fields.
 
 		Returns a dict with:
-		  - transcription: plain-text transcript
+		  - transcription: plain-text transcript with chapter timestamps interleaved
 		  - summary:       bullet-point summary string
 		  - chapters:      list of {title, summary, start_time, end_time}
 		"""
@@ -158,6 +164,10 @@ class SpeechmaticsApi:
 			for ch in (raw.get("chapters") or [])
 		]
 
+		transcription = SpeechmaticsApi.build_transcript(raw.get("results", []), chapters=chapters)
+
+		summary = raw.get("summary", {}).get("content", "")
+
 		return {
 			"transcription": transcription,
 			"summary": summary,
@@ -165,19 +175,39 @@ class SpeechmaticsApi:
 		}
 
 	@staticmethod
-	def build_transcript(events: list) -> str:
+	def build_transcript(events: list, chapters: list = None) -> str:
 		result_lines = []
-		
+
 		current_speaker = None
 		current_sentence = []
+		current_start_time = None
+
+		sorted_chapters = sorted(chapters or [], key=lambda c: c["start_time"])
+		next_chapter_idx = 0
+
+		def format_time(seconds: float) -> str:
+			total_seconds = int(seconds)
+			h = total_seconds // 3600
+			m = (total_seconds % 3600) // 60
+			s = total_seconds % 60
+			return f"{h:02d}:{m:02d}:{s:02d}"
 
 		def flush():
-			"""Flush current sentence into result_lines."""
-			nonlocal current_sentence, current_speaker
+			"""Flush current sentence into result_lines, inserting chapter timestamps as needed."""
+			nonlocal current_sentence, current_speaker, next_chapter_idx, current_start_time
 			if current_speaker and current_sentence:
 				sentence = "".join(current_sentence).strip()
+				# Insert any chapter timestamps whose boundary has been reached
+				while (next_chapter_idx < len(sorted_chapters) and
+						current_start_time is not None and
+						sorted_chapters[next_chapter_idx]["start_time"] <= current_start_time):
+					if result_lines:
+						result_lines.append("")
+					result_lines.append(format_time(sorted_chapters[next_chapter_idx]["start_time"]))
+					next_chapter_idx += 1
 				result_lines.append(f"{current_speaker}: {sentence}")
 			current_sentence = []
+			current_start_time = None
 
 		for event in events:
 			if not event.get("alternatives"):
@@ -196,6 +226,9 @@ class SpeechmaticsApi:
 				current_speaker = speaker
 
 			if event_type == "word":
+				# Capture start time of first word in the segment for chapter boundary checks
+				if current_start_time is None:
+					current_start_time = event.get("start_time")
 				# Add space before word if needed
 				if current_sentence:
 					current_sentence.append(" ")

@@ -110,7 +110,7 @@ class JobsService:
         department, pid, processed_at, speechmatic_job_id, transcription, summary.
         """
         allowed = {'department', 'pid', 'processed_at', 'speechmatic_job_id',
-                   'transcription', 'summary', 'chapters', 'status'}
+                   'transcription', 'summary', 'chapters', 'status', 'errors'}
         updates = {k: v for k, v in fields.items() if k in allowed}
         if not updates:
             return self.get_job_by_id(job_id)

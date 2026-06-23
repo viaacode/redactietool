@@ -160,6 +160,7 @@ class MetaMapping:
             'validation_errors': errors,
             # speechmatics data
             'sm_job_status': sm_data.get('status') if sm_data else None,
+            'sm_job_errors': sm_data.get('errors') if sm_data else None,
             'sm_job_transcription': sm_data.get('transcription') if sm_data else None,
             'sm_job_summary': sm_data.get('summary') if sm_data else None,
             'sm_job_chapters': json.loads(sm_data['chapters']) if sm_data and isinstance(sm_data.get('chapters'), str) else (sm_data.get('chapters') if sm_data else None),

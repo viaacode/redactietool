@@ -39,10 +39,11 @@ def fetch_pending_results():
         job_id = job['id']
         speechmatic_job_id = job['speechmatic_job_id']
         try:
-            remote_status = speechmatics_api.get_job_status(speechmatic_job_id)
+            remote_status, remote_errors = speechmatics_api.get_job_status(speechmatic_job_id)
             if remote_status != job['status']:
-                jobs_service.update_job_status(job_id, remote_status)
-                logger.info('cron: updated job status', data={'job_id': job_id, 'status': remote_status})
+                error_text = ' '.join(remote_errors) if remote_errors else None
+                jobs_service.update_job(job_id, status=remote_status, errors=error_text)
+                logger.info('cron: updated job status', data={'job_id': job_id, 'status': remote_status, 'errors': remote_errors})
         except Exception as ex:
             logger.error('cron: failed to fetch status', data={'job_id': job_id, 'error': str(ex)})
 
