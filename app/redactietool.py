@@ -425,6 +425,7 @@ def save_item_metadata():
         logger.error('save_item_metadata: failed to fetch job data', data={'pid': pid, 'error': str(ex)})
         speechmatics_data = None
     template_vars['sm_job_status'] = speechmatics_data.get('status') if speechmatics_data else None
+    template_vars['sm_job_errors'] = speechmatics_data.get('errors') if speechmatics_data else None
     template_vars['sm_job_transcription'] = speechmatics_data.get('transcription') if speechmatics_data else None
     template_vars['sm_job_summary'] = speechmatics_data.get('summary') if speechmatics_data else None
     template_vars['sm_job_chapters'] = json.loads(speechmatics_data['chapters']) if speechmatics_data and isinstance(speechmatics_data.get('chapters'), str) else (speechmatics_data.get('chapters') if speechmatics_data else None)
@@ -564,7 +565,7 @@ def generate_transcript():
             }, HTTPStatus.NOT_FOUND
         
         job = jobs_service.get_job(department, pid)
-        if job and job["processed_at"] is None:
+        if job and job["status"] in ('created', 'running'):
             return {
                 'error': f'Job already exists for pid: {pid} with status: {job["status"]}, but not processed yet'
             }, HTTPStatus.CONFLICT
@@ -589,7 +590,7 @@ def generate_transcript():
             jobs_service.create_job(department, pid, job_id)
         else:
             logger.info(f"Job already exists for pid: {pid}, updating with new job_id: {job_id} and resetting status")
-            jobs_service.update_job(job["id"], speechmatic_job_id=job_id)
+            jobs_service.update_job(job["id"], speechmatic_job_id=job_id, status='created', processed_at=None)
         return {
             'department': department,
             'pid': pid,
@@ -614,14 +615,33 @@ def transcription_status(department, pid):
                 'status': 'not found'
             }, HTTPStatus.NOT_FOUND
         if (job["processed_at"] is not None):
-            status = job["status"] 
+            status = job["status"]
+            errors = []
         else:
-            status = speechmatics_api.get_job_status(job["speechmatic_job_id"])
-            jobs_service.update_job_status(job["id"], status)
+            status, errors = speechmatics_api.get_job_status(job["speechmatic_job_id"])
+            error_text = ' '.join(errors) if errors else None
+            jobs_service.update_job(job["id"], status=status, errors=error_text)
+
+            if status == 'done':
+                logger.info('transcription_status: job done, fetching result immediately', data={'job_id': job["id"]})
+                try:
+                    result = speechmatics_api.get_job_result(job["speechmatic_job_id"])
+                    processed_result = speechmatics_api.parse_result(result)
+                    jobs_service.mark_processed(
+                        job_id=job["id"],
+                        transcription=processed_result.get('transcription'),
+                        summary=processed_result.get('summary'),
+                        chapters=json.dumps(processed_result.get('chapters')),
+                        status='done',
+                    )
+                    logger.info('transcription_status: result stored', data={'job_id': job["id"]})
+                except Exception as result_ex:
+                    logger.exception('transcription_status: failed to fetch/store result', data={'job_id': job["id"], 'error': str(result_ex)})
 
         return {
             'job_id': job["id"],
-            'status': status
+            'status': status,
+            'errors': errors,
         }, HTTPStatus.OK
     except Exception as ex:
         logger.exception(

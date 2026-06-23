@@ -122,6 +122,22 @@ class TestGenerateTranscript:
             res = self._post(auth_client, {'pid': 'abc', 'department': 'vrt'})
         assert res.status_code == HTTPStatus.OK
 
+    def test_rejected_job_with_no_processed_at_allows_restart(self, auth_client):
+        """A rejected job (processed_at=None) must not block a new submission."""
+        mam_data = {'Internal': {'PathToVideo': 'https://media.example.com/video.mp4'}}
+        rejected_job = {'id': 1, 'status': 'rejected', 'processed_at': None, 'speechmatic_job_id': 'old-sm'}
+        with patch('app.redactietool.MediahavenApi') as MockMH, \
+             patch('app.redactietool.JobsService') as MockJobs, \
+             patch('app.redactietool.ConverterService') as MockConverter, \
+             patch('app.redactietool.SpeechmaticsApi') as MockSM:
+            MockMH.return_value.find_item_by_pid.return_value = mam_data
+            MockJobs.return_value.get_job.return_value = rejected_job
+            MockConverter.return_value.get_media_url.return_value = 'https://media.example.com/video.mp4?token=tok'
+            MockSM.return_value.launch_job.return_value = 'new-sm-id'
+            MockJobs.return_value.update_job.return_value = {**rejected_job, 'speechmatic_job_id': 'new-sm-id', 'status': 'created'}
+            res = self._post(auth_client, {'pid': 'abc', 'department': 'vrt'})
+        assert res.status_code == HTTPStatus.OK
+
 
 # ---------------------------------------------------------------------------
 # GET /<department>/<pid>/speechmatic/status
@@ -158,7 +174,7 @@ class TestTranscriptionStatus:
         with patch('app.redactietool.JobsService') as MockJobs, \
              patch('app.redactietool.SpeechmaticsApi') as MockSM:
             MockJobs.return_value.get_job.return_value = job
-            MockSM.return_value.get_job_status.return_value = 'running'
+            MockSM.return_value.get_job_status.return_value = ('running', [])
             res = auth_client.get(self._url())
         assert res.status_code == HTTPStatus.OK
         data = res.get_json()
@@ -169,7 +185,7 @@ class TestTranscriptionStatus:
         with patch('app.redactietool.JobsService') as MockJobs, \
              patch('app.redactietool.SpeechmaticsApi') as MockSM:
             MockJobs.return_value.get_job.return_value = job
-            MockSM.return_value.get_job_status.return_value = 'done'
+            MockSM.return_value.get_job_status.return_value = ('done', [])
             auth_client.get(self._url())
         MockJobs.return_value.update_job_status.assert_called_once_with(1, 'done')
 

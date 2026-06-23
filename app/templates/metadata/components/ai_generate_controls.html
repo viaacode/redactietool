@@ -25,15 +25,6 @@
   </div>
 </div>
 
-{% if sm_job_status in ['rejected', 'deleted'] %}
-<div class="notification is-danger is-light mt-2" id="ai_status_error">
-  De vorige aanvraag voor AI inhoud is mislukt. Je kan een nieuwe aanvraag indienen.
-</div>
-{% else %}
-<div class="notification is-danger is-light mt-2" id="ai_status_error" style="display:none;"></div>
-{% endif %}
-
-
 <script>
   (function () {
     var btn = document.getElementById('request_ai_content_btn');
@@ -72,16 +63,27 @@
       btn.disabled = false;
     }
 
-    function showError(message) {
+    function showError(message, details) {
       var el = document.getElementById('ai_status_error');
       if (!el) return;
       el.textContent = message;
+      if (details && details.length > 0) {
+        var small = document.createElement('small');
+        small.style.display = 'block';
+        small.style.marginTop = '0.25rem';
+        small.textContent = details.join(' ');
+        el.appendChild(small);
+      }
       el.style.display = '';
+      var sectionEl = document.getElementById('ai_section_status_error');
+      if (sectionEl) sectionEl.style.display = '';
     }
 
     function hideError() {
       var el = document.getElementById('ai_status_error');
       if (el) el.style.display = 'none';
+      var sectionEl = document.getElementById('ai_section_status_error');
+      if (sectionEl) sectionEl.style.display = 'none';
     }
 
     var pollingInterval = null;
@@ -105,9 +107,9 @@
               pollingInterval = null;
               setButtonReady();
               if (status === 'rejected' || status === 'deleted') {
-                showError('De aanvraag voor AI inhoud is mislukt. Je kan een nieuwe aanvraag indienen.');
+                showError('De aanvraag voor AI inhoud is mislukt. Je kan een nieuwe aanvraag indienen.', data.errors);
               } else if (status === 'expired') {
-                showError('De aanvraag voor AI inhoud is verlopen. Je kan een nieuwe aanvraag indienen.');
+                showError('De aanvraag voor AI inhoud is verlopen. Je kan een nieuwe aanvraag indienen.', data.errors);
               }
             }
           })
