@@ -81,7 +81,7 @@
     update_richtext(); 
   }
 
-  var turndownService = new TurndownService();
+  var turndownService = new TurndownService({ emDelimiter: '*' });
   var quill = new Quill('#redactietool-richtext-editor', {
     modules: {
       toolbar: [
