@@ -39,14 +39,14 @@ def save_subtitles(upload_folder, pid, uploaded_file):
             srt_path = os.path.join(upload_folder, srt_filename)
             uploaded_file.save(srt_path)
 
-            # convert <br> into newlines
-            fsrt = open(srt_path, 'rt')
+            # convert <br> into newlines; use utf-8-sig to handle UTF-8 BOM
+            fsrt = open(srt_path, 'rt', encoding='utf-8-sig')
             content = fsrt.read()
             content = content.replace('<br>', '\n')
             content = content.replace('<br/>', '\n')
             content = content.replace('<br />', '\n')
             fsrt.close()
-            fsrt = open(srt_path, 'wt')
+            fsrt = open(srt_path, 'wt', encoding='utf-8')
             fsrt.write(content)
             fsrt.close()
 

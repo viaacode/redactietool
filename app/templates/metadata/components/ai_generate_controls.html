@@ -20,7 +20,7 @@
             id="request_ai_content_btn"
             {% if sm_job_status == 'running' %}disabled{% endif %}>
       <ion-icon name="cloud-upload-outline" class="pr-2"></ion-icon>
-      AI inhoud opvragen
+      Metadata genereren
     </button>
   </div>
 </div>
@@ -160,7 +160,7 @@
       })
       .then(function (result) {
         if (result.ok) {
-          showAiToast('is-success', 'Aanvraag ingediend. De AI inhoud wordt verwerkt.');
+          showAiToast('is-success', 'De transcriptie, samenvatting en chapters worden gegenereerd.');
           updateBadge('running');
           startPolling();
         } else {

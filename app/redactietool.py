@@ -20,6 +20,7 @@
 #
 import datetime
 import json
+import logging as stdlib_logging
 import os
 
 from flask import (Flask, Response, jsonify, redirect, render_template, request,
@@ -50,6 +51,15 @@ from app.services.validation import (pid_error, validate_input,
 app = Flask(__name__)
 config = ConfigParser()
 logger = logging.get_logger(__name__, config=config)
+
+
+class _SuppressStaticAndHealthLogs(stdlib_logging.Filter):
+    def filter(self, record):
+        msg = record.getMessage()
+        return '/static/' not in msg and '/health/' not in msg
+
+
+stdlib_logging.getLogger('werkzeug').addFilter(_SuppressStaticAndHealthLogs())
 
 app.config.from_object(flask_environment())
 
