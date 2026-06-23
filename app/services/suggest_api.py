@@ -22,13 +22,11 @@ from app.services.suggest.Suggest import Suggest
 
 class SuggestApi:
 
-    SPARQL_ENDPOINT = os.environ.get(
-        "SPARQL_ENDPOINT", "http://sparql_test_endpoint")
-    USER = os.environ.get("SPARQL_USER", "test")
-    PASSWORD = os.environ.get("SPARQL_PASS", "test")
-    TOKEN = os.environ.get("SPARQL_TOKEN", "test")
-
     def __init__(self):
+        self.SPARQL_ENDPOINT = os.environ.get("SPARQL_ENDPOINT", "http://sparql_test_endpoint")
+        self.USER = os.environ.get("SPARQL_USER", "test")
+        self.PASSWORD = os.environ.get("SPARQL_PASS", "test")
+        self.TOKEN = os.environ.get("SPARQL_TOKEN", "test")
         self.suggest = Suggest(
             self.SPARQL_ENDPOINT, self.USER, self.PASSWORD, self.TOKEN
         )

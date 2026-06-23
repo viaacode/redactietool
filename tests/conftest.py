@@ -17,6 +17,17 @@ pytest_plugins = [
     #"sparql_endpoint_fixture.endpoint"
 ]
 
+
+@pytest.fixture(autouse=True)
+def test_env_defaults(monkeypatch):
+    """Pin env vars that vary between environments so tests are reproducible."""
+    monkeypatch.setenv('SPARQL_ENDPOINT', 'http://sparql_test_endpoint')
+    monkeypatch.setenv('SPARQL_USER', 'test')
+    monkeypatch.setenv('SPARQL_PASS', 'test')
+    monkeypatch.setenv('TESTBEELD_PERM_ID', 'config_testbeeld_uuid')
+    monkeypatch.setenv('ONDERWIJS_PERM_ID', 'config_onderwijs_uuid')
+    monkeypatch.setenv('ADMIN_PERM_ID', 'config_admin_uuid')
+
 @pytest.fixture(scope="function")
 def client():
     """Unauthenticated test client (default)."""

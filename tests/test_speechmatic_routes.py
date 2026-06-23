@@ -186,8 +186,9 @@ class TestTranscriptionStatus:
              patch('app.redactietool.SpeechmaticsApi') as MockSM:
             MockJobs.return_value.get_job.return_value = job
             MockSM.return_value.get_job_status.return_value = ('done', [])
+            MockSM.return_value.parse_result.return_value = {'transcription': 'text', 'summary': None, 'chapters': None}
             auth_client.get(self._url())
-        MockJobs.return_value.update_job_status.assert_called_once_with(1, 'done')
+            MockJobs.return_value.update_job.assert_called_once_with(1, status='done', errors=None)
 
 
 # ---------------------------------------------------------------------------
