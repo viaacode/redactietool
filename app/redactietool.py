@@ -622,6 +622,22 @@ def transcription_status(department, pid):
             error_text = ' '.join(errors) if errors else None
             jobs_service.update_job(job["id"], status=status, errors=error_text)
 
+            if status == 'done':
+                logger.info('transcription_status: job done, fetching result immediately', data={'job_id': job["id"]})
+                try:
+                    result = speechmatics_api.get_job_result(job["speechmatic_job_id"])
+                    processed_result = speechmatics_api.parse_result(result)
+                    jobs_service.mark_processed(
+                        job_id=job["id"],
+                        transcription=processed_result.get('transcription'),
+                        summary=processed_result.get('summary'),
+                        chapters=json.dumps(processed_result.get('chapters')),
+                        status='done',
+                    )
+                    logger.info('transcription_status: result stored', data={'job_id': job["id"]})
+                except Exception as result_ex:
+                    logger.exception('transcription_status: failed to fetch/store result', data={'job_id': job["id"], 'error': str(result_ex)})
+
         return {
             'job_id': job["id"],
             'status': status,
