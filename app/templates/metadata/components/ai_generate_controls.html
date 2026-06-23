@@ -51,6 +51,11 @@
       Object.values(statusBadgeClasses).forEach(function(cls) { badge.classList.remove(cls); });
       badge.classList.add(statusBadgeClasses[status] || 'is-light');
       badge.textContent = statusBadgeLabels[status] || status;
+
+      var noJobEl = document.getElementById('ai_no_job_notification');
+      var runningEl = document.getElementById('ai_running_notification');
+      if (noJobEl) noJobEl.style.display = (status === 'running') ? 'none' : '';
+      if (runningEl) runningEl.style.display = (status === 'running') ? '' : 'none';
     }
 
     function setButtonRunning() {
