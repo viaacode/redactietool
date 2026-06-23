@@ -119,12 +119,6 @@ class ConverterService:
             headers={'Accept': '*/*'},
             timeout=10,
         )
-        logger.info('converter: ticket response', data={
-            'status': response.status_code,
-            'url': response.url,
-            'content_type': response.headers.get('Content-Type', ''),
-            'body': response.text[:500],
-        })
         if not response.ok:
             logger.error('converter: ticket service error', data={
                 'status': response.status_code,
@@ -133,7 +127,6 @@ class ConverterService:
             })
         response.raise_for_status()
         ticket = response.json()
-        logger.info('converter: ticket received', data={'path': path})
         return ticket
 
     def get_media_url(self, path: str, referer: str = '', ip: str = '') -> str:
