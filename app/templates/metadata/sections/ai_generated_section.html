@@ -55,14 +55,15 @@
               De AI gegenereerde inhoud is aangevraagd en wordt momenteel verwerkt. Kom later terug om de resultaten te bekijken.
             </div>
         {% elif sm_job_status in ['rejected', 'deleted', 'expired'] %}
-          <div class="notification is-danger">
-            De aanvraag voor AI gegenereerde inhoud is mislukt of verlopen. Er kan een nieuwe aanvraag worden ingediend door de originele taal van het audio/beeldfragment te selecteren en op de knop te klikken bovenaan de pagina.
-          </div>    
         {% elif sm_job_status is none %}
           <div class="notification is-light">
             Er is nog geen AI gegenereerde inhoud beschikbaar voor dit item. Selecteer de originele taal van het audio/beeldfragment en op de knop te klikken bovenaan de pagina.
           </div>
         {% endif %}
+        <div class="notification is-danger" id="ai_section_status_error"{% if sm_job_status not in ['rejected', 'deleted', 'expired'] %} style="display:none;"{% endif %}>
+          De aanvraag voor AI gegenereerde inhoud is mislukt of verlopen. Er kan een nieuwe aanvraag worden ingediend door de originele taal van het audio/beeldfragment te selecteren en op de knop te klikken bovenaan de pagina.
+          {% if sm_job_errors %}<br><small>{{ sm_job_errors }}</small>{% endif %}
+        </div>
 
 
 

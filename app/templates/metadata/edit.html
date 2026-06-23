@@ -87,7 +87,16 @@ Metadata bewerken
             
           {% include 'metadata/components/ai_generate_controls.html' %}
         </div>
-        
+
+        {% if sm_job_status in ['rejected', 'deleted'] %}
+        <div class="notification is-danger is-light mt-2" id="ai_status_error">
+          De vorige aanvraag voor AI inhoud is mislukt. Je kan een nieuwe aanvraag indienen.
+          {% if sm_job_errors %}<br><small>{{ sm_job_errors }}</small>{% endif %}
+        </div>
+        {% else %}
+        <div class="notification is-danger is-light mt-2" id="ai_status_error" style="display:none;"></div>
+        {% endif %}
+
         <div id="ai_toast_container" class="mt-3"></div>
 
       </div>

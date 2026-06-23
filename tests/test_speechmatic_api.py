@@ -93,8 +93,9 @@ class TestGetJobStatus:
         api = _make_api(monkeypatch)
         resp = _mock_response({'job': {'status': 'running'}})
         with patch('app.services.speechmatic_api.requests.get', return_value=resp):
-            status = api.get_job_status('job-xyz')
+            status, errors = api.get_job_status('job-xyz')
         assert status == 'running'
+        assert errors == []
 
     def test_calls_correct_url(self, monkeypatch):
         api = _make_api(monkeypatch, base_url='https://eu1.asr.api.speechmatics.com')
@@ -107,7 +108,18 @@ class TestGetJobStatus:
         api = _make_api(monkeypatch)
         resp = _mock_response({'job': {'status': 'done'}})
         with patch('app.services.speechmatic_api.requests.get', return_value=resp):
-            assert api.get_job_status('j') == 'done'
+            status, errors = api.get_job_status('j')
+        assert status == 'done'
+        assert errors == []
+
+    def test_returns_errors_on_rejected(self, monkeypatch):
+        api = _make_api(monkeypatch)
+        body = {'job': {'status': 'rejected', 'errors': [{'message': 'limit exceeded'}]}}
+        resp = _mock_response(body)
+        with patch('app.services.speechmatic_api.requests.get', return_value=resp):
+            status, errors = api.get_job_status('j')
+        assert status == 'rejected'
+        assert errors == ['limit exceeded']
 
 
 # ---------------------------------------------------------------------------
