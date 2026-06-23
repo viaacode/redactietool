@@ -154,8 +154,7 @@ class ConverterService:
             # If the path doesn't start with the expected prefix, attempt to extract the relative path
             parsed_url = urlparse(path)
             relative_path = parsed_url.path.removeprefix('/')
-            
-        logger.info('converter: get_media_url', data={'relative_path': relative_path})
+
         ticket = self.get_ticket(relative_path)
         serviceUrl = os.environ.get('MEDIA_SERVICE_URL', self.base_url).rstrip('/')
         return f"{serviceUrl}/{relative_path}?token={ticket.get('jwt', '')}"
