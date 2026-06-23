@@ -20,7 +20,7 @@
             id="request_ai_content_btn"
             {% if sm_job_status == 'running' %}disabled{% endif %}>
       <ion-icon name="cloud-upload-outline" class="pr-2"></ion-icon>
-      AI inhoud opvragen
+      Metadata genereren
     </button>
   </div>
 </div>
@@ -51,6 +51,11 @@
       Object.values(statusBadgeClasses).forEach(function(cls) { badge.classList.remove(cls); });
       badge.classList.add(statusBadgeClasses[status] || 'is-light');
       badge.textContent = statusBadgeLabels[status] || status;
+
+      var noJobEl = document.getElementById('ai_no_job_notification');
+      var runningEl = document.getElementById('ai_running_notification');
+      if (noJobEl) noJobEl.style.display = (status === 'running') ? 'none' : '';
+      if (runningEl) runningEl.style.display = (status === 'running') ? '' : 'none';
     }
 
     function setButtonRunning() {
@@ -114,7 +119,7 @@
             }
           })
           .catch(function () { /* keep polling on network error */ });
-      }, 5000);
+      }, 30000);
     }
 
     function showAiToast(colorClass, message) {
@@ -155,7 +160,7 @@
       })
       .then(function (result) {
         if (result.ok) {
-          showAiToast('is-success', 'Aanvraag ingediend. De AI inhoud wordt verwerkt.');
+          showAiToast('is-success', 'De transcriptie, samenvatting en chapters worden gegenereerd.');
           updateBadge('running');
           startPolling();
         } else {

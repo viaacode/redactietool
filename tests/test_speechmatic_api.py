@@ -265,8 +265,11 @@ class TestParseResult:
 # ---------------------------------------------------------------------------
 
 class TestBuildTranscript:
-    def _word(self, content, speaker='S1'):
-        return {'type': 'word', 'alternatives': [{'content': content, 'speaker': speaker}]}
+    def _word(self, content, speaker='S1', start_time=None):
+        event = {'type': 'word', 'alternatives': [{'content': content, 'speaker': speaker}]}
+        if start_time is not None:
+            event['start_time'] = start_time
+        return event
 
     def _punct(self, content, speaker='S1'):
         return {'type': 'punctuation', 'alternatives': [{'content': content, 'speaker': speaker}]}
@@ -321,3 +324,42 @@ class TestBuildTranscript:
         assert lines[1] == 'S3: Stoor ik?'
         assert lines[2] == 'S2: Nee, nee nee nee.'
         assert lines[3] == 'S3: Kom binnen Albert, het gaat druk worden als we van boord komen.'
+
+    def test_chapter_timestamps_inserted_at_boundaries(self):
+        chapters = [
+            {'start_time': 0.0, 'end_time': 128.0, 'title': 'Intro', 'summary': ''},
+            {'start_time': 128.0, 'end_time': 273.0, 'title': 'Main', 'summary': ''},
+            {'start_time': 273.0, 'end_time': 400.0, 'title': 'End', 'summary': ''},
+        ]
+        events = [
+            self._word('Hallo', 'S1', start_time=0.5),
+            self._word('wereld', 'S1', start_time=1.0),
+            self._word('Dag', 'S6', start_time=128.5),
+            self._word('mensen', 'S6', start_time=129.0),
+            self._word('Tot', 'S9', start_time=273.5),
+            self._word('ziens', 'S9', start_time=274.0),
+        ]
+        lines = SpeechmaticsApi.build_transcript(events, chapters=chapters).splitlines()
+        assert lines[0] == '00:00:00'
+        assert lines[1] == 'S1: Hallo wereld'
+        assert lines[2] == ''
+        assert lines[3] == '00:02:08'
+        assert lines[4] == 'S6: Dag mensen'
+        assert lines[5] == ''
+        assert lines[6] == '00:04:33'
+        assert lines[7] == 'S9: Tot ziens'
+
+    def test_no_chapters_no_timestamps(self):
+        events = [
+            self._word('Hello', 'S1', start_time=0.5),
+            self._word('world', 'S1', start_time=1.0),
+        ]
+        transcript = SpeechmaticsApi.build_transcript(events, chapters=[])
+        assert transcript == 'S1: Hello world'
+
+    def test_chapter_timestamps_without_start_time_in_events(self):
+        """Events without start_time should not insert chapter timestamps."""
+        chapters = [{'start_time': 0.0, 'end_time': 60.0, 'title': 'Intro', 'summary': ''}]
+        events = [self._word('Hello'), self._word('world')]
+        transcript = SpeechmaticsApi.build_transcript(events, chapters=chapters)
+        assert transcript == 'S1: Hello world'
