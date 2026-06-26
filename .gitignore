@@ -12,5 +12,5 @@ htmlcov
 /frontend/redactietool_widgets/node_modules
 /.idea
 /.github
-
 app/subtitle_uploads/
+AGENTS.md

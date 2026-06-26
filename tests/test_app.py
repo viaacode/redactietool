@@ -448,10 +448,10 @@ def test_random_404(client, setup):
 # =================== Combined metadata + subtitle tests =====================
 
 
-@pytest.mark.skip(reason="requires mediahaven OAuth2 token")
+@pytest.mark.skip(reason="requires VCR cassette recording against a live MediaHaven server")
 @pytest.mark.vcr
 def test_edit_metadata_with_subtitle_published(auth_client, mocker):
-    """POST with a valid SRT file and publicatiestatus_checked=true should FTP-upload."""
+    """POST with a valid SRT file should save metadata then FTP-upload the subtitle."""
     with open('./tests/fixture_data/edit_mam_data.json', "r") as f:
         mam_data = json.loads(f.read())
 
@@ -504,7 +504,7 @@ def test_edit_metadata_with_subtitle_published(auth_client, mocker):
     assert ftp_mock.login.called
 
 
-@pytest.mark.skip(reason="requires mediahaven OAuth2 token")
+@pytest.mark.skip(reason="requires VCR cassette recording against a live MediaHaven server")
 @pytest.mark.vcr
 def test_edit_metadata_without_subtitle(auth_client, mocker):
     """POST without subtitle file should only save metadata."""
@@ -544,7 +544,7 @@ def test_edit_metadata_without_subtitle(auth_client, mocker):
     assert 'automatisch opgeladen' not in body
 
 
-@pytest.mark.skip(reason="requires mediahaven OAuth2 token")
+@pytest.mark.skip(reason="requires VCR cassette recording against a live MediaHaven server")
 @pytest.mark.vcr
 def test_edit_metadata_with_invalid_srt(auth_client, mocker):
     """POST with a non-SRT file should show a subtitle validation error."""

@@ -34,6 +34,7 @@ from app.config import flask_environment
 from app.debug_login import legacy_login, legacy_login_submit
 from app.saml import saml_login
 from app.services.elastic_api import ElasticApi
+from app.services.ftp_uploader import FtpUploader
 from app.services.mediahaven_api import MediahavenApi
 from app.services.meta_mapping import MetaMapping
 from app.services.subtitle_files import (delete_files, get_vtt_subtitles,
@@ -210,7 +211,7 @@ def get_subtitle_by_type(department, pid, subtype):
     srt_url = f"{object_store_url}/{org_name}/{object_id}/{object_id}.srt"
     print("SRT LINK:", srt_url)
 
-    response = Response(get_vtt_subtitles(srt_url))
+    response = Response(get_vtt_subtitles(srt_url), content_type='text/vtt; charset=utf-8')
     response.cache_control.max_age = 0
     response.headers.add('Last-Modified', datetime.datetime.now())
     response.headers.add(
@@ -295,22 +296,6 @@ def edit_metadata():
     )
 
 
-def _subtitle_upload_error(errors):
-    """Return a human-readable subtitle upload error message.
-
-    Detects EDUPLICATE responses and surfaces the conflicting record ID.
-    """
-    error_str = errors[0] if errors else ''
-    if 'EDUPLICATE' in error_str:
-        try:
-            error_data = json.loads(error_str)
-            record_ids = error_data.get('ExistingRecordIds', [])
-            record_id = record_ids[0] if record_ids else '(onbekend)'
-            return f'Dit ondertitel bestand is reeds in gebruik voor Record: {record_id}'
-        except Exception:
-            pass
-    return 'Fout bij uploaden ondertitel: ' + error_str
-
 
 @app.route('/edit_metadata', methods=['POST'])
 @login_required
@@ -345,7 +330,6 @@ def save_item_metadata():
         template_vars['mh_errors'] = response['errors']
 
     # Phase 2 — Subtitle handling
-    replace_subtitle = request.form.get('replace_subtitle') == 'confirm'
     logger.info(
         'subtitle upload check',
         data={
@@ -353,12 +337,10 @@ def save_item_metadata():
             'mh_synced': template_vars.get('mh_synced'),
             'has_subtitle_file': has_subtitle_file,
             'subtitle_validation_error': subtitle_validation_error,
-            'replace_subtitle': replace_subtitle,
         }
     )
     if template_vars['mh_synced']:
         if has_subtitle_file and not subtitle_validation_error:
-            # Upload subtitle directly via MediaHaven API
             try:
                 tp = {
                     'pid': pid,
@@ -366,44 +348,26 @@ def save_item_metadata():
                     'subtitle_type': subtitle_type,
                 }
 
-                # If replacing, delete existing subtitle record from MH first
-                if replace_subtitle:
-                    existing_sub = mh_api.get_subtitle(department, pid, subtitle_type)
-                    if existing_sub:
-                        sub_fragment_id = existing_sub.get(
-                            'Internal', {}).get('FragmentId')
-                        if sub_fragment_id:
-                            del_response = mh_api.delete_subtitle(
-                                sub_fragment_id,
-                                reason=f"Replacing subtitle for {pid}"
-                            )
-                            if not del_response['status']:
-                                template_vars['subtitle_error'] = (
-                                    'Fout bij verwijderen bestaand ondertitelbestand: '
-                                    + ', '.join(del_response['errors'])
-                                )
+                tp['srt_file'], tp['vtt_file'] = save_subtitles(
+                    upload_folder(), pid, uploaded_file)
+                if tp['srt_file']:
+                    tp['srt_file'] = move_subtitle(upload_folder(), tp)
+                    tp['xml_file'], tp['xml_sidecar'] = save_sidecar_xml(
+                        upload_folder(), mam_data, tp)
 
-                if not template_vars.get('subtitle_error'):
-                    tp['srt_file'], tp['vtt_file'] = save_subtitles(
-                        upload_folder(), pid, uploaded_file)
-                    if tp['srt_file']:
-                        tp['srt_file'] = move_subtitle(upload_folder(), tp)
-                        tp['xml_file'], xml_sidecar_data = save_sidecar_xml(
-                            upload_folder(), mam_data, tp)
+                    ftp_uploader = FtpUploader()
+                    ftp_response = ftp_uploader.upload_subtitles(
+                        upload_folder(), mam_data, tp)
 
-                        srt_path = os.path.join(upload_folder(), tp['srt_file'])
-                        api_response = mh_api.upload_subtitle(
-                            srt_path, tp['srt_file'], xml_sidecar_data)
-
-                        delete_files(upload_folder(), tp)
-                        if not api_response['status']:
-                            template_vars['subtitle_error'] = _subtitle_upload_error(
-                                api_response['errors'])
-                        else:
-                            template_vars['subtitle_synced'] = True
-                            template_vars['subtitle_synced_filename'] = f"{pid}_{subtitle_type}.srt"
+                    delete_files(upload_folder(), tp)
+                    if 'ftp_error' in ftp_response:
+                        template_vars['subtitle_error'] = (
+                            'FTP upload fout: ' + ftp_response['ftp_error'])
                     else:
-                        template_vars['subtitle_error'] = 'Ondertitels moeten in SRT formaat'
+                        template_vars['subtitle_synced'] = True
+                        template_vars['subtitle_synced_filename'] = tp['srt_file']
+                else:
+                    template_vars['subtitle_error'] = 'Ondertitels moeten in SRT formaat'
             except Exception as e:
                 logger.exception('subtitle upload failed', data={'pid': pid, 'error': str(e)})
                 template_vars['subtitle_error'] = str(e)
@@ -449,19 +413,6 @@ def save_item_metadata():
     }
 
     return redirect(url_for('edit_metadata', pid=pid, department=department))
-
-
-@app.route('/delete_subtitle', methods=['POST'])
-@login_required
-def delete_subtitle():
-    data = request.get_json()
-    fragment_id = data.get('fragment_id')
-    pid = data.get('pid')
-
-    mh_api = MediahavenApi()
-    result = mh_api.delete_subtitle(fragment_id, reason=f"Deleted by editor for {pid}")
-
-    return jsonify(result)
 
 
 @app.route('/subtitle_files', methods=['GET'])

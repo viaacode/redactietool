@@ -20,6 +20,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./db/init:/docker-entrypoint-initdb.d
+      - subtitle_uploads:/app/app/subtitle_uploads
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
@@ -29,6 +30,7 @@ services:
       - app-network
 
 volumes:
+  subtitle_uploads:
   postgres-data:
 
 networks:
