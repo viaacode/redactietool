@@ -6,3 +6,7 @@ htmlcov
 *.pem
 *.key
 *generate_saml_certificate*
+.env*
+!.env.template
+.idea
+AGENTS.md
