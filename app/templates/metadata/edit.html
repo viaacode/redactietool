@@ -57,22 +57,23 @@ Metadata bewerken
   
         <script>
           var hasExistingSubtitle = {{ has_existing_subtitle | tojson }};
-          flowplayer('#player_container', {
+          var existingSubtitleTypes = {{ existing_subtitle_types | tojson }};
+          var playerOpts = {
             src: '{{video_url}}',
             token: '{{flowplayer_token}}',
             poster: '{{keyframe}}?nocache='+Date.now(),
-              subtitles:{ 
-                tracks:[
-                  { 
-                    src: "/item_subtitles/{{department}}/{{pid}}/closed",
-                    label: "Nederlands",
-                    id: "Nederlands-nl",
-                    default: true,
-                    crossorigin: "anonymous" 
-                  }
-                ]
-              }
-          })
+          };
+          if (hasExistingSubtitle && existingSubtitleTypes.length > 0) {
+            playerOpts.subtitles = {
+              tracks: existingSubtitleTypes.map((subType, subTypeIndex) => ({
+                src: "/item_subtitles/{{department}}/{{pid}}/" + subType,
+                label: "Nederlands (" + subType + ')',
+                id: "Nederlands-nl-" + subType,
+                default: subTypeIndex === 0
+              }))
+            };
+          }
+          flowplayer('#player_container', playerOpts);
         </script>
         
         <div class="is-flex is-justify-content-space-between">

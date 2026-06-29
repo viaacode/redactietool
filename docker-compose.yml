@@ -8,6 +8,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - subtitle_uploads:/app/app/subtitle_uploads
     networks:
       - app-network
 
@@ -29,6 +31,7 @@ services:
       - app-network
 
 volumes:
+  subtitle_uploads:
   postgres-data:
 
 networks:
