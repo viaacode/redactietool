@@ -56,10 +56,10 @@
         {% endif %}
         {% if sm_job_status not in ['done', 'rejected', 'deleted', 'expired'] %}
           <div class="notification is-info" id="ai_running_notification"{% if sm_job_status != 'running' %} style="display:none;"{% endif %}>
-            De AI gegenereerde inhoud is aangevraagd en wordt momenteel verwerkt. Kom later terug om de resultaten te bekijken.
+              De transcriptie, samenvatting en chapters worden momenteel gegenereerd. Kom later terug om de resultaten te bekijken.
           </div>
           <div class="notification is-light" id="ai_no_job_notification"{% if sm_job_status is not none %} style="display:none;"{% endif %}>
-            Er is nog geen AI gegenereerde inhoud beschikbaar voor dit item. Selecteer de originele taal van het audio/beeldfragment en op de knop te klikken bovenaan de pagina.
+              Er is nog geen door AI gegenereerde metadata beschikbaar voor dit item. Selecteer bovenaan de pagina de hoofdtaal van het item, en klik op de knop ‘Metadata genereren’ om de transcriptie, samenvatting en chapters te genereren voor dit item.
           </div>
         {% endif %}
         <div class="notification is-danger" id="ai_section_status_error"{% if sm_job_status not in ['rejected', 'deleted', 'expired'] %} style="display:none;"{% endif %}>
