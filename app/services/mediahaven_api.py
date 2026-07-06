@@ -116,6 +116,20 @@ class MediahavenApi:
         else:
             return False
 
+    def delete_subtitle(self, fragment_id):
+        try:
+            logger.info("deleting subtitle from mediahaven...", data={'fragment_id': fragment_id})
+            self.client.records.delete(fragment_id)
+            return {
+                'status': True,
+                'errors': []
+            }
+        except MediaHavenException as me:
+            return {
+                'status': False,
+                'errors': [str(me)]
+            }
+
     def update_metadata(self, department, fragment_id, external_id, xml_sidecar):
         try:
             logger.info("syncing metadata to mediahaven...")
