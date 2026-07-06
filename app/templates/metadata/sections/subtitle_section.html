@@ -158,7 +158,7 @@ function buildSubtitleTag(subfile) {
 function startSubtitlePolling() {
 	var expectedFilename = subtitleSyncedFilename;
 	if (!expectedFilename) return;
-	var maxAttempts = 20;
+	var maxAttempts = 60;
 	var attempts = 0;
 	var interval = setInterval(function() {
 		attempts++;
@@ -170,8 +170,6 @@ function startSubtitlePolling() {
 					clearInterval(interval);
 					var spinner = document.getElementById('subtitle_polling_spinner');
 					if (spinner) spinner.remove();
-					var alert = document.getElementById('subtitle_synced_alert');
-					if (alert) alert.textContent = 'Het ondertitelbestand werd succesvol opgeladen.';
 					var list = document.getElementById('subtitle_files_list');
 					if (list) {
 						list.innerHTML = '';
@@ -186,16 +184,20 @@ function startSubtitlePolling() {
 							if (f.filename.indexOf('_open.') !== -1) existingSubtitleFilenames['open'] = f.filename;
 							if (f.filename.indexOf('_closed.') !== -1) existingSubtitleFilenames['closed'] = f.filename;
 						});
+						var section = document.getElementById('subtitle_files_section');
 						if (files.length > 0) {
-							var section = document.getElementById('subtitle_files_section');
 							if (section) section.style.display = '';
+							var alert = document.getElementById('subtitle_synced_alert');
+							if (alert) alert.textContent = 'Het ondertitelbestand werd succesvol opgeladen.';
+						} else {
+							if (section) section.style.display = 'none';
 						}
 						updateSubtitleExistingWarning();
 					}
 				}
 			})
 			.catch(function() { if (attempts >= maxAttempts) clearInterval(interval); });
-	}, 3000);
+	}, 10000);
 }
 
 var deleteSubtitleFragmentId = null;
