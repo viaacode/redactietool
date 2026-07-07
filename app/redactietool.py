@@ -432,6 +432,20 @@ def get_subtitle_files():
     return jsonify(subtitle_files)
 
 
+@app.route('/delete_subtitle', methods=['POST'])
+@login_required
+def delete_subtitle():
+    json_data = request.json
+    fragment_id = json_data.get('fragment_id')
+
+    if not fragment_id:
+        return jsonify({'status': False, 'errors': ['fragment_id is required']}), HTTPStatus.BAD_REQUEST
+
+    mh_api = MediahavenApi()
+    result = mh_api.delete_subtitle(fragment_id)
+    return jsonify(result)
+
+
 @app.route('/publicatie_status', methods=['GET'])
 @login_required
 def publicatie_status():
