@@ -1,5 +1,5 @@
 {
-  
+
     "strict": true,
     "debug": true,
     "sp": {
@@ -15,17 +15,15 @@
         "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
     },
     "idp": {
-        "entityId": "http://idp-qas.viaa.be/idp",
+        "entityId": "http://idp-qas.hetarchief.be/idp",
         "singleSignOnService": {
-            "url": "https://idp-qas.viaa.be/saml2/idp/SSOService.php",
+            "url": "https://idp-qas.hetarchief.be/module.php/saml/idp/singleSignOnService",
             "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
         },
         "singleLogoutService": {
-            "url": "https://idp-qas.viaa.be/saml2/idp/SingleLogoutService.php",
+            "url": "https://idp-qas.hetarchief.be/module.php/saml/idp/singleLogout",
             "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
         },
-        "x509cert": "MIIEwTCCAymgAwIBAgIUbALb/ZRvVN6cc1tOGPJay6Z7jswwDQYJKoZIhvcNAQELBQAwcDELMAkGA1UEBhMCQkUxGDAWBgNVBAgMD09vc3QtVmxhYW5kZXJlbjENMAsGA1UEBwwER2VudDEPMA0GA1UECgwGbWVlbW9vMRUwEwYDVQQLDAxUZWFtIEFyY2hpZWYxEDAOBgNVBAMMB2lkcC1xYXMwHhcNMjAxMDE1MTQwODU5WhcNMjUxMjI4MTQwODU5WjBwMQswCQYDVQQGEwJCRTEYMBYGA1UECAwPT29zdC1WbGFhbmRlcmVuMQ0wCwYDVQQHDARHZW50MQ8wDQYDVQQKDAZtZWVtb28xFTATBgNVBAsMDFRlYW0gQXJjaGllZjEQMA4GA1UEAwwHaWRwLXFhczCCAaIwDQYJKoZIhvcNAQEBBQADggGPADCCAYoCggGBAN6htPTrdTMPeMW7mip5yER4j6rkBMOKT8RJfGwLGfc62bcE2AC9cDpLFoe8KR9YYKlsc+iz1I2m3zknIxxyEx/lzt/InHnrXasBNpFi7DqZ0YGvzktreTvBgrW+oKHneoe2z/QaiGvKLXWqB9EeP7lVlAHj0w+8V/i9Eb4ulLjk/yBSH+GcXvqJG1WDXX3A+LaV4X8PVIp3RugVN1y5bEF3yfqdZpMZqSfSBpBhXyJgh0XhFJuqDJz5StW3yungcaNDuDT54zAFgpDabb2oH1lpFyIwFo6dD3C94qna+8e9GXPyldq4srm0qbP07A6ZhXS0xc6MueOJgpC5jPwRweX30kp+8SEC1KE1YqNVIrl3NLeqD9ZIjvh+Vh735OJ6HtXbDQOMi1mH1vREjcdMswaKOvMkz9E2xGxAuNo4Av6dGfE95fDlz9FIR4k2Witom1Yid6os2phal5f3hNzI5pb2qu0x6wUnRAKZGcuAAtYVGiQuF2/plWZYp5QeCoQdiwIDAQABo1MwUTAdBgNVHQ4EFgQUUyGFTb+/H2ZOE1DJ8mS9B3qtfAcwHwYDVR0jBBgwFoAUUyGFTb+/H2ZOE1DJ8mS9B3qtfAcwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAYEAFgaW8HEjXmi/iOrIwl1p1zX9OF7u1xUUoGFR57gWvP4uU/OoeoI9w5co0lvp+hvr8yuTNgy6RF903WR1dTL8Zqned5obu7pb2rQIr9s8ZexipzN/jB0h88pGLMzYsIpUq71tdRZt0CshpZZbmzJvLhC+VXJls0JdMm3IyDfEowEA3gqwSY6FxbwQ35ZThY3AOuGmrtuA1idteU3VK28CISXfG0+rjZN1EUDYIBqWsalhIGoKeAq0DIOAXCPVEeAtHf6xUSscrvhjzDj20Hr3hi8QGskt1cw7mMU41JKYXwubg7dLi8gAzJcqDeZ6EvBM33/rnv0ES/8l7HkTBPXdgESpz7Z4f0nBxsR6qixXvgrXrzNfncPDvPG2ZBYSZpqsCHPaQ33tUjWq4IIhxrnDn88LCFgDSd/9TuW4Ck6/rFmYXXdLPfbjLzoVQciCOyoqIBPjoMOimAl/+xOTHgj7kSSTkgouLS4s56HVvkvSJQje5289rQu6Bn2VDBvRx6S4"
+        "x509cert": "MIIDXTCCAkWgAwIBAgIUH35QWbgDsAx5B9akhKGmXsuC68YwDQYJKoZIhvcNAQELBQAwPjEQMA4GA1UEAwwHc3NvIGlkcDEMMAoGA1UECwwDcWFzMQ8wDQYDVQQKDAZtZWVtb28xCzAJBgNVBAYTAmJlMB4XDTI2MDUxMTE0MTYzN1oXDTMxMDQxNTE0MTYzN1owPjEQMA4GA1UEAwwHc3NvIGlkcDEMMAoGA1UECwwDcWFzMQ8wDQYDVQQKDAZtZWVtb28xCzAJBgNVBAYTAmJlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyWWjeuMgNbRxTyekvK5bMd8FutyCTYskvRAVyrdCvpnFKhWg8ZLd5rM6iFyWPaiAa7miW3tpgKJvP44ssh6BZGhyeXfrhWDhVY05yN5lhBxxwiTX8dNLqdVs+NPJZWKrH/8/H5gq7djGug0nXRNRD7IOWfzQsR4TKsz6FO3NCSzqbf7PD6B9fEiY+mdGJhs/OfoRHQo0X9/UALMC0t0RkYqbe+DCl67MXCAY3jwq68THXFpgfKf6cBQRSzHX8Wq+9KHmIT4371wzTx5ADKoLvKw2kVFtp9JcnSWO5JnirdhRsjGH5tkDWz4Ckndt29YD1x4Km3fmFzQ2UmIic4Eq/wIDAQABo1MwUTAdBgNVHQ4EFgQUG/KT49qJu6jAHQPCHom2cm0QiJMwHwYDVR0jBBgwFoAUG/KT49qJu6jAHQPCHom2cm0QiJMwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAnuWS5YZcZ8cAyg8NlFnOAldmBpdtXLRWTNZ3BSWWo8BJswIjMNSrLb+NZo3ph7hqzL6h5qw404ugiI6o3E784AcZAhpVX1vW0e1CmjBrqqlWC+p20fjcC+VJ588wi5N3YhhlAUNuWlO8HTw2M7Wr7UqO/SEo/G+6WcuL2clUJAAKnMiV/alNLo+qK3sdxfYVnP9VlxdlLeyeBMmc4yM5vJDRbsSbIOMW+LrG8dgW/oxdCrU0ct9CFBjJ0VkpBk/+43mOXUQvIXyZkJ9KPVvMwOVaW/tKldv+IJpKOhhon+MirsTndKLQfCPxARt455e/Rs4Rx+nk3KgiPfwYjsP9Vg=="
     }
 }
-
-
