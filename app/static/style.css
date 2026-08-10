@@ -651,3 +651,21 @@ fieldset.debug-pids > legend {
   height: 30px;
   width: 30px;
 }
+
+/* clickable subtitle files under "Bestaande ondertitelbestanden" */
+.subtitle-file-tag {
+  transition: background-color 0.15s ease-in-out;
+}
+
+/* the tag is a <button> for accessibility, strip the native button chrome */
+button.subtitle-file-tag {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.tag:not(body).is-info.is-light.subtitle-file-tag:hover {
+  background-color: #cfe6f9;
+}

@@ -220,6 +220,35 @@ def get_subtitle_by_type(department, pid, subtype):
     return response
 
 
+# fetch a specific subtitle file (by its fragment id) as webvtt
+@app.route('/item_subtitles_by_fragment/<string:department>/<string:pid>/<string:fragment_id>', methods=['GET'])
+@login_required
+def get_subtitle_by_fragment(department, pid, fragment_id):
+    mh_api = MediahavenApi()
+    sub_response = None
+    for sub in mh_api.get_subtitles(department, pid):
+        if sub.get('Internal', {}).get('FragmentId', '') == fragment_id:
+            sub_response = sub
+            break
+
+    if not sub_response:
+        return ""
+
+    object_store_url = app.config.get('OBJECT_STORE_URL')
+    object_id = sub_response.get('Internal').get('MediaObjectId', '')
+    org_name = sub_response.get('Administrative').get(
+        'OrganisationName').upper()
+    srt_url = f"{object_store_url}/{org_name}/{object_id}/{object_id}.srt"
+
+    response = Response(get_vtt_subtitles(srt_url), content_type='text/vtt; charset=utf-8')
+    response.cache_control.max_age = 0
+    response.headers.add('Last-Modified', datetime.datetime.now())
+    response.headers.add(
+        'Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')
+    response.headers.add('Pragma', 'no-cache')
+    return response
+
+
 @app.route('/subtitles/<filename>')
 @login_required
 def uploaded_subtitles(filename):
@@ -366,7 +395,26 @@ def save_item_metadata():
                     else:
                         template_vars['subtitle_synced'] = True
                         template_vars['subtitle_synced_filename'] = tp['srt_file']
+
+                    logger.info(
+                        'subtitle sent to mediahaven, waiting for ingest',
+                        data={
+                            'pid': pid,
+                            'subtitle_type': subtitle_type,
+                            'uploaded_filename': uploaded_file.filename,
+                            'srt_file': tp['srt_file'],
+                            'xml_file': tp['xml_file'],
+                            'ftp_response': ftp_response,
+                            # the polling then waits for this exact filename to
+                            # come back from the mediahaven search api
+                            'expected_filename': tp['srt_file'],
+                        }
+                    )
                 else:
+                    logger.info(
+                        'subtitle rejected, could not parse as srt',
+                        data={'pid': pid, 'uploaded_filename': uploaded_file.filename}
+                    )
                     template_vars['subtitle_error'] = 'Ondertitels moeten in SRT formaat'
             except Exception as e:
                 logger.exception('subtitle upload failed', data={'pid': pid, 'error': str(e)})
@@ -420,6 +468,8 @@ def save_item_metadata():
 def get_subtitle_files():
     pid = request.args.get('pid')
     department = request.args.get('department')
+    expected = request.args.get('expected')
+    attempt = request.args.get('attempt')
 
     mh_api = MediahavenApi()
     all_subs = mh_api.get_subtitles(department, pid)
@@ -428,6 +478,27 @@ def get_subtitle_files():
         filename = sub.get('Descriptive', {}).get('OriginalFilename', '')
         fragment_id = sub.get('Internal', {}).get('FragmentId', '')
         subtitle_files.append({'filename': filename, 'fragment_id': fragment_id})
+
+    if expected:
+        found = any(sf['filename'] == expected for sf in subtitle_files)
+        logger.info(
+            'polling for uploaded subtitle',
+            data={
+                'pid': pid,
+                'expected': expected,
+                'attempt': attempt,
+                'found': found,
+                'filenames': [sf['filename'] for sf in subtitle_files],
+            }
+        )
+        # every minute of waiting, check if mediahaven ingested the file
+        # without linking it to the video (is_verwant_aan missing/wrong) and
+        # whether the files are still waiting in the ftp watchfolder
+        if not found and attempt and attempt.isdigit() and int(attempt) % 6 == 0:
+            subtitle_type = 'open' if '_open.' in expected else 'closed'
+            mh_api.find_ingested_subtitle(pid, subtitle_type)
+            FtpUploader().check_uploaded_files(
+                [expected, expected.replace('.srt', '.xml')])
 
     return jsonify(subtitle_files)
 

@@ -77,27 +77,64 @@ class MediahavenApi:
         permissions = records[0].RightsManagement.Permissions.Read
         return self.ONDERWIJS_PERM_ID in permissions
 
-    def get_subtitles(self, department, pid):
-        matched_subs = self.client.records.search(
-            q=f"+(dc_relationsis_verwant_aan:{pid})")
-        if not matched_subs.total_nr_of_results:
+    def record_summary(self, record):
+        # compact view of the fields that matter for subtitle ingest debugging
+        descriptive = record.get('Descriptive', {})
+        internal = record.get('Internal', {})
+        dynamic = record.get('Dynamic', {})
+        return {
+            'original_filename': descriptive.get('OriginalFilename', ''),
+            'fragment_id': internal.get('FragmentId', ''),
+            'external_id': internal.get('ExternalId', ''),
+            'archive_status': internal.get('ArchiveStatus', ''),
+            'pid': dynamic.get('PID', ''),
+            'is_verwant_aan': dynamic.get('dc_relations', {}).get('is_verwant_aan', ''),
+        }
+
+    def search_records(self, query, label, extra_data=None):
+        # single place where we log what we asked mediahaven and what came back
+        try:
+            matched = self.client.records.search(q=query)
+        except MediaHavenException as me:
+            logger.error(
+                f"{label} search failed",
+                data={'query': query, 'error': str(me), **(extra_data or {})}
+            )
             return []
 
-        sub_response = json.loads(
-            matched_subs.raw_response).get('Results', [{}])
-        filenames = [
-            sub.get('Descriptive', {}).get('OriginalFilename', '')
-            for sub in sub_response
-        ]
+        results = json.loads(matched.raw_response).get(
+            'Results', []) if matched.total_nr_of_results else []
+
         logger.info(
-            'get_subtitles found files',
+            f"{label} search",
             data={
-                'pid': pid,
-                'filenames': filenames,
-                'count': len(sub_response),
+                'query': query,
+                'total_nr_of_results': matched.total_nr_of_results,
+                'records': [self.record_summary(r) for r in results],
+                **(extra_data or {}),
             }
         )
+        return results
+
+    def get_subtitles(self, department, pid):
+        sub_response = self.search_records(
+            f"+(dc_relationsis_verwant_aan:{pid})",
+            'get_subtitles',
+            {'pid': pid}
+        )
         return sub_response
+
+    def find_ingested_subtitle(self, pid, subtitle_type):
+        # Diagnostic lookup used while polling: an ftp upload that got ingested
+        # but did not get linked to the video shows up here while it never
+        # shows up in get_subtitles. Nothing here at all means mediahaven
+        # never ingested the sidecar/srt pair from the watchfolder.
+        expected_pid = f"{pid}_{subtitle_type}"
+        return self.search_records(
+            f"+(PID:{expected_pid})",
+            'find_ingested_subtitle',
+            {'pid': pid, 'expected_pid': expected_pid}
+        )
 
     def get_subtitle(self, department, pid, subtype):
         matched_subs = self.client.records.search(

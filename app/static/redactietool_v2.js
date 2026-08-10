@@ -91,9 +91,127 @@ function pidSubmitForMetadata(btn){
   execute(btn, 'Item opzoeken...');
 }
 
+// Label of the existing subtitle track currently shown on the player
+var activeSubtitleLabel = null;
+// True while a locally selected srt file is previewed on the player
+var subtitlePreviewActive = false;
+
+// Show one of the existing (MAM) subtitle tracks on the player. Tracks are
+// matched on their label (the original filename). The player builds its
+// text tracks asynchronously, so we retry for a short while.
+function showSubtitleTrackByLabel(label, attempt){
+  attempt = attempt || 0;
+  if(attempt === 0){
+    activeSubtitleLabel = label;
+  } else if(activeSubtitleLabel !== label || subtitlePreviewActive){
+    // another subtitle (or a local preview) was selected meanwhile
+    return;
+  }
+
+  var video = document.querySelector('#player_container video');
+  var matched = false;
+
+  if(video){
+    // a local preview always takes precedence over the existing subtitles
+    video.querySelectorAll('track.preview-track').forEach(function(t){ t.remove(); });
+
+    for(var i = 0; i < video.textTracks.length; i++){
+      var isMatch = video.textTracks[i].label === label;
+      video.textTracks[i].mode = isMatch ? 'showing' : 'hidden';
+      if(isMatch) matched = true;
+    }
+  }
+
+  if(!matched && attempt < 40){
+    setTimeout(function(){ showSubtitleTrackByLabel(label, attempt + 1); }, 250);
+  }
+}
+
+// Re-evaluate what is shown on the player after a subtitle file was deleted.
+// Call this once the tag was removed from the list: when the deleted file was
+// the one on screen we fall back to the first remaining file, or to no
+// subtitles at all when it was the last one.
+function refreshSubtitlesAfterDelete(deletedFilename){
+  var video = document.querySelector('#player_container video');
+  if(video){
+    video.querySelectorAll('track').forEach(function(t){
+      if(t.label === deletedFilename) t.remove();
+    });
+    for(var i = 0; i < video.textTracks.length; i++){
+      if(video.textTracks[i].label === deletedFilename){
+        video.textTracks[i].mode = 'hidden';
+      }
+    }
+  }
+
+  if(activeSubtitleLabel !== deletedFilename) return;
+  activeSubtitleLabel = null;
+
+  var remaining = document.querySelector('#subtitle_files_list [data-fragment-id]');
+  if(remaining){
+    showExistingSubtitleFile(
+      remaining.getAttribute('data-fragment-id'),
+      remaining.getAttribute('data-filename'),
+      false
+    );
+  } else if(video && !subtitlePreviewActive){
+    for(var j = 0; j < video.textTracks.length; j++){
+      video.textTracks[j].mode = 'hidden';
+    }
+  }
+}
+
+// Short lived notification below the list of existing subtitle files
+function showSubtitleToast(message){
+  var container = document.getElementById('subtitle_toast_container');
+  if(!container) return;
+
+  container.innerHTML = '';
+  var toast = document.createElement('div');
+  toast.className = 'notification is-success fadein';
+  toast.textContent = message;
+  container.appendChild(toast);
+
+  setTimeout(function(){
+    if(container.firstChild !== toast) return;
+    toast.classList.replace('fadein', 'fadeout');
+    setTimeout(function(){
+      if(container.firstChild === toast) container.innerHTML = '';
+    }, 500);
+  }, 5000);
+}
+
+// Show an existing (MAM) subtitle file on the player. Files that were only
+// added after the player was initialised get their track appended here.
+function showExistingSubtitleFile(fragmentId, filename, showToast){
+  if(showToast === undefined) showToast = true;
+  var video = document.querySelector('#player_container video');
+  if(video && typeof subtitleTrackUrlPrefix !== 'undefined'){
+    var trackExists = false;
+    for(var i = 0; i < video.textTracks.length; i++){
+      if(video.textTracks[i].label === filename) trackExists = true;
+    }
+
+    if(!trackExists){
+      var track = document.createElement('track');
+      track.kind = 'subtitles';
+      track.label = filename;
+      track.srclang = 'nl';
+      track.src = subtitleTrackUrlPrefix + fragmentId;
+      video.appendChild(track);
+    }
+  }
+
+  subtitlePreviewActive = false;
+  showSubtitleTrackByLabel(filename);
+  if(showToast) showSubtitleToast('De ondertitel "' + filename + '" is nu geladen');
+}
+
 // Preview a locally selected SRT file in the Flowplayer video player
 function previewSubtitleInPlayer(input){
   if(!input.files || !input.files[0]) return;
+
+  subtitlePreviewActive = true;
 
   var previewMsg = document.getElementById('subtitle_preview_msg');
   if(previewMsg) previewMsg.style.display = '';
@@ -137,6 +255,8 @@ function previewSubtitleInPlayer(input){
 }
 
 function clearSubtitleInput(){
+  subtitlePreviewActive = false;
+
   var input = document.getElementById('subtitle_file_input');
   if(input) input.value = '';
 
@@ -149,10 +269,14 @@ function clearSubtitleInput(){
   var video = document.querySelector('#player_container video');
   if(video){
     video.querySelectorAll('track.preview-track').forEach(function(t){ t.remove(); });
-    var restoreMode = (typeof hasExistingSubtitle !== 'undefined' && hasExistingSubtitle) ? 'showing' : 'hidden';
     for(var i = 0; i < video.textTracks.length; i++){
-      video.textTracks[i].mode = restoreMode;
+      video.textTracks[i].mode = 'hidden';
     }
+  }
+
+  // restore the existing subtitle that was shown before the preview
+  if(activeSubtitleLabel){
+    showSubtitleTrackByLabel(activeSubtitleLabel);
   }
 }
 
