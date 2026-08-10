@@ -273,6 +273,7 @@ def edit_metadata():
         template_vars['subtitle_synced_filename'] = post_result['subtitle_synced_filename']
     if post_result.get('subtitle_error'):
         template_vars['subtitle_error'] = post_result['subtitle_error']
+    template_vars['subtitle_type'] = post_result.get('subtitle_type', 'closed')
 
     # Fetch existing subtitle files from MediaHaven
     all_subs = mh_api.get_subtitles(department, pid)
@@ -410,6 +411,7 @@ def save_item_metadata():
         'subtitle_synced': template_vars.get('subtitle_synced'),
         'subtitle_synced_filename': template_vars.get('subtitle_synced_filename'),
         'subtitle_error': template_vars.get('subtitle_error'),
+        'subtitle_type': subtitle_type,
     }
 
     return redirect(url_for('edit_metadata', pid=pid, department=department))
