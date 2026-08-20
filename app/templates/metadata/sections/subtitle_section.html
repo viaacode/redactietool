@@ -21,8 +21,8 @@
 			<div class="control">
 				<div class="select">
 					<select name="subtitle_type" id="subtitle_type">
-						<option value="closed" {% if subtitle_type != 'open' %}selected{% endif %}>Closed</option>
-						<option value="open" {% if subtitle_type == 'open' %}selected{% endif %}>Open</option>
+						<option value="closed" {% if subtitle_type == 'closed' %}selected{% endif %}>Closed</option>
+						<option value="open" {% if subtitle_type != 'closed' %}selected{% endif %}>Open</option>
 					</select>
 				</div>
 			</div>
