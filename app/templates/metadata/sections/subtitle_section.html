@@ -1,3 +1,4 @@
+{% set unavailable_subtitle_message = 'is niet beschikbaar in het MAM: het bestand werd geregistreerd, maar de inhoud werd niet opgeslagen. Verwijder het en laad het opnieuw op.' %}
 <div class="columns">
 	<div class="column">
 		<h2 class="title is-clickable" onclick="sectionToggle('subtitle_section')">
@@ -62,10 +63,16 @@
 					<div id="subtitle_delete_error_alert" class="notification is-danger fadein" style="display:none;"></div>
 					<div class="control" id="subtitle_files_list">
 						{% for subfile in subtitle_files %}
-						<span class="is-inline-flex is-align-items-center mr-2 mb-2" data-fragment-id="{{ subfile.fragment_id }}" data-filename="{{ subfile.filename }}">
+						<span class="is-inline-flex is-align-items-center mr-2 mb-2" data-fragment-id="{{ subfile.fragment_id }}" data-filename="{{ subfile.filename }}" data-available="{{ 'true' if subfile.available else 'false' }}">
+							{% if subfile.available %}
 							<button type="button" class="tag is-info is-light subtitle-file-tag" style="border-radius:4px 0 0 4px;" title="Toon deze ondertitels op de video" onclick="showExistingSubtitleFile('{{ subfile.fragment_id }}', '{{ subfile.filename }}'); return false;">
 								{{ subfile.filename }}
 							</button>
+							{% else %}
+							<button type="button" class="tag is-warning is-light subtitle-file-tag" style="border-radius:4px 0 0 4px;" title="Dit bestand {{ unavailable_subtitle_message }}" onclick="showUnavailableSubtitleFile('{{ subfile.filename }}'); return false;">
+								<ion-icon name="alert-circle-outline" class="pr-1"></ion-icon>{{ subfile.filename }}
+							</button>
+							{% endif %}
 							<button type="button" class="button is-danger is-small" style="height:24px; min-height:24px; padding:0 6px; margin-left:1px; border-radius:0 4px 4px 0;" title="Verwijder dit ondertitel bestand" onclick="openDeleteSubtitleModal('{{ subfile.fragment_id }}', '{{ subfile.filename }}'); return false;">x</button>
 						</span>
 						{% endfor %}
@@ -141,20 +148,36 @@ var existingSubtitleFilenames = {
 	{% endfor %}
 };
 var subtitleSyncedFilename = {{ subtitle_synced_filename | default(None) | tojson }};
+var unavailableSubtitleMessage = {{ unavailable_subtitle_message | tojson }};
+
+// a record without essence in the object store cannot be played, so its tag
+// only explains the problem instead of loading an empty track on the player
+function showUnavailableSubtitleFile(filename) {
+	showSubtitleAlert('"' + filename + '" ' + unavailableSubtitleMessage);
+}
 
 function buildSubtitleTag(subfile) {
+	var available = subfile.available !== false;
+
 	var wrapper = document.createElement('span');
 	wrapper.className = 'is-inline-flex is-align-items-center mr-2 mb-2';
 	wrapper.setAttribute('data-fragment-id', subfile.fragment_id);
 	wrapper.setAttribute('data-filename', subfile.filename);
+	wrapper.setAttribute('data-available', available ? 'true' : 'false');
 
 	var tag = document.createElement('button');
 	tag.type = 'button';
-	tag.className = 'tag is-info is-light subtitle-file-tag';
+	tag.className = available
+		? 'tag is-info is-light subtitle-file-tag'
+		: 'tag is-warning is-light subtitle-file-tag';
 	tag.style.borderRadius = '4px 0 0 4px';
-	tag.title = 'Toon deze ondertitels op de video';
+	tag.title = available
+		? 'Toon deze ondertitels op de video'
+		: 'Dit bestand ' + unavailableSubtitleMessage;
 	tag.textContent = subfile.filename;
-	tag.onclick = function() { showExistingSubtitleFile(subfile.fragment_id, subfile.filename); };
+	tag.onclick = available
+		? function() { showExistingSubtitleFile(subfile.fragment_id, subfile.filename); }
+		: function() { showUnavailableSubtitleFile(subfile.filename); };
 
 	var btn = document.createElement('button');
 	btn.type = 'button';
@@ -239,10 +262,14 @@ function closeDeleteSubtitleModal() {
 	document.getElementById('delete_subtitle_modal').classList.remove('is-active');
 }
 
-function showSubtitleDeleteError(message) {
+function showSubtitleAlert(message) {
 	var alertBox = document.getElementById('subtitle_delete_error_alert');
-	alertBox.textContent = 'Fout bij wissen: ' + message;
+	alertBox.textContent = message;
 	alertBox.style.display = '';
+}
+
+function showSubtitleDeleteError(message) {
+	showSubtitleAlert('Fout bij wissen: ' + message);
 }
 
 function hideSubtitleDeleteError() {

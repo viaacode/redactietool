@@ -64,9 +64,14 @@ Metadata bewerken
             token: '{{flowplayer_token}}',
             poster: '{{keyframe}}?nocache='+Date.now(),
           };
-          if (existingSubtitleFiles.length > 0) {
+          // a subtitle record whose srt never landed in the object store cannot
+          // be played, so never add it as a track and never make it the default
+          var playableSubtitleFiles = existingSubtitleFiles.filter(
+            (subFile) => subFile.available !== false
+          );
+          if (playableSubtitleFiles.length > 0) {
             playerOpts.subtitles = {
-              tracks: existingSubtitleFiles.map((subFile, subFileIndex) => ({
+              tracks: playableSubtitleFiles.map((subFile, subFileIndex) => ({
                 src: subtitleTrackUrlPrefix + subFile.fragment_id,
                 label: subFile.filename,
                 id: "subtitle-" + subFile.fragment_id,
@@ -76,9 +81,9 @@ Metadata bewerken
           }
           flowplayer('#player_container', playerOpts);
 
-          // show the first existing subtitle file on the player right away
-          if (existingSubtitleFiles.length > 0) {
-            showSubtitleTrackByLabel(existingSubtitleFiles[0].filename);
+          // show the first playable subtitle file on the player right away
+          if (playableSubtitleFiles.length > 0) {
+            showSubtitleTrackByLabel(playableSubtitleFiles[0].filename);
           }
         </script>
         

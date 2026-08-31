@@ -147,7 +147,10 @@ function refreshSubtitlesAfterDelete(deletedFilename){
   if(activeSubtitleLabel !== deletedFilename) return;
   activeSubtitleLabel = null;
 
-  var remaining = document.querySelector('#subtitle_files_list [data-fragment-id]');
+  // skip records without essence in the object store, they cannot be played
+  var remaining = document.querySelector(
+    '#subtitle_files_list [data-fragment-id]:not([data-available="false"])'
+  );
   if(remaining){
     showExistingSubtitleFile(
       remaining.getAttribute('data-fragment-id'),

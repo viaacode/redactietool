@@ -675,3 +675,79 @@ def test_cache_app_assets(client):
         assert res.cache_control.public is True
         assert res.cache_control.max_age == 3600
         assert not res.cache_control.immutable
+
+
+# ============= Subtitles that never landed in the object store ==============
+
+
+def mh_record(filename, fragment_id, external_id):
+    return {
+        'Descriptive': {'OriginalFilename': filename},
+        'Internal': {
+            'FragmentId': fragment_id,
+            'MediaObjectId': fragment_id[:64],
+            'ArchiveStatus': 'on_disk',
+        },
+        'Administrative': {
+            'OrganisationName': 'testbeeld',
+            'ExternalId': external_id,
+        },
+    }
+
+
+# a half ingested record has no Administrative.ExternalId: mediahaven wrote the
+# row but the srt never reached the object store
+HALF_INGESTED = mh_record('qs5d8ncx8c_closed.srt', 'c' * 96, None)
+COMPLETE = mh_record('qs5d8ncx8c_open.srt', '5' * 96, 'qs5d8ncx8c_open')
+
+
+@pytest.fixture
+def mocked_subtitles(mocker):
+    mocker.patch('app.services.mediahaven_api.MediahavenApi.__init__',
+                 lambda self, session=None: None)
+    return mocker.patch(
+        'app.services.mediahaven_api.MediahavenApi.get_subtitles',
+        return_value=[HALF_INGESTED, COMPLETE]
+    )
+
+
+def test_subtitle_files_flags_unavailable(mocked_subtitles):
+    from app.services.mediahaven_api import MediahavenApi
+
+    files = MediahavenApi().subtitle_files('testbeeld', 'qs5d8ncx8c')
+
+    assert files == [
+        {'filename': 'qs5d8ncx8c_closed.srt',
+         'fragment_id': 'c' * 96, 'available': False},
+        {'filename': 'qs5d8ncx8c_open.srt',
+         'fragment_id': '5' * 96, 'available': True},
+    ]
+
+
+def test_subtitle_by_fragment_not_in_object_store(auth_client, mocker, mocked_subtitles):
+    """An srt that is not in the object store must 404, not serve empty vtt."""
+    mocker.patch('app.redactietool.get_vtt_subtitles', return_value='')
+
+    res = auth_client.get(
+        '/item_subtitles_by_fragment/testbeeld/qs5d8ncx8c/' + 'c' * 96)
+
+    assert res.status_code == HTTPStatus.NOT_FOUND
+
+
+def test_subtitle_by_fragment_unknown_fragment(auth_client, mocker, mocked_subtitles):
+    res = auth_client.get(
+        '/item_subtitles_by_fragment/testbeeld/qs5d8ncx8c/' + '0' * 96)
+
+    assert res.status_code == HTTPStatus.NOT_FOUND
+
+
+def test_subtitle_by_fragment_serves_vtt(auth_client, mocker, mocked_subtitles):
+    mocker.patch('app.redactietool.get_vtt_subtitles',
+                 return_value='WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhallo\n')
+
+    res = auth_client.get(
+        '/item_subtitles_by_fragment/testbeeld/qs5d8ncx8c/' + '5' * 96)
+
+    assert res.status_code == HTTPStatus.OK
+    assert res.mimetype == 'text/vtt'
+    assert res.data.decode().startswith('WEBVTT')

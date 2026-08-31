@@ -124,6 +124,21 @@ class MediahavenApi:
         )
         return sub_response
 
+    def subtitle_files(self, department, pid):
+        # compact list used by the edit page and the polling endpoint.
+        # a half ingested record (mediahaven wrote the row but the srt never
+        # landed in the object store) has no Administrative.ExternalId, while
+        # it still reports ArchiveStatus on_disk. Such a record cannot be
+        # served as webvtt, so flag it instead of pretending it is there.
+        files = []
+        for sub in self.get_subtitles(department, pid):
+            files.append({
+                'filename': sub.get('Descriptive', {}).get('OriginalFilename', ''),
+                'fragment_id': sub.get('Internal', {}).get('FragmentId', ''),
+                'available': sub.get('Administrative', {}).get('ExternalId') is not None,
+            })
+        return files
+
     def find_ingested_subtitle(self, pid, subtitle_type):
         # Diagnostic lookup used while polling: an ftp upload that got ingested
         # but did not get linked to the video shows up here while it never
