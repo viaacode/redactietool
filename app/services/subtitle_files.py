@@ -65,6 +65,10 @@ def save_subtitles(upload_folder, pid, uploaded_file):
 
 def get_vtt_subtitles(srt_url):
     srt_response = requests.get(srt_url)
+    # the object store serves srt as text/plain without a charset, so requests
+    # falls back to ISO-8859-1 and utf-8 accents come out as mojibake (Ã©).
+    # utf-8-sig also strips a BOM when the uploaded file has one.
+    srt_response.encoding = 'utf-8-sig'
     srt_content = srt_response.text
     vtt_content = convert_srt(srt_content)
 
