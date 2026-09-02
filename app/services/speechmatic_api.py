@@ -48,8 +48,7 @@ class SpeechmaticsApi:
 			"transcription_config": {
 				"language": language,
     			"diarization": "speaker",
-				"operating_point": "enhanced",
-				# "enable_entities": True
+				"operating_point": "enhanced"
 			},
 			"summarization_config": {
 				"summary_length": "brief",

@@ -56,24 +56,35 @@ Metadata bewerken
         <div id="player_container"></div>
   
         <script>
-          var hasExistingSubtitle = {{ has_existing_subtitle | tojson }};
           var existingSubtitleTypes = {{ existing_subtitle_types | tojson }};
+          var existingSubtitleFiles = {{ subtitle_files | tojson }};
+          var subtitleTrackUrlPrefix = "/item_subtitles_by_fragment/{{department}}/{{pid}}/";
           var playerOpts = {
             src: '{{video_url}}',
             token: '{{flowplayer_token}}',
             poster: '{{keyframe}}?nocache='+Date.now(),
           };
-          if (hasExistingSubtitle && existingSubtitleTypes.length > 0) {
+          // a subtitle record whose srt never landed in the object store cannot
+          // be played, so never add it as a track and never make it the default
+          var playableSubtitleFiles = existingSubtitleFiles.filter(
+            (subFile) => subFile.available !== false
+          );
+          if (playableSubtitleFiles.length > 0) {
             playerOpts.subtitles = {
-              tracks: existingSubtitleTypes.map((subType, subTypeIndex) => ({
-                src: "/item_subtitles/{{department}}/{{pid}}/" + subType,
-                label: "Nederlands (" + subType + ')',
-                id: "Nederlands-nl-" + subType,
-                default: subTypeIndex === 0
+              tracks: playableSubtitleFiles.map((subFile, subFileIndex) => ({
+                src: subtitleTrackUrlPrefix + subFile.fragment_id,
+                label: subFile.filename,
+                id: "subtitle-" + subFile.fragment_id,
+                default: subFileIndex === 0
               }))
             };
           }
           flowplayer('#player_container', playerOpts);
+
+          // show the first playable subtitle file on the player right away
+          if (playableSubtitleFiles.length > 0) {
+            showSubtitleTrackByLabel(playableSubtitleFiles[0].filename);
+          }
         </script>
         
         <div class="is-flex is-justify-content-space-between">

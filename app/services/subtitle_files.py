@@ -64,8 +64,30 @@ def save_subtitles(upload_folder, pid, uploaded_file):
 
 
 def get_vtt_subtitles(srt_url):
-    srt_content = requests.get(srt_url).text
-    return convert_srt(srt_content)
+    srt_response = requests.get(srt_url)
+    # the object store serves srt as text/plain without a charset, so requests
+    # falls back to ISO-8859-1 and utf-8 accents come out as mojibake (Ã©).
+    # utf-8-sig also strips a BOM when the uploaded file has one.
+    srt_response.encoding = 'utf-8-sig'
+    srt_content = srt_response.text
+    vtt_content = convert_srt(srt_content)
+
+    if not vtt_content:
+        # convert_srt swallows parse errors, so log what we actually fetched:
+        # a 404 page, a wrong encoding or a BOM all end up as an empty result
+        logger.warning(
+            'could not convert srt from object store',
+            data={
+                'srt_url': srt_url,
+                'status_code': srt_response.status_code,
+                'content_type': srt_response.headers.get('Content-Type'),
+                'encoding': srt_response.encoding,
+                'content_length': len(srt_content),
+                'first_line': repr(srt_content.split('\n')[0][:80]),
+            }
+        )
+
+    return vtt_content
 
 
 def not_deleted(upload_folder, f):
