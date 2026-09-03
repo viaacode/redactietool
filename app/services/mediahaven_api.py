@@ -7,19 +7,26 @@
 #
 #   Make api calls to hetarchief/mediahaven
 #   find video and audio fragments used to lookup video by pid and tenant
-#   send_subtitles saves the srt file together with an xml sidecar
-#   delete_old_subtitle used to replace existing srt with new upload
+#   upload_subtitle posts the srt file together with an xml sidecar
+#   delete_subtitle used to replace existing srt with new upload
 #
 
 import os
 import json
+from urllib.parse import urlparse
 from viaa.configuration import ConfigParser
 from viaa.observability import logging
 from mediahaven import MediaHaven
-from mediahaven.mediahaven import MediaHavenException
+from mediahaven.mediahaven import DEFAULT_ACCEPT_FORMAT, MediaHavenException
 from mediahaven.oauth2 import ROPCGrant, RequestTokenError
 
 logger = logging.get_logger(__name__, config=ConfigParser())
+
+def local_size(path):
+    try:
+        return os.path.getsize(path)
+    except OSError:
+        return -1
 
 
 class MediahavenApi:
@@ -139,18 +146,6 @@ class MediahavenApi:
             })
         return files
 
-    def find_ingested_subtitle(self, pid, subtitle_type):
-        # Diagnostic lookup used while polling: an ftp upload that got ingested
-        # but did not get linked to the video shows up here while it never
-        # shows up in get_subtitles. Nothing here at all means mediahaven
-        # never ingested the sidecar/srt pair from the watchfolder.
-        expected_pid = f"{pid}_{subtitle_type}"
-        return self.search_records(
-            f"+(PID:{expected_pid})",
-            'find_ingested_subtitle',
-            {'pid': pid, 'expected_pid': expected_pid}
-        )
-
     def get_subtitle(self, department, pid, subtype):
         matched_subs = self.client.records.search(
             q=f"+(dc_relationsis_verwant_aan:{pid})")
@@ -167,6 +162,204 @@ class MediahavenApi:
                     return sub
         else:
             return False
+
+    def subtitle_original_path(self, record_id):
+        """Ask mediahaven where the srt of a subtitle record is stored.
+
+        The record itself holds no url for it: a data record like an srt gets
+        no browse, and its preview fields point at a keyframe image. The
+        storage pools of the record do know the identifier and the filename of
+        the original, so we read those instead of assuming the filename
+        matches the media object id.
+
+        The pool that holds the original has no ExternalBaseUrl of its own, so
+        the caller combines this with the object store base url. Returns None
+        when mediahaven has no stored original for us (yet).
+        """
+        try:
+            pools = self.client._get(
+                f"records/{record_id}/storage", DEFAULT_ACCEPT_FORMAT).json()
+        except MediaHavenException as me:
+            logger.error(
+                'could not fetch subtitle storage pools',
+                data={'record_id': record_id, 'error': str(me)}
+            )
+            return None
+
+        original_pool = self.pick_original_pool(pools)
+        logger.info(
+            'subtitle storage pools',
+            data={
+                'record_id': record_id,
+                'pools': [
+                    {
+                        'cluster_group': pool.get('ClusterGroup'),
+                        'role': pool.get('Role'),
+                        'online': pool.get('Online'),
+                        'path_to_original': pool.get('PathToOriginal'),
+                    }
+                    for pool in pools
+                ],
+                'picked_role': original_pool.get(
+                    'Role') if original_pool else None,
+            }
+        )
+        if not original_pool:
+            return None
+
+        original = original_pool['PathToOriginal']
+        return {
+            'base_url': original.get('ExternalBaseUrl'),
+            'identifier_path': original.get('IdentifierPath'),
+            'file_path': original.get('FilePath'),
+        }
+
+    def pick_original_pool(self, pools):
+        # an archived pool that is online is the one serving the file; a
+        # subtitle whose ingest never completed only has a transient pool
+        candidates = [
+            pool for pool in pools
+            if isinstance(pool, dict)
+            and (pool.get('PathToOriginal') or {}).get('FilePath')
+            and (pool.get('PathToOriginal') or {}).get('IdentifierPath')
+        ]
+        if not candidates:
+            return None
+
+        return sorted(
+            candidates,
+            key=lambda pool: (
+                pool.get('Role') != 'ARCHIVE',
+                not pool.get('Online'),
+            )
+        )[0]
+
+    def essence_session(self, url):
+        # a representation url served by the api itself needs our oauth
+        # session, a signed object store url is fetched anonymously
+        if urlparse(url).netloc != urlparse(self.API_SERVER).netloc:
+            return None
+
+        try:
+            return self.client.grant._get_session()
+        except Exception as e:
+            logger.warning(
+                'no authorized session for essence url',
+                data={'url': url, 'error': str(e)}
+            )
+            return None
+
+    def upload_subtitle(self, upload_folder, tp, xml_sidecar):
+        """Create the subtitle record with a direct multipart upload.
+
+        This replaces the old ftp watchfolder detour: mediahaven answers with
+        the created record, so we know the fragment id right away instead of
+        polling the search api until the ingest shows up.
+        """
+        srt_path = os.path.join(upload_folder, tp['srt_file'])
+        form_data = {
+            'title': tp['srt_file'],
+            # requests would send a python bool as 'True'
+            'publish': 'true',
+            'departmentId': self.DEPARTMENT_ID,
+            # the watchfolder ran the legacy ingest, and that is what makes
+            # dc_relations/is_verwant_aan stick. Every subtitle lookup we do
+            # searches on that relation, so keep using it.
+            'workflow': 'Ingest-1.0',
+            # no externalId on purpose: mediahaven computes it, and
+            # subtitle_files() reads its presence as "the essence landed"
+        }
+
+        logger.info(
+            "uploading subtitle to mediahaven...",
+            data={
+                'pid': tp['pid'],
+                'subtitle_type': tp['subtitle_type'],
+                'srt_file': tp['srt_file'],
+                'srt_bytes': local_size(srt_path),
+                'api_server': self.API_SERVER,
+                **form_data,
+            }
+        )
+
+        try:
+            with open(srt_path, 'rb') as srt_file:
+                record = self.client._post(
+                    self.client.records._construct_path(),
+                    files={
+                        'file': (
+                            tp['srt_file'], srt_file, 'application/x-subrip'),
+                        # the sidecar only gets a content-type of its own when
+                        # it is sent as a file part, and without that
+                        # content-type mediahaven ignores the metadata
+                        'metadata': (
+                            'sidecar.xml',
+                            xml_sidecar.encode('utf-8'),
+                            'application/xml'),
+                    },
+                    **form_data
+                )
+        except MediaHavenException as me:
+            return self.upload_failed(self.upload_error_message(me), tp, xml_sidecar, me)
+        except OSError as oe:
+            return self.upload_failed(
+                'Ondertitelbestand kon niet gelezen worden', tp, xml_sidecar, oe)
+
+        fragment_id = record.get('Internal', {}).get(
+            'FragmentId', '') if isinstance(record, dict) else ''
+        if not fragment_id:
+            # a 2xx without a record body leaves us with nothing to address,
+            # so don't report a synced subtitle we cannot show or delete
+            return self.upload_failed(
+                'Onverwacht antwoord van het MAM', tp, xml_sidecar, record)
+
+        logger.info(
+            'subtitle created in mediahaven',
+            data={'pid': tp['pid'], 'record': self.record_summary(record)}
+        )
+
+        return {
+            'status': True,
+            'record': record,
+            'fragment_id': fragment_id,
+            'filename': record.get('Descriptive', {}).get(
+                'OriginalFilename') or tp['srt_file'],
+            # mediahaven only fills in the external id once the essence is
+            # really there, see subtitle_files()
+            'available': record.get(
+                'Administrative', {}).get('ExternalId') is not None,
+            'errors': [],
+        }
+
+    def upload_failed(self, message, tp, xml_sidecar, error):
+        logger.error(
+            'subtitle upload to mediahaven failed',
+            data={
+                'pid': tp['pid'],
+                'subtitle_type': tp['subtitle_type'],
+                'srt_file': tp['srt_file'],
+                'error': str(error),
+                # the sidecar decides whether the subtitle gets linked to the
+                # video, so log it when something went wrong
+                'xml_sidecar': xml_sidecar,
+            }
+        )
+        return {
+            'status': False,
+            'record': None,
+            'fragment_id': '',
+            'filename': tp['srt_file'],
+            'available': False,
+            'errors': [message],
+        }
+
+    def upload_error_message(self, mh_exception):
+        status_code = getattr(mh_exception, 'status_code', None)
+        if status_code == 409:
+            return 'Dit ondertitelbestand bestaat al in het MAM'
+        if status_code == 403:
+            return 'Geen rechten om dit ondertitelbestand op te laden in het MAM'
+        return str(mh_exception)
 
     def delete_subtitle(self, fragment_id):
         try:

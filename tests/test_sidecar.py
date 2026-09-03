@@ -6,7 +6,7 @@
 #
 
 import pytest
-from app.services.subtitle_files import save_sidecar_xml
+from app.services.xml_sidecar import XMLSidecar
 from .fixtures import sub_params, sub_meta, subtitle_sidecar
 
 pytestmark = [pytest.mark.vcr(ignore_localhost=True)]
@@ -23,8 +23,6 @@ def vcr_config():
 
 
 def test_sidecar_v2():
-    xml_filename, xml_data = save_sidecar_xml(
-        "./tests/test_subs", sub_meta(), sub_params())
+    xml_data = XMLSidecar().subtitle_sidecar(sub_meta(), sub_params())
 
-    print(xml_data)
     assert xml_data == subtitle_sidecar()

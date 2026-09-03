@@ -205,7 +205,6 @@ Name                              Stmts   Miss  Cover
 app/__init__.py                       0      0   100%
 app/config.py                        20      0   100%
 app/redactietool.py                 339     58    83%
-app/services/ftp_uploader.py         33     10    70%
 app/services/input_escaping.py       35      0   100%
 app/services/mediahaven_api.py      103     22    79%
 app/services/meta_mapping.py         90      1    99%
@@ -251,13 +250,9 @@ export SAML_ENV 'saml/localhost' # or 'saml/prd' or...
 export OAS_APPNAME 'mediahaven'  # or whatever the application access app name needs be
 export SECRET_KEY 'set_in_secrets_for_meemoo_saml_cookie'
 export OBJECT_STORE_URL 'https://archief-media-qas.viaa.be/viaa/MOB'
-export FTP_SERVER '' # ftp url for uploading subtitles (internal vpn url)
-export FTP_DIR '/'
 export TESTBEELD_PERM_ID 'uuid_here'
 export ONDERWIJS_PERM_ID 'uuid2_here'
 export ADMIN_PERM_ID 'uuid3_here'
-export FTP_USER 'user'
-export FTP_PASS 'pass'
 export KEYFRAME_EDITING_LINK 'https://archief-qas.viaa.be/player?id='
 export SPARQL_ENDPOINT = 'https://sparql_api_url'
 export SPARQL_USER = lookup in team pass

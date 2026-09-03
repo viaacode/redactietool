@@ -10,7 +10,6 @@ import io
 import os
 import json
 
-from unittest.mock import MagicMock
 from http import HTTPStatus
 from app.redactietool import app
 
@@ -192,7 +191,13 @@ def test_edit_metadata_working_pid(auth_client):
 
 
 @pytest.mark.vcr
-def test_subtitles_on_metadata_edit(auth_client):
+def test_subtitles_on_metadata_edit(auth_client, mocker):
+    # the cassette was recorded before we asked the api where the srt lives,
+    # so pin this test to the object store fallback
+    mocker.patch(
+        'app.services.mediahaven_api.MediahavenApi.subtitle_original_path',
+        return_value=None)
+
     res = auth_client.get(
         "/item_subtitles/testbeeld/qs5d8ncx8c/closed",
         follow_redirects=True
@@ -448,25 +453,73 @@ def test_random_404(client, setup):
 # =================== Combined metadata + subtitle tests =====================
 
 
-@pytest.mark.skip(reason="requires VCR cassette recording against a live MediaHaven server")
-@pytest.mark.vcr
-def test_edit_metadata_with_subtitle_published(auth_client, mocker):
-    """POST with a valid SRT file should save metadata then FTP-upload the subtitle."""
+UPLOADED_SUBTITLE = {
+    'status': True,
+    'record': {},
+    'fragment_id': 'a' * 96,
+    'filename': 'qsf7664p39_closed.srt',
+    # a freshly created record has no essence yet
+    'available': False,
+    'errors': [],
+}
+
+
+def metadata_form_fields(mam_data):
+    """The metadata form fields the save flow validates, without subtitles."""
+    return {
+        'pid': 'qsf7664p39',
+        'department': 'testbeeld',
+        'mam_data': json.dumps(mam_data),
+        'sm_data': json.dumps({}),
+        'serie': 'Serie veld test',
+        'uitzenddatum': '2021-11-21',
+        'ontsluitingstitel': 'Fietsstraten in centrum Gent',
+        'prd_maker_attribute': 'Maker',
+        'prd_maker_value': '',
+        'prd_bijdrager_attribute': 'Aanwezig',
+        'prd_bijdrager_value': '',
+        'prd_publisher_attribute': 'Distributeur',
+        'prd_publisher_value': '',
+        'avo_beschrijving': 'Beschrijving test',
+        'lom_type': '[{"name":"Video","code":"Video"}]',
+        'lom1_beoogde_eindgebruiker': '[{"name":"Student","code":"Student"}]',
+        'talen': '[{"name":"Nederlands","code":"nl"}]',
+        'lom_onderwijs_combo': '[]',
+        'lom1_onderwijsniveaus': '[]',
+        'lom1_onderwijsgraden': '[]',
+        'themas': '[]',
+        'vakken': '[]',
+        'trefwoorden': '[]',
+    }
+
+
+@pytest.fixture
+def mocked_save_flow(mocker):
+    """Mock away mediahaven and postgres so the save flow can be tested."""
     with open('./tests/fixture_data/edit_mam_data.json', "r") as f:
         mam_data = json.loads(f.read())
 
-    ftp_mock = MagicMock()
+    mocker.patch('app.services.mediahaven_api.MediahavenApi.__init__',
+                 lambda self, session=None: None)
+    mocker.patch('app.services.mediahaven_api.MediahavenApi.find_item_by_pid',
+                 return_value=mam_data)
+    mocker.patch('app.services.mediahaven_api.MediahavenApi.update_metadata',
+                 return_value={'status': True, 'errors': []})
+    mocker.patch('app.services.mediahaven_api.MediahavenApi.subtitle_files',
+                 return_value=[])
+    mocker.patch('app.services.jobs.JobsService.get_job', return_value=None)
 
-    def mock_ftp_client(self, server):
-        ftp_mock.login.return_value = 'login ok'
-        ftp_mock.cwd.return_value = 'dir changed'
-        ftp_mock.storbinary.return_value = '226 Transfer complete.'
-        return ftp_mock
+    return {
+        'mam_data': mam_data,
+        'upload': mocker.patch(
+            'app.services.mediahaven_api.MediahavenApi.upload_subtitle',
+            return_value=UPLOADED_SUBTITLE),
+    }
 
-    mocker.patch(
-        'app.services.ftp_uploader.FtpUploader.ftp_client',
-        mock_ftp_client
-    )
+
+def test_edit_metadata_with_subtitle_published(auth_client, mocked_save_flow):
+    """POST with a valid SRT file saves metadata and uploads the subtitle."""
+    mam_data = mocked_save_flow['mam_data']
 
     filepath = os.path.join('./tests/test_subs', 'testing_good.srt')
     res = auth_client.post("/edit_metadata?pid=qsf7664p39&department=testbeeld", data={
@@ -499,17 +552,50 @@ def test_edit_metadata_with_subtitle_published(auth_client, mocker):
     }, follow_redirects=True)
 
     assert res.status_code == HTTPStatus.OK
-    assert 'werden opgeslagen' in res.data.decode()
-    assert 'succesvol opgeladen' in res.data.decode()
-    assert ftp_mock.login.called
+    body = res.data.decode()
+    assert 'werden opgeslagen' in body
+    assert 'succesvol opgeladen' in body
+    mocked_save_flow['upload'].assert_called_once()
+
+    # the created record carries the page, the search api only catches up
+    # later, so the new file shows as still being processed
+    assert 'qsf7664p39_closed.srt' in body
+    assert 'wordt nog verwerkt in het MAM' in body
+    # nothing polls for the ingest any more
+    assert 'startSubtitlePolling' not in body
+    assert '/subtitle_files' not in body
 
 
-@pytest.mark.skip(reason="requires VCR cassette recording against a live MediaHaven server")
-@pytest.mark.vcr
-def test_edit_metadata_without_subtitle(auth_client, mocker):
+def test_edit_metadata_with_failing_subtitle_upload(auth_client, mocked_save_flow):
+    """A rejected upload shows the mediahaven error instead of a success."""
+    mam_data = mocked_save_flow['mam_data']
+    mocked_save_flow['upload'].return_value = {
+        'status': False,
+        'record': None,
+        'fragment_id': '',
+        'filename': 'qsf7664p39_closed.srt',
+        'available': False,
+        'errors': ['Dit ondertitelbestand bestaat al in het MAM'],
+    }
+
+    filepath = os.path.join('./tests/test_subs', 'testing_good.srt')
+    res = auth_client.post("/edit_metadata?pid=qsf7664p39&department=testbeeld", data={
+        **metadata_form_fields(mam_data),
+        'publicatiestatus_checked': 'on',
+        'subtitle_type': 'closed',
+        'subtitle_file': (open(filepath, 'rb'), 'testing_good.srt'),
+    }, follow_redirects=True)
+
+    assert res.status_code == HTTPStatus.OK
+    body = res.data.decode()
+    assert 'werden opgeslagen' in body
+    assert 'bestaat al in het MAM' in body
+    assert 'succesvol opgeladen' not in body
+
+
+def test_edit_metadata_without_subtitle(auth_client, mocked_save_flow):
     """POST without subtitle file should only save metadata."""
-    with open('./tests/fixture_data/edit_mam_data.json', "r") as f:
-        mam_data = json.loads(f.read())
+    mam_data = mocked_save_flow['mam_data']
 
     res = auth_client.post("/edit_metadata?pid=qsf7664p39&department=testbeeld", data={
         'pid': 'qsf7664p39',
@@ -544,12 +630,9 @@ def test_edit_metadata_without_subtitle(auth_client, mocker):
     assert 'automatisch opgeladen' not in body
 
 
-@pytest.mark.skip(reason="requires VCR cassette recording against a live MediaHaven server")
-@pytest.mark.vcr
-def test_edit_metadata_with_invalid_srt(auth_client, mocker):
+def test_edit_metadata_with_invalid_srt(auth_client, mocked_save_flow):
     """POST with a non-SRT file should show a subtitle validation error."""
-    with open('./tests/fixture_data/edit_mam_data.json', "r") as f:
-        mam_data = json.loads(f.read())
+    mam_data = mocked_save_flow['mam_data']
 
     res = auth_client.post("/edit_metadata?pid=qsf7664p39&department=testbeeld", data={
         'pid': 'qsf7664p39',
@@ -705,6 +788,14 @@ COMPLETE = mh_record('qs5d8ncx8c_open.srt', '5' * 96, 'qs5d8ncx8c_open')
 def mocked_subtitles(mocker):
     mocker.patch('app.services.mediahaven_api.MediahavenApi.__init__',
                  lambda self, session=None: None)
+    mocker.patch('app.services.mediahaven_api.MediahavenApi.essence_session',
+                 return_value=None)
+    # no stored original for these records, so they fall back to the guessed
+    # object store url; test_subtitle_by_fragment_uses_stored_original covers
+    # the other way around
+    mocker.patch(
+        'app.services.mediahaven_api.MediahavenApi.subtitle_original_path',
+        return_value=None)
     return mocker.patch(
         'app.services.mediahaven_api.MediahavenApi.get_subtitles',
         return_value=[HALF_INGESTED, COMPLETE]
@@ -739,6 +830,27 @@ def test_subtitle_by_fragment_unknown_fragment(auth_client, mocker, mocked_subti
         '/item_subtitles_by_fragment/testbeeld/qs5d8ncx8c/' + '0' * 96)
 
     assert res.status_code == HTTPStatus.NOT_FOUND
+
+
+def test_subtitle_by_fragment_uses_stored_original(auth_client, mocker, mocked_subtitles):
+    """The stored original path wins over guessing the filename ourselves."""
+    mocker.patch(
+        'app.services.mediahaven_api.MediahavenApi.subtitle_original_path',
+        return_value={
+            'base_url': None,
+            'identifier_path': 'abc',
+            'file_path': 'abc.srt',
+        })
+    get_vtt = mocker.patch(
+        'app.redactietool.get_vtt_subtitles',
+        return_value='WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhallo\n')
+
+    res = auth_client.get(
+        '/item_subtitles_by_fragment/testbeeld/qs5d8ncx8c/' + '5' * 96)
+
+    assert res.status_code == HTTPStatus.OK
+    assert get_vtt.call_args[0][0] == (
+        'https://archief-media-qas.viaa.be/viaa/MOB/TESTBEELD/abc/abc.srt')
 
 
 def test_subtitle_by_fragment_serves_vtt(auth_client, mocker, mocked_subtitles):

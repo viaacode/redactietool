@@ -18,12 +18,8 @@ def sub_params():
         'subtitle_type': 'closed',
         'srt_file': 'qsf7664p39_closed.srt',
         'vtt_file': 'qsf7664p39.vtt',
-        'xml_file': None,
-        'xml_sidecar': None,
-        'mh_response': None,
         'mam_data': '{}',
         'replace_existing': None,
-        'transfer_method': 'ftp'
     }
 
 

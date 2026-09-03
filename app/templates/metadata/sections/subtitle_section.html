@@ -1,4 +1,5 @@
 {% set unavailable_subtitle_message = 'is niet beschikbaar in het MAM: het bestand werd geregistreerd, maar de inhoud werd niet opgeslagen. Verwijder het en laad het opnieuw op.' %}
+{% set processing_subtitle_message = 'wordt nog verwerkt in het MAM. Herlaad deze pagina later om de ondertitels op de video te bekijken.' %}
 <div class="columns">
 	<div class="column">
 		<h2 class="title is-clickable" onclick="sectionToggle('subtitle_section')">
@@ -68,6 +69,10 @@
 							<button type="button" class="tag is-info is-light subtitle-file-tag" style="border-radius:4px 0 0 4px;" title="Toon deze ondertitels op de video" onclick="showExistingSubtitleFile('{{ subfile.fragment_id }}', '{{ subfile.filename }}'); return false;">
 								{{ subfile.filename }}
 							</button>
+							{% elif subfile.processing %}
+							<button type="button" class="tag is-light subtitle-file-tag" style="border-radius:4px 0 0 4px;" title="Dit bestand {{ processing_subtitle_message }}" onclick="showProcessingSubtitleFile('{{ subfile.filename }}'); return false;">
+								<ion-icon name="time-outline" class="pr-1"></ion-icon>{{ subfile.filename }}
+							</button>
 							{% else %}
 							<button type="button" class="tag is-warning is-light subtitle-file-tag" style="border-radius:4px 0 0 4px;" title="Dit bestand {{ unavailable_subtitle_message }}" onclick="showUnavailableSubtitleFile('{{ subfile.filename }}'); return false;">
 								<ion-icon name="alert-circle-outline" class="pr-1"></ion-icon>{{ subfile.filename }}
@@ -78,12 +83,6 @@
 						{% endfor %}
 					</div>
 					<div id="subtitle_toast_container" class="mt-2"></div>
-					{% if subtitle_synced %}
-					<div id="subtitle_polling_spinner" class="mt-2">
-						<span class="icon" style="position: relative; top: 4px;"><ion-icon name="sync-outline" class="rotating"></ion-icon></span>
-						<span class="is-size-7 has-text-grey">Bezig met verwerken...</span>
-					</div>
-					{% endif %}
 				</div>
 			{% endif %}
 			{% if subtitle_synced %}
@@ -135,10 +134,6 @@
 		</footer>
 	</div>
 </div>
-<style>
-@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-.rotating { display: inline-block; animation: rotate 1.2s linear infinite; }
-</style>
 <script>
 var existingSubtitleTypes = {{ existing_subtitle_types | default([]) | tojson }};
 var existingSubtitleFilenames = {
@@ -147,8 +142,8 @@ var existingSubtitleFilenames = {
 		{% if '_closed.' in subfile.filename %}'closed': '{{ subfile.filename }}',{% endif %}
 	{% endfor %}
 };
-var subtitleSyncedFilename = {{ subtitle_synced_filename | default(None) | tojson }};
 var unavailableSubtitleMessage = {{ unavailable_subtitle_message | tojson }};
+var processingSubtitleMessage = {{ processing_subtitle_message | tojson }};
 
 // a record without essence in the object store cannot be played, so its tag
 // only explains the problem instead of loading an empty track on the player
@@ -156,97 +151,10 @@ function showUnavailableSubtitleFile(filename) {
 	showSubtitleAlert('"' + filename + '" ' + unavailableSubtitleMessage);
 }
 
-function buildSubtitleTag(subfile) {
-	var available = subfile.available !== false;
-
-	var wrapper = document.createElement('span');
-	wrapper.className = 'is-inline-flex is-align-items-center mr-2 mb-2';
-	wrapper.setAttribute('data-fragment-id', subfile.fragment_id);
-	wrapper.setAttribute('data-filename', subfile.filename);
-	wrapper.setAttribute('data-available', available ? 'true' : 'false');
-
-	var tag = document.createElement('button');
-	tag.type = 'button';
-	tag.className = available
-		? 'tag is-info is-light subtitle-file-tag'
-		: 'tag is-warning is-light subtitle-file-tag';
-	tag.style.borderRadius = '4px 0 0 4px';
-	tag.title = available
-		? 'Toon deze ondertitels op de video'
-		: 'Dit bestand ' + unavailableSubtitleMessage;
-	tag.textContent = subfile.filename;
-	tag.onclick = available
-		? function() { showExistingSubtitleFile(subfile.fragment_id, subfile.filename); }
-		: function() { showUnavailableSubtitleFile(subfile.filename); };
-
-	var btn = document.createElement('button');
-	btn.type = 'button';
-	btn.className = 'button is-danger is-small';
-	btn.style.cssText = 'height:24px; min-height:24px; padding:0 6px; margin-left:1px; border-radius:0 4px 4px 0;';
-	btn.title = 'Verwijder dit ondertitel bestand';
-	btn.textContent = 'x';
-	btn.onclick = function() { openDeleteSubtitleModal(subfile.fragment_id, subfile.filename); };
-
-	wrapper.appendChild(tag);
-	wrapper.appendChild(btn);
-	return wrapper;
-}
-
-function startSubtitlePolling() {
-	var expectedFilename = subtitleSyncedFilename;
-	if (!expectedFilename) return;
-	var maxAttempts = 60;
-	var attempts = 0;
-	var interval = setInterval(function() {
-		attempts++;
-		fetch('/subtitle_files?pid={{ pid }}&department={{ department }}'
-			+ '&expected=' + encodeURIComponent(expectedFilename)
-			+ '&attempt=' + attempts)
-			.then(function(r) { return r.json(); })
-			.then(function(files) {
-				var found = files.some(function(f) { return f.filename === expectedFilename; });
-				if (!found && attempts < maxAttempts) return;
-
-				clearInterval(interval);
-				var spinner = document.getElementById('subtitle_polling_spinner');
-				if (spinner) spinner.remove();
-
-				var alert = document.getElementById('subtitle_synced_alert');
-				if (alert) {
-					if (found) {
-						alert.className = 'notification is-success fadein';
-						alert.textContent = 'Het ondertitelbestand werd succesvol opgeladen.';
-					} else {
-						// the file reached the mam upload folder but did not come
-						// back from mediahaven, so do not claim it succeeded
-						alert.className = 'notification is-warning fadein';
-						alert.textContent = 'Het ondertitelbestand "' + expectedFilename
-							+ '" werd doorgestuurd, maar is nog niet verwerkt door het MAM.'
-							+ ' Herlaad deze pagina later om te controleren.';
-					}
-				}
-
-				var list = document.getElementById('subtitle_files_list');
-				if (list) {
-					list.innerHTML = '';
-					files.forEach(function(subfile) { list.appendChild(buildSubtitleTag(subfile)); });
-					existingSubtitleTypes = files.map(function(f) {
-						if (f.filename.indexOf('_open.') !== -1) return 'open';
-						if (f.filename.indexOf('_closed.') !== -1) return 'closed';
-						return null;
-					}).filter(Boolean);
-					existingSubtitleFilenames = {};
-					files.forEach(function(f) {
-						if (f.filename.indexOf('_open.') !== -1) existingSubtitleFilenames['open'] = f.filename;
-						if (f.filename.indexOf('_closed.') !== -1) existingSubtitleFilenames['closed'] = f.filename;
-					});
-					var section = document.getElementById('subtitle_files_section');
-					if (section) section.style.display = files.length > 0 ? '' : 'none';
-					updateSubtitleExistingWarning();
-				}
-			})
-			.catch(function() { if (attempts >= maxAttempts) clearInterval(interval); });
-	}, 10000);
+// a just uploaded subtitle has a record but no essence yet, so there is
+// nothing to put on the player until mediahaven finished processing it
+function showProcessingSubtitleFile(filename) {
+	showSubtitleAlert('"' + filename + '" ' + processingSubtitleMessage);
 }
 
 var deleteSubtitleFragmentId = null;
@@ -335,10 +243,6 @@ function subtitleNeedsReplacement() {
 
 document.getElementById('subtitle_type').addEventListener('change', updateSubtitleExistingWarning);
 updateSubtitleExistingWarning();
-
-if (subtitleSyncedFilename) {
-	startSubtitlePolling();
-}
 
 function closeReplaceSubtitleModal() {
 	document.getElementById('replace_subtitle_modal').classList.remove('is-active');

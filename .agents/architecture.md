@@ -212,6 +212,20 @@ Editor confirms
 
 ### Upload mechanics to Mediahaven
 
+> **Update (2026-09-02): the FTP path described below is gone.** The subtitle
+> is now created with a direct multipart `POST /records` to the Mediahaven v2
+> API, with the SRT as the `file` part and the XML sidecar as the `metadata`
+> part (see `MediahavenApi.upload_subtitle`). The create call answers with the
+> created record, so the browser no longer polls `/subtitle_files` waiting for
+> a watchfolder ingest, and `app/services/ftp_uploader.py` plus every `FTP_*`
+> environment variable have been removed. The preview also no longer guesses
+> an object store path: it asks `GET /records/:id/representations` where the
+> SRT lives (`MediahavenApi.subtitle_essence_url`), because the FTP location
+> was cleared once Mediahaven ingested the file.
+>
+> The historical account below is kept because it explains why the sidecar and
+> the `dc_relations/is_verwant_aan` link look the way they do.
+
 Historically, subtitle upload could not be done cleanly through the newer Mediahaven JSON API. Walter says the Mediahaven V2 API existed, but the call needed for subtitles did not work with JSON at the time. Therefore the redactietool had to upload subtitle assets via **FTP**, together with an **XML sidecar** containing metadata such as PID/content partner/type information.
 
 The flow is approximately:

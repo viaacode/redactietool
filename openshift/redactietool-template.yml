@@ -138,8 +138,6 @@ objects:
       OAS_APPNAME: ''
       MEDIAHAVEN_API: ''
       DEPARTMENT_ID: ''
-      FTP_SERVER: ''
-      FTP_DIR: ''
       TESTBEELD_PERM_ID: ''
       ONDERWIJS_PERM_ID: ''
       ADMIN_PERM_ID: ''
@@ -160,8 +158,6 @@ objects:
         env: ${env}
     stringData:
       FLOWPLAYER_TOKEN: ''
-      FTP_PASS: ''
-      FTP_USER: ''
       MEDIAHAVEN_PASS: ''
       MEDIAHAVEN_USER: ''
       OAS_JWT_SECRET: ''

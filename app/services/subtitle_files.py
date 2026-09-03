@@ -4,9 +4,8 @@
 #
 #  app/subtitle_files.py
 #
-#   methods to create temporary srt, vtt and xml files
+#   methods to create temporary srt and vtt files
 #   used for sending to mediahaven and streaming in the flowplayer preview.html
-#   we also save the subtitle xml sidecar here for ftp uploading
 #
 
 import os
@@ -14,7 +13,6 @@ import webvtt
 import requests
 
 from app.services.srt_converter import convert_srt
-from app.services.xml_sidecar import XMLSidecar
 from werkzeug.utils import secure_filename
 from viaa.configuration import ConfigParser
 from viaa.observability import logging
@@ -63,8 +61,10 @@ def save_subtitles(upload_folder, pid, uploaded_file):
     return None, None
 
 
-def get_vtt_subtitles(srt_url):
-    srt_response = requests.get(srt_url)
+def get_vtt_subtitles(srt_url, session=None):
+    # a subtitle url that mediahaven serves itself needs the authorized
+    # session of the api client, an object store url does not
+    srt_response = (session or requests).get(srt_url)
     # the object store serves srt as text/plain without a charset, so requests
     # falls back to ISO-8859-1 and utf-8 accents come out as mojibake (Ã©).
     # utf-8-sig also strips a BOM when the uploaded file has one.
@@ -79,6 +79,7 @@ def get_vtt_subtitles(srt_url):
             'could not convert srt from object store',
             data={
                 'srt_url': srt_url,
+                'authorized': session is not None,
                 'status_code': srt_response.status_code,
                 'content_type': srt_response.headers.get('Content-Type'),
                 'encoding': srt_response.encoding,
@@ -111,9 +112,6 @@ def delete_files(upload_folder, tp):
     if tp.get('vtt_file'):
         delete_file(upload_folder, tp['vtt_file'])
 
-    if tp.get('xml_file'):
-        delete_file(upload_folder, tp['xml_file'])
-
 
 def move_subtitle(upload_folder, tp):
     # moving it from somename.srt into <pid>_open/closed.srt
@@ -124,15 +122,3 @@ def move_subtitle(upload_folder, tp):
     if not os.path.exists(new_path):
         os.rename(orig_path, new_path)
     return new_filename
-
-
-def save_sidecar_xml(upload_folder, metadata, tp):
-    # now write data to correct filename
-    xml_pid = f"{tp['pid']}_{tp['subtitle_type']}"
-    xml_filename = f"{xml_pid}.xml"
-    xml_data = XMLSidecar().subtitle_sidecar(metadata, tp)
-    sf = open(os.path.join(upload_folder, xml_filename), 'w')
-    sf.write(xml_data)
-    sf.close()
-
-    return xml_filename, xml_data

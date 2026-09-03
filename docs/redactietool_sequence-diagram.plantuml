@@ -8,7 +8,6 @@ participant redactietool as "Redactietool"
 participant mh as "MediaHaven"
 participant es as "Elastic Search"
 participant suggest as "Suggest SPARQL service"
-participant ftp as "FTP Server"
 participant saml as "SAML server"
 
 activate redactietool
@@ -60,10 +59,6 @@ loop
             redactietool -> redactietool: Add keyword to selected keywords in Leerobject
           end
           redactietool -> redactietool: Construct sidecar for updating metadata
-          redactietool -> ftp: Transfer collateral to MH tra
-          activate ftp
-          redactietool -> ftp: Transfer sidecar XML to MH tra
-          deactivate ftp
           activate mh
           redactietool -> mh: Update object with transformed metadata
           mh --> redactietool: Display results in metadata edit form
@@ -79,11 +74,11 @@ loop
           redactietool -> redactietool: Parse and convert SRT into webVTT file
           redactietool -> redactietool: Redirect to preview page that shows local webVTT in browser.
           redactietool -> redactietool: Construct sidecar for updating subtitle file.
-          redactietool -> ftp: Transfer webVTT to MH tra
-          activate ftp
-          redactietool -> ftp: Transfer sidecar XML to MH tra
-          deactivate ftp
-          redactietool -> redactietool: display results of ftp upload response.
+          activate mh
+          redactietool -> mh: Create record with SRT file and sidecar XML (POST /records)
+          mh -> redactietool: Return created record with fragment id
+          deactivate mh
+          redactietool -> redactietool: display the created subtitle file, marked as still processing.
         end
 end
 
