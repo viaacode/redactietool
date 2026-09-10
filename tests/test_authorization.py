@@ -22,7 +22,7 @@ def vcr_config():
 def test_logout(client):
     res = client.get('/?slo')
 
-    assert 'SingleLogoutService' in res.data.decode()
+    assert 'singleLogout' in res.data.decode()
     assert 'RelayState' in res.data.decode()
 
 
