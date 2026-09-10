@@ -38,6 +38,15 @@
     <!-- vue components and minified bulma -->
     {% include 'includes/base_vue_header.html' %}
 
+    <script type="text/javascript">
+      {% set version %}{% include 'includes/version_number.html' %}{% endset %}
+      {% set git_short_sha %}{% include 'includes/git_short_sha.html' %}{% endset %}
+      console.info(
+        `%c Redactietool version: {{ version | trim }} (commit {{ git_short_sha | trim }})`,
+        'color: #bada55'
+      );
+    </script>
+
     <title>Redactietool</title>
   </head>
 
