@@ -6,3 +6,6 @@ htmlcov
 *.pem
 *.key
 *generate_saml_certificate*
+.idea/
+.env*
+
