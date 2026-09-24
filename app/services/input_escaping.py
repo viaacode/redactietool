@@ -72,7 +72,8 @@ def cleanup_markdown(markdown_text):
 def markdown_to_html(markdown_content):
     markdown_text = cleanup_markdown(markdown_content)
     html_content = markdown2.markdown(markdown_text)
-    html_content = html_content.replace("\n\n", "<br>")
+    # markdown2 only puts newlines between block elements, so strip them
+    # instead of converting them into <br> (which adds empty lines in quill)
     html_content = html_content.replace("\n", "")
 
     return secure_unescape(html_content)
